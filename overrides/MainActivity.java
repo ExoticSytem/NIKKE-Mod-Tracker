@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
                         conn.setConnectTimeout(7000);
                         conn.setReadTimeout(10000);
                         conn.setInstanceFollowRedirects(true);
-                        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) NIKKE-Mod-Tracker/0.2");
+                        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) NIKKE-Mod-Tracker/0.2.1");
                         conn.setRequestProperty("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
                         int status = conn.getResponseCode();
                         if (status < 200 || status >= 300) continue;
@@ -94,8 +94,21 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public String getCatalogJson() {
+            try (InputStream in = getAssets().open("catalog.json")) {
+                byte[] buf = new byte[16384];
+                java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+                int n;
+                while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+                return out.toString(StandardCharsets.UTF_8.name());
+            } catch (Exception ignored) {
+                return "";
+            }
+        }
+
+        @JavascriptInterface
         public String appVersion() {
-            return "0.2.0";
+            return "0.2.1";
         }
     }
 
