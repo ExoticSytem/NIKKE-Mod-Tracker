@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
                         conn.setConnectTimeout(7000);
                         conn.setReadTimeout(10000);
                         conn.setInstanceFollowRedirects(true);
-                        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) NIKKE-Mod-Tracker/0.2.4");
+                        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) NIKKE-Mod-Tracker/0.2.5");
                         conn.setRequestProperty("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
                         int status = conn.getResponseCode();
                         if (status < 200 || status >= 300) continue;
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String appVersion() {
-            return "0.2.4";
+            return "0.2.5";
         }
     }
 
