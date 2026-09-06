@@ -1,0 +1,69 @@
+name: Admin - Character classification
+
+on:
+  workflow_dispatch:
+    inputs:
+      character_key:
+        description: 'ID_Ver, por ejemplo 472_00'
+        required: true
+        type: string
+      classification:
+        description: 'Clasificación central'
+        required: true
+        type: choice
+        options:
+          - npc_extra
+          - playable
+          - auto
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate and update override
+        env:
+          CHARACTER_KEY: ${{ inputs.character_key }}
+          CLASSIFICATION: ${{ inputs.classification }}
+        shell: python
+        run: |
+          import json, os, re
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          key = os.environ['CHARACTER_KEY'].strip()
+          mode = os.environ['CLASSIFICATION'].strip()
+          if not re.fullmatch(r'\d{3,4}_\d{2}', key):
+              raise SystemExit('character_key debe tener formato ID_Ver, ej. 472_00')
+          if mode not in {'npc_extra', 'playable', 'auto'}:
+              raise SystemExit('classification inválida')
+
+          path = Path('admin/catalog_overrides.json')
+          payload = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+          chars = payload.setdefault('characters', {})
+          if mode == 'auto':
+              chars.pop(key, None)
+          else:
+              chars[key] = {'npc_extra': mode == 'npc_extra'}
+          payload['version'] = 1
+          payload['updated_at'] = datetime.now(timezone.utc).isoformat()
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+      - name: Commit change
+        shell: bash
+        run: |
+          if git diff --quiet -- admin/catalog_overrides.json; then
+            echo 'No changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add admin/catalog_overrides.json
+          git commit -m "Admin classification: ${{ inputs.character_key }} -> ${{ inputs.classification }}"
+          git push
