@@ -22,40 +22,46 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install preview dependencies
-        run: python -m pip install --disable-pip-version-check UnityPy Pillow cryptography
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check UnityPy Pillow cryptography send2trash
 
       - name: Syntax checks
         shell: pwsh
         run: |
-          python -m py_compile pc_full_v012/manager_server.py
+          python -m py_compile pc_full_v012/manager.py
           python -m py_compile pc_preview_v012/preview_beta_server.py
 
-      - name: Prepare standalone folder
+      - name: Prepare native desktop package
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force output/NIKKE_Mod_Manager_v0_12_Preview_Beta | Out-Null
-          New-Item -ItemType Directory -Force output/NIKKE_Mod_Manager_v0_12_Preview_Beta/tools | Out-Null
-          New-Item -ItemType Directory -Force output/NIKKE_Mod_Manager_v0_12_Preview_Beta/catalog | Out-Null
-          New-Item -ItemType Directory -Force output/NIKKE_Mod_Manager_v0_12_Preview_Beta/data | Out-Null
-          Copy-Item pc_full_v012/manager_server.py output/NIKKE_Mod_Manager_v0_12_Preview_Beta/
-          Copy-Item pc_full_v012/INSTALAR_Y_ABRIR.bat output/NIKKE_Mod_Manager_v0_12_Preview_Beta/
-          Copy-Item pc_full_v012/README.txt output/NIKKE_Mod_Manager_v0_12_Preview_Beta/
-          Copy-Item pc_preview_v012/preview_beta_server.py output/NIKKE_Mod_Manager_v0_12_Preview_Beta/tools/
-          Copy-Item catalog/base_catalog.json output/NIKKE_Mod_Manager_v0_12_Preview_Beta/catalog/
-          'NIKKE Mod Manager v0.12 Preview Beta FULL' | Set-Content -Encoding UTF8 output/NIKKE_Mod_Manager_v0_12_Preview_Beta/VERSION.txt
+          $root = 'output/NIKKE_Mod_Manager_v0_12_Preview_Beta'
+          New-Item -ItemType Directory -Force "$root/tools" | Out-Null
+          New-Item -ItemType Directory -Force "$root/catalog" | Out-Null
+          New-Item -ItemType Directory -Force "$root/data" | Out-Null
+          Copy-Item pc_full_v012/manager.py "$root/manager.py"
+          Copy-Item pc_full_v012/INSTALAR_Y_ABRIR.bat "$root/INSTALAR_Y_ABRIR.bat"
+          Copy-Item pc_full_v012/README.txt "$root/README.txt"
+          Copy-Item pc_preview_v012/preview_beta_server.py "$root/tools/preview_beta_server.py"
+          Copy-Item catalog/base_catalog.json "$root/catalog/base_catalog.json"
+          'NIKKE Mod Manager v0.12 Preview Beta FULL - Native Desktop' | Set-Content -Encoding UTF8 "$root/VERSION.txt"
 
-      - name: Smoke test manager API
+      - name: Validate bundled catalog and manager module
         shell: pwsh
         run: |
-          $root = Resolve-Path output/NIKKE_Mod_Manager_v0_12_Preview_Beta
-          $p = Start-Process python -ArgumentList "$root/manager_server.py",'--no-browser','--port','8136' -PassThru -WindowStyle Hidden
-          Start-Sleep -Seconds 2
-          $r = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8136/api/health
-          if ($r.StatusCode -ne 200) { throw 'Manager health check failed' }
-          $inv = Invoke-RestMethod http://127.0.0.1:8136/api/inventory
-          if ($null -eq $inv.characters -or $inv.characters.Count -lt 500) { throw 'Bundled catalog did not load' }
-          Stop-Process -Id $p.Id -Force
+          @'
+          import importlib.util, json, pathlib
+          root = pathlib.Path('output/NIKKE_Mod_Manager_v0_12_Preview_Beta')
+          catalog = json.loads((root/'catalog'/'base_catalog.json').read_text(encoding='utf-8'))
+          chars = catalog.get('characters', [])
+          assert len(chars) >= 500, f'Catalog too small: {len(chars)}'
+          spec = importlib.util.spec_from_file_location('manager', root/'manager.py')
+          mod = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          assert hasattr(mod, 'App')
+          assert mod.APP_VERSION.startswith('0.12')
+          print('Native manager module + catalog OK')
+          '@ | Set-Content -Encoding UTF8 test_manager_native.py
+          python test_manager_native.py
 
       - name: Smoke test preview API
         shell: pwsh
@@ -86,24 +92,25 @@ jobs:
           '@ | Set-Content -Encoding UTF8 test_preview_full.py
           python test_preview_full.py
 
-      - name: Verify full package
+      - name: Verify package layout
         shell: pwsh
         run: |
           $root = 'output/NIKKE_Mod_Manager_v0_12_Preview_Beta'
           $required = @(
             "$root/INSTALAR_Y_ABRIR.bat",
-            "$root/manager_server.py",
+            "$root/manager.py",
             "$root/tools/preview_beta_server.py",
             "$root/catalog/base_catalog.json",
             "$root/README.txt"
           )
           foreach ($f in $required) { if (!(Test-Path $f)) { throw "Missing $f" } }
-          Write-Host 'Standalone package OK'
+          if (Test-Path "$root/manager_server.py") { throw 'Web manager must not be packaged as the main app' }
+          Write-Host 'Native standalone package OK'
 
       - name: Upload full standalone package
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE-Mod-Manager-v0.12-Preview-Beta-FULL
+          name: NIKKE-Mod-Manager-v0.12-Preview-Beta-FULL-NATIVE
           path: output/NIKKE_Mod_Manager_v0_12_Preview_Beta
           if-no-files-found: error
           retention-days: 30
