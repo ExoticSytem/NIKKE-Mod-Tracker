@@ -49,6 +49,8 @@
 </main>
 
 <div id="modal" class="overlay hidden"><div class="sheet"><button id="close" class="close">×</button><div class="hero"><div class="detailportrait"><img id="detailImg"></div><div><h2 id="detailName"></h2><div id="detailId" class="mono"></div><div id="npcBadge"></div></div></div><div id="actions"></div><div id="syncedMods" class="modsdetail"></div><label class="field"><span id="notesLabel">Notas</span><textarea id="notes" placeholder="Notas personales..."></textarea></label><div class="field"><span id="tagsLabel">Etiquetas</span><div id="tagList" class="taglist"></div><div class="tagadd"><input id="tagInput" placeholder="Nueva etiqueta"><button id="addTag">Agregar</button></div></div></div></div>
+<!-- Compatibility element for base app.js. Hidden from players; classification is centrally managed. -->
+<select id="classSelect" class="hidden" aria-hidden="true" tabindex="-1"><option value="auto">auto</option><option value="normal">normal</option><option value="npc">npc</option></select>
 <div id="toast" class="toast hidden"></div>
 <script src="app.js"></script>
 <script src="fixes.js"></script>
