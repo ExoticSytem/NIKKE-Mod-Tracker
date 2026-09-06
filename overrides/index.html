@@ -9,8 +9,11 @@
 <body>
 <header class="top">
   <div><div class="brand">NIKKE <span>MOD TRACKER</span></div><div id="summary" class="summary"></div></div>
-  <button id="syncQuickBtn" class="iconbtn" aria-label="Sincronizar">↻</button>
-  <button id="settingsBtn" class="iconbtn" aria-label="Configuración">⚙</button>
+  <div class="topactions">
+    <button id="refreshBtn" class="iconbtn" aria-label="Actualizar" title="Actualizar">↻</button>
+    <button id="syncQuickBtn" class="iconbtn syncicon" aria-label="Sincronizar con PC" title="Sincronizar con PC"><span class="phoneglyph">▯</span><span class="syncglyph">↻</span></button>
+    <button id="settingsBtn" class="iconbtn" aria-label="Configuración" title="Configuración">⚙</button>
+  </div>
 </header>
 <main>
 <section id="catalogView">
@@ -46,4 +49,5 @@
 <div id="modal" class="overlay hidden"><div class="sheet"><button id="close" class="close">×</button><div class="hero"><div class="detailportrait"><img id="detailImg"></div><div><h2 id="detailName"></h2><div id="detailId" class="mono"></div><div id="npcBadge"></div></div></div><label class="field"><span id="classLabel">Clasificación</span><select id="classSelect"><option value="auto">Automática</option><option value="normal">No NPC / Extra</option><option value="npc">NPC / Extra</option></select></label><div id="actions"></div><div id="syncedMods" class="modsdetail"></div><label class="field"><span id="notesLabel">Notas</span><textarea id="notes" placeholder="Notas personales..."></textarea></label><div class="field"><span id="tagsLabel">Etiquetas</span><div id="tagList" class="taglist"></div><div class="tagadd"><input id="tagInput" placeholder="Nueva etiqueta"><button id="addTag">Agregar</button></div></div></div></div>
 <div id="toast" class="toast hidden"></div>
 <script src="app.js"></script>
+<script src="fixes.js"></script>
 </body></html>
