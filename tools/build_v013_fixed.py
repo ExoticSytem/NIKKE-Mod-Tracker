@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import build_v013 as old
 
+ORIGINAL_PATCH_PREVIEW = old.patch_preview
+
 
 def fixed_patch_preview(src: str) -> str:
-    text = old.patch_preview(src)
+    text = ORIGINAL_PATCH_PREVIEW(src)
 
     replacements = {
         "function stopDemo(){if(demoTimer){clearInterval(demoTimer);demoTimer=null;}const b=$('#demoAuto');if(b)b.textContent='🎬 Demo Auto';}":
