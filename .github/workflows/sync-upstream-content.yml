@@ -24,6 +24,7 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Reconstruct protected base catalog
@@ -191,12 +192,7 @@ jobs:
 
           def find_sprite(c):
               for stem in source_candidates(c):
-                  # Nikke-DB sprite naming uses si_<character id>[_variant]_00_s.png.
-                  exacts = [
-                      sprite/f'si_{stem}_00_s.png',
-                      sprite/f'si_{stem}_s.png',
-                  ]
-                  # Base IDs may already end in _00, making si_c010_00_s.png the direct form.
+                  exacts = [sprite/f'si_{stem}_00_s.png', sprite/f'si_{stem}_s.png']
                   if stem.endswith('_00'):
                       exacts.insert(0, sprite/f'si_{stem}_s.png')
                   for candidate in exacts:
@@ -260,6 +256,7 @@ jobs:
               'mirrored_images': mirrored,
               'mirrored_full_body': mirrored_fb,
               'mirrored_sprite_fallback': mirrored_sprite,
+              'image_strategy_version': 2,
           }
           (root/'catalog/sync_state.json').write_text(json.dumps(state, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
           print(json.dumps(state, indent=2))
@@ -275,5 +272,8 @@ jobs:
             exit 0
           fi
           git commit -m 'Sync upstream NIKKE catalog and character images'
-          git pull --rebase origin main
+          git fetch origin main
+          # Generated catalog/image files are authoritative for this run; keep them
+          # if another maintenance commit lands while conversion is in progress.
+          git merge --no-edit -X ours origin/main
           git push origin HEAD:main
