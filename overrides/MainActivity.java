@@ -41,6 +41,17 @@ public class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public void clearImageCache() {
+            File dir = new File(getCacheDir(), "nikke_images");
+            if (!dir.exists()) return;
+            File[] files = dir.listFiles();
+            if (files == null) return;
+            for (File f : files) {
+                try { f.delete(); } catch (Exception ignored) {}
+            }
+        }
+
+        @JavascriptInterface
         public String cacheImage(String key, String urlsJson) {
             try {
                 String cached = getCachedImage(key);
@@ -58,7 +69,7 @@ public class MainActivity extends Activity {
                         conn.setConnectTimeout(7000);
                         conn.setReadTimeout(10000);
                         conn.setInstanceFollowRedirects(true);
-                        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) NIKKE-Mod-Tracker/0.2.1");
+                        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Android) NIKKE-Mod-Tracker/0.2.2");
                         conn.setRequestProperty("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8");
                         int status = conn.getResponseCode();
                         if (status < 200 || status >= 300) continue;
@@ -108,7 +119,7 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface
         public String appVersion() {
-            return "0.2.1";
+            return "0.2.2";
         }
     }
 
