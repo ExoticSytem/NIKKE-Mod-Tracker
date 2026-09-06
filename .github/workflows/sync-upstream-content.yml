@@ -33,11 +33,11 @@ jobs:
           cat source.part00 source.part01 source.part02 source.part03 source.part04 source.part05 source.part06 | base64 --decode > /tmp/source.zip
           unzip -p /tmp/source.zip app/src/main/assets/catalog.json > catalog/base_catalog.json
 
-      - name: Fetch Nikke-DB data and full-body images
+      - name: Fetch Nikke-DB data and character images
         shell: bash
         run: |
           git clone --depth 1 --filter=blob:none --sparse https://github.com/Nikke-db/Nikke-db.github.io.git upstream
-          git -C upstream sparse-checkout set images/FB js/json
+          git -C upstream sparse-checkout set images/FB images/sprite js/json
           git -C upstream checkout
           git -C upstream rev-parse HEAD > /tmp/upstream_sha.txt
 
@@ -161,6 +161,7 @@ jobs:
               remote_by_name.setdefault(norm(e.get('name')), []).append(rid)
 
           fb = root/'upstream/images/FB'
+          sprite = root/'upstream/images/sprite'
           out_dir = root/'assets/characters/library'
           out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -180,22 +181,42 @@ jobs:
                   if x and x not in seen: seen.append(x)
               return seen
 
-          def find_source(c):
+          def find_full_body(c):
               for stem in source_candidates(c):
-                  direct = fb/f'{stem}.png'
-                  if direct.exists(): return direct
-                  direct2 = fb/f'{stem}_00.png'
-                  if direct2.exists(): return direct2
+                  for candidate in (fb/f'{stem}.png', fb/f'{stem}_00.png'):
+                      if candidate.exists(): return candidate
                   found = sorted(fb.glob(f'{stem}*.png'))
                   if found: return found[0]
               return None
 
+          def find_sprite(c):
+              for stem in source_candidates(c):
+                  # Nikke-DB sprite naming uses si_<character id>[_variant]_00_s.png.
+                  exacts = [
+                      sprite/f'si_{stem}_00_s.png',
+                      sprite/f'si_{stem}_s.png',
+                  ]
+                  # Base IDs may already end in _00, making si_c010_00_s.png the direct form.
+                  if stem.endswith('_00'):
+                      exacts.insert(0, sprite/f'si_{stem}_s.png')
+                  for candidate in exacts:
+                      if candidate.exists(): return candidate
+                  found = sorted(sprite.glob(f'si_{stem}*_s.png'))
+                  if found: return found[0]
+              return None
+
           mirrored = 0
+          mirrored_fb = 0
+          mirrored_sprite = 0
           for c in current:
               cid = str(c.get('id','')).strip(); ver = str(c.get('version','00')).zfill(2)
               if not cid: continue
               key = f'{cid}_{ver}'
-              src = find_source(c)
+              src = find_full_body(c)
+              kind = 'full_body'
+              if not src:
+                  src = find_sprite(c)
+                  kind = 'sprite'
               if not src: continue
               target = out_dir/f'c{key}.webp'
               try:
@@ -206,6 +227,8 @@ jobs:
                       im.thumbnail((1400, 2000), Image.Resampling.LANCZOS)
                       im.save(target, 'WEBP', quality=90, method=6)
                   mirrored += 1
+                  if kind == 'full_body': mirrored_fb += 1
+                  else: mirrored_sprite += 1
               except Exception as exc:
                   print(f'Could not mirror {src}: {exc}')
 
@@ -235,6 +258,8 @@ jobs:
               'discovered_count': len(discovered),
               'new_this_run': len(added),
               'mirrored_images': mirrored,
+              'mirrored_full_body': mirrored_fb,
+              'mirrored_sprite_fallback': mirrored_sprite,
           }
           (root/'catalog/sync_state.json').write_text(json.dumps(state, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
           print(json.dumps(state, indent=2))
@@ -250,7 +275,5 @@ jobs:
             exit 0
           fi
           git commit -m 'Sync upstream NIKKE catalog and character images'
-          # Other maintenance workflows or admin edits may land while image conversion runs.
-          # Rebase the generated commit onto the current main before pushing.
           git pull --rebase origin main
           git push origin HEAD:main
