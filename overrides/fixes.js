@@ -2,41 +2,61 @@
   const PROJECT_RAW_ROOT = 'https://raw.githubusercontent.com/ExoticSytem/NIKKE-Mod-Tracker/main';
   const PROJECT_MANIFEST = `${PROJECT_RAW_ROOT}/assets/characters/manifest.json`;
   const PROJECT_CLASSIFICATION = `${PROJECT_RAW_ROOT}/admin/catalog_overrides.json`;
+  const PROJECT_DISCOVERED = `${PROJECT_RAW_ROOT}/catalog/discovered.json`;
   let imageRevision = Date.now();
   let projectImages = {};
   let adminNpcOverrides = {};
+  let discoveredCharacters = [];
 
-  async function loadProjectManifest(force=false) {
+  async function getJson(url, force=false) {
     try {
-      const sep = PROJECT_MANIFEST.includes('?') ? '&' : '?';
-      const url = force ? `${PROJECT_MANIFEST}${sep}v=${Date.now()}` : PROJECT_MANIFEST;
-      const r = await fetch(url, {cache:'no-store'});
-      if (!r.ok) return false;
-      const p = await r.json();
-      projectImages = p && typeof p.images === 'object' && p.images ? p.images : {};
-      return true;
+      const sep = url.includes('?') ? '&' : '?';
+      const target = force ? `${url}${sep}v=${Date.now()}` : url;
+      const r = await fetch(target, {cache:'no-store'});
+      if (!r.ok) return null;
+      return await r.json();
     } catch (_e) {
-      return false;
+      return null;
     }
   }
 
+  async function loadProjectManifest(force=false) {
+    const p = await getJson(PROJECT_MANIFEST, force);
+    projectImages = p && typeof p.images === 'object' && p.images ? p.images : {};
+    return !!p;
+  }
+
   async function loadProjectClassification(force=false) {
-    try {
-      const sep = PROJECT_CLASSIFICATION.includes('?') ? '&' : '?';
-      const url = force ? `${PROJECT_CLASSIFICATION}${sep}v=${Date.now()}` : PROJECT_CLASSIFICATION;
-      const r = await fetch(url, {cache:'no-store'});
-      if (!r.ok) return false;
-      const p = await r.json();
-      const source = p && typeof p.characters === 'object' && p.characters ? p.characters : {};
-      const next = {};
-      Object.entries(source).forEach(([key, meta]) => {
-        if (meta && typeof meta.npc_extra === 'boolean') next[key] = meta.npc_extra;
-      });
-      adminNpcOverrides = next;
-      return true;
-    } catch (_e) {
-      return false;
+    const p = await getJson(PROJECT_CLASSIFICATION, force);
+    const source = p && typeof p.characters === 'object' && p.characters ? p.characters : {};
+    const next = {};
+    Object.entries(source).forEach(([key, meta]) => {
+      if (meta && typeof meta.npc_extra === 'boolean') next[key] = meta.npc_extra;
+    });
+    adminNpcOverrides = next;
+    return !!p;
+  }
+
+  async function loadDiscoveredCatalog(force=false) {
+    const p = await getJson(PROJECT_DISCOVERED, force);
+    discoveredCharacters = Array.isArray(p && p.characters) ? p.characters : [];
+    return !!p;
+  }
+
+  function mergeDiscovered(base) {
+    const out = Array.isArray(base) ? base.map(x => x) : [];
+    const keys = new Set(out.map(x => x && x.key).filter(Boolean));
+    for (const raw of discoveredCharacters) {
+      if (!raw || typeof raw !== 'object') continue;
+      const id = String(raw.id || '').trim();
+      const version = String(raw.version || '00').padStart(2, '0');
+      const key = String(raw.key || `${id}_${version}`);
+      const name = String(raw.name || '').trim();
+      if (!id || !name || keys.has(key)) continue;
+      out.push({id, version, key, name, npcExtra:false, catalogSource:'project_online', images:[]});
+      keys.add(key);
     }
+    return out;
   }
 
   npcOf = function(c) {
@@ -123,20 +143,55 @@
       if (showToast) clearNativeImageCache();
       await Promise.all([
         loadProjectManifest(!!showToast),
-        loadProjectClassification(!!showToast)
+        loadProjectClassification(!!showToast),
+        loadDiscoveredCatalog(!!showToast)
       ]);
       const p = await readBundledCatalog();
-      catalog = Array.isArray(p.characters) ? p.characters : [];
+      catalog = mergeDiscovered(Array.isArray(p.characters) ? p.characters : []);
       const info = $('catalogInfo');
-      if (info) info.textContent = `${p.count || catalog.length} entradas · ${p.version || ''}`;
+      if (info) info.textContent = `${catalog.length} entradas · ${p.version || p.catalog_version || ''}`;
       render();
-      if (showToast) toast(lang()==='es' ? 'Catálogo, clasificación e imágenes actualizados' : 'Catalog, classification and images refreshed');
+      if (showToast) toast(lang()==='es' ? 'Catálogo, personajes nuevos e imágenes actualizados' : 'Catalog, new characters and images refreshed');
       return true;
     } catch (e) {
       const grid = $('grid');
       if (grid) grid.innerHTML = `<div class="empty">${lang()==='es'?'No se pudo cargar el catálogo':'Could not load catalog'}: ${esc(e.message || e)}</div>`;
       return false;
     }
+  }
+
+  openDetail = function(k) {
+    current = catalog.find(c => c.key === k);
+    if (!current) return;
+    const d = data(k);
+    $('detailName').textContent = current.name;
+    $('detailId').textContent = `ID ${current.id} · Ver ${current.version}`;
+    const wrap = $('detailImg').parentElement;
+    wrap.innerHTML = imageHtml(current, 'detailimage');
+    if (wrap.firstElementChild) wrap.firstElementChild.id = 'detailImg';
+    $('npcBadge').innerHTML = npcOf(current) ? '<span class="npc">NPC / Extra</span>' : '';
+    $('notes').value = d.notes || '';
+    renderActions();
+    renderSyncedMods();
+    renderDetailTags();
+    $('modal').classList.remove('hidden');
+  };
+
+  function showLanguageOnboarding() {
+    if (localStorage.getItem('nikkeLang')) return;
+    const style = document.createElement('style');
+    style.textContent = `.firstlang{position:fixed;inset:0;z-index:9999;background:#090b10ee;display:grid;place-items:center;padding:24px}.firstlang-card{width:min(440px,100%);background:#151a24;border:1px solid #30394a;border-radius:22px;padding:25px;box-shadow:0 28px 70px #000a;text-align:center}.firstlang-logo{font-weight:900;font-size:25px;letter-spacing:.04em}.firstlang-logo span{color:#ffcc33;font-size:13px}.firstlang-card h2{margin:24px 0 8px}.firstlang-card p{color:#aeb6c5;line-height:1.5;margin:0 0 22px}.firstlang-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.firstlang-actions button{padding:15px;border-radius:13px;border:1px solid #384255;background:#222937;color:white;font-weight:800;font-size:16px}.firstlang-actions button:first-child{background:#ffcc33;color:#17130a;border-color:#ffcc33}`;
+    document.head.appendChild(style);
+    const layer = document.createElement('div');
+    layer.className = 'firstlang';
+    layer.innerHTML = `<div class="firstlang-card"><div class="firstlang-logo">NIKKE <span>MOD TRACKER</span></div><h2>Idioma / Language</h2><p>Elige el idioma de la interfaz.<br>Choose the interface language.</p><div class="firstlang-actions"><button data-lang="es">Español</button><button data-lang="en">English</button></div></div>`;
+    document.body.appendChild(layer);
+    layer.querySelectorAll('button').forEach(btn => btn.onclick = () => {
+      localStorage.setItem('nikkeLang', btn.dataset.lang);
+      layer.remove();
+      try { applyLanguage(); } catch (_e) {}
+      try { render(); } catch (_e) {}
+    });
   }
 
   function wireButtons() {
@@ -150,13 +205,18 @@
     if (!catalog.length || (($('grid') && $('grid').textContent) || '').includes('Failed to fetch')) {
       refreshCatalog(false);
     } else {
+      catalog = mergeDiscovered(catalog);
       render();
     }
   }
 
   wireButtons();
-  Promise.all([loadProjectManifest(false), loadProjectClassification(false)]).then(() => {
-    if (catalog.length) render();
+  showLanguageOnboarding();
+  Promise.all([loadProjectManifest(false), loadProjectClassification(false), loadDiscoveredCatalog(false)]).then(() => {
+    if (catalog.length) {
+      catalog = mergeDiscovered(catalog);
+      render();
+    }
   });
   recoverIfNeeded();
   setTimeout(recoverIfNeeded, 250);
