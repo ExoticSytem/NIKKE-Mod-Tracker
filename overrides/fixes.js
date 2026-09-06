@@ -1,15 +1,36 @@
 (function () {
-  function rawFirst(c) {
-    const urls = Array.isArray(c && c.images) ? c.images.filter(Boolean) : [];
-    return [...urls].sort((a,b) => {
+  const ASSET_BASE = 'https://raw.githubusercontent.com/ExoticSytem/NIKKE-Mod-Tracker/main/assets/characters';
+  let imageRevision = Date.now();
+
+  function ownImageCandidates(c) {
+    if (!c) return [];
+    const id = String(c.id || '').trim();
+    const ver = String(c.version || '').trim();
+    if (!id || !ver) return [];
+    const base = `c${id}_${ver}`;
+    const rev = `?v=${imageRevision}`;
+    return [
+      `${ASSET_BASE}/manual/${base}.png${rev}`,
+      `${ASSET_BASE}/manual/${base}.webp${rev}`,
+      `${ASSET_BASE}/manual/${base}.jpg${rev}`,
+      `${ASSET_BASE}/library/${base}.png${rev}`,
+      `${ASSET_BASE}/library/${base}.webp${rev}`,
+      `${ASSET_BASE}/library/${base}.jpg${rev}`
+    ];
+  }
+
+  function orderedImages(c) {
+    const original = Array.isArray(c && c.images) ? c.images.filter(Boolean) : [];
+    const raw = [...original].sort((a,b) => {
       const ar = String(a).includes('raw.githubusercontent.com') ? 0 : 1;
       const br = String(b).includes('raw.githubusercontent.com') ? 0 : 1;
       return ar - br;
     });
+    return [...new Set([...ownImageCandidates(c), ...raw])];
   }
 
   imageHtml = function(c, cls='') {
-    const urls = rawFirst(c);
+    const urls = orderedImages(c);
     const cached = nativeCached(c.key);
     const src = cached || urls[0] || '';
     if (!src) return '<div class="placeholder">◇</div>';
@@ -52,14 +73,22 @@
     return await r.json();
   }
 
+  function clearNativeImageCache() {
+    try {
+      if (window.AndroidBridge && AndroidBridge.clearImageCache) AndroidBridge.clearImageCache();
+    } catch (_e) {}
+    imageRevision = Date.now();
+  }
+
   async function refreshCatalog(showToast) {
     try {
+      if (showToast) clearNativeImageCache();
       const p = await readBundledCatalog();
       catalog = Array.isArray(p.characters) ? p.characters : [];
       const info = $('catalogInfo');
       if (info) info.textContent = `${p.count || catalog.length} entradas · ${p.version || ''}`;
       render();
-      if (showToast) toast(lang()==='es' ? 'Catálogo actualizado' : 'Catalog refreshed');
+      if (showToast) toast(lang()==='es' ? 'Catálogo e imágenes actualizados' : 'Catalog and images refreshed');
       return true;
     } catch (e) {
       const grid = $('grid');
