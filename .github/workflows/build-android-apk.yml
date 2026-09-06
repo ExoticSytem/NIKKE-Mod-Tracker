@@ -6,6 +6,7 @@ on:
     branches: [ main ]
     paths-ignore:
       - 'assets/characters/**'
+      - 'admin/catalog_overrides.json'
 
 jobs:
   build-apk:
@@ -59,12 +60,12 @@ jobs:
         shell: bash
         run: |
           mkdir -p output
-          cp buildsrc/app/build/outputs/apk/debug/app-debug.apk output/NIKKE-Mod-Tracker-v0.2.2.apk
+          cp buildsrc/app/build/outputs/apk/debug/app-debug.apk output/NIKKE-Mod-Tracker-v0.2.3.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE-Mod-Tracker-Android-v0.2.2
-          path: output/NIKKE-Mod-Tracker-v0.2.2.apk
+          name: NIKKE-Mod-Tracker-Android-v0.2.3
+          path: output/NIKKE-Mod-Tracker-v0.2.3.apk
           if-no-files-found: error
           retention-days: 30
