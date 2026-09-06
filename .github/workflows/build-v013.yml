@@ -1,0 +1,30 @@
+name: Build NIKKE Mod Manager v0.13
+
+on:
+  push:
+    branches:
+      - build-v0.13
+    paths:
+      - 'tools/build_v013.py'
+      - '.github/workflows/build-v013.yml'
+      - 'pc_full_v012/**'
+      - 'pc_preview_v012/**'
+      - 'catalog/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build v0.13 package
+        run: python tools/build_v013.py
+
+      - name: Upload full package
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_13_FULL
+          path: dist/NIKKE_Mod_Manager_v0_13_FULL/**
+          if-no-files-found: error
