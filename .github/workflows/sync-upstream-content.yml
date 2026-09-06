@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: nikke-upstream-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -19,6 +23,8 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Reconstruct protected base catalog
         shell: bash
@@ -147,8 +153,6 @@ jobs:
           }
           discovered_path.write_text(json.dumps(discovered_payload, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
 
-          # Match official/display names back to Nikke-DB source IDs. This avoids
-          # legacy suffix shifts such as Rapi_old moving later cosmetic suffixes.
           remote_by_name = {}
           for e in remote:
               if not isinstance(e, dict): continue
@@ -159,14 +163,12 @@ jobs:
           fb = root/'upstream/images/FB'
           out_dir = root/'assets/characters/library'
           out_dir.mkdir(parents=True, exist_ok=True)
-          manual = root/'assets/characters/manual'
 
           def source_candidates(c):
               out = []
               if c.get('source_id'):
                   out.append(str(c['source_id']))
               matches = remote_by_name.get(norm(c.get('name')), [])
-              # Prefer a source ID sharing the same numeric base ID.
               same = [x for x in matches if re.match(rf'^c{re.escape(str(c.get("id","")))}(?:_|$)', x)]
               out.extend(same or matches)
               official = f"c{c.get('id','')}_{str(c.get('version','00')).zfill(2)}"
@@ -207,7 +209,6 @@ jobs:
               except Exception as exc:
                   print(f'Could not mirror {src}: {exc}')
 
-          # Build manifest. Manual overrides are always first.
           images = {}
           allowed = {'.png','.webp','.jpg','.jpeg'}
           for folder in ('manual','library'):
@@ -249,4 +250,7 @@ jobs:
             exit 0
           fi
           git commit -m 'Sync upstream NIKKE catalog and character images'
-          git push
+          # Other maintenance workflows or admin edits may land while image conversion runs.
+          # Rebase the generated commit onto the current main before pushing.
+          git pull --rebase origin main
+          git push origin HEAD:main
