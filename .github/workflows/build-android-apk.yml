@@ -17,7 +17,8 @@ jobs:
       - name: Reconstruct Android project
         shell: bash
         run: |
-          base64 --decode source.zip.b64 > source.zip
+          cat source.part00 source.part01 source.part02 source.part03 source.part04 source.part05 source.part06 | base64 --decode > source.zip
+          unzip -t source.zip
           mkdir -p buildsrc
           unzip -q source.zip -d buildsrc
           rm -rf buildsrc/.github
