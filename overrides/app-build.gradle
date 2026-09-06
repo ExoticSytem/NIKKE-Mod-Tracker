@@ -3,31 +3,11 @@ plugins { id 'com.android.application' }
 android {
     namespace 'com.maxi.nikkemodtracker'
     compileSdk 35
-
-    signingConfigs {
-        release {
-            storeFile file('../signing/nikke-mod-tracker.keystore')
-            storePassword 'NikkeTracker2026!'
-            keyAlias 'nikke-mod-tracker'
-            keyPassword 'NikkeTracker2026!'
-        }
-    }
-
     defaultConfig {
         applicationId 'com.maxi.nikkemodtracker'
         minSdk 26
         targetSdk 35
         versionCode 2
         versionName '0.2.0'
-    }
-
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.release
-        }
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-        }
     }
 }
