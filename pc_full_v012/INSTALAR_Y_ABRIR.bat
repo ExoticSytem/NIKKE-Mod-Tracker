@@ -47,12 +47,12 @@ if not defined PY (
 )
 
 :deps
-echo Verificando dependencias del visualizador...
-"%PY%" -c "import UnityPy, PIL, cryptography" >nul 2>&1
+echo Verificando dependencias...
+"%PY%" -c "import UnityPy, PIL, cryptography, send2trash" >nul 2>&1
 if errorlevel 1 (
-  echo Instalando UnityPy, Pillow y cryptography...
+  echo Instalando UnityPy, Pillow, cryptography y send2trash...
   "%PY%" -m pip install --disable-pip-version-check --upgrade pip >nul
-  "%PY%" -m pip install --disable-pip-version-check UnityPy Pillow cryptography
+  "%PY%" -m pip install --disable-pip-version-check UnityPy Pillow cryptography send2trash
   if errorlevel 1 (
     echo.
     echo No se pudieron instalar las dependencias.
@@ -67,21 +67,18 @@ if not exist "tools\preview_beta_server.py" (
   exit /b 1
 )
 
-if not exist "manager_server.py" (
-  echo Falta manager_server.py. Vuelve a extraer el ZIP completo.
+if not exist "manager.py" (
+  echo Falta manager.py. Vuelve a extraer el ZIP completo.
   pause
   exit /b 1
 )
 
-REM Cierra instancias antiguas solo de nuestros puertos mediante los endpoints, sin matar Python global.
-powershell -NoProfile -Command "try { Invoke-WebRequest -UseBasicParsing -TimeoutSec 1 http://127.0.0.1:8137/health | Out-Null; exit 0 } catch { exit 1 }" >nul 2>&1
-if errorlevel 1 start "NIKKE Preview Beta" /min "%PY%" "%CD%\tools\preview_beta_server.py" --root "%CD%" --port 8137
-
-powershell -NoProfile -Command "try { Invoke-WebRequest -UseBasicParsing -TimeoutSec 1 http://127.0.0.1:8136/api/health | Out-Null; exit 0 } catch { exit 1 }" >nul 2>&1
-if errorlevel 1 (
-  start "NIKKE Mod Manager" /min "%PY%" "%CD%\manager_server.py" --port 8136
-  timeout /t 2 /nobreak >nul
+REM El gestor principal vuelve a ser la aplicacion de escritorio nativa (Tkinter).
+REM El servidor HTML se usa solo internamente cuando se pulsa Vista previa.
+set "PYW=%CD%\.venv\Scripts\pythonw.exe"
+if exist "%PYW%" (
+  start "NIKKE Mod Manager" "%PYW%" "%CD%\manager.py"
+) else (
+  start "NIKKE Mod Manager" "%PY%" "%CD%\manager.py"
 )
-
-start "" "http://127.0.0.1:8136/"
 exit /b 0
