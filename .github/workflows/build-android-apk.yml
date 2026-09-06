@@ -27,6 +27,8 @@ jobs:
           cp overrides/index.html buildsrc/app/src/main/assets/index.html
           cp overrides/styles.css buildsrc/app/src/main/assets/styles.css
           cp overrides/app.js buildsrc/app/src/main/assets/app.js
+          mkdir -p buildsrc/signing
+          cp signing/nikke-mod-tracker.keystore buildsrc/signing/nikke-mod-tracker.keystore
 
       - name: Set up Java 17
         uses: actions/setup-java@v4
