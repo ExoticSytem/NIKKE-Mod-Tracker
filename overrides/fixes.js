@@ -1,22 +1,31 @@
 (function () {
-  const ASSET_BASE = 'https://raw.githubusercontent.com/ExoticSytem/NIKKE-Mod-Tracker/main/assets/characters';
+  const PROJECT_RAW_ROOT = 'https://raw.githubusercontent.com/ExoticSytem/NIKKE-Mod-Tracker/main';
+  const PROJECT_MANIFEST = `${PROJECT_RAW_ROOT}/assets/characters/manifest.json`;
   let imageRevision = Date.now();
+  let projectImages = {};
+
+  async function loadProjectManifest(force=false) {
+    try {
+      const sep = PROJECT_MANIFEST.includes('?') ? '&' : '?';
+      const url = force ? `${PROJECT_MANIFEST}${sep}v=${Date.now()}` : PROJECT_MANIFEST;
+      const r = await fetch(url, {cache:'no-store'});
+      if (!r.ok) return false;
+      const p = await r.json();
+      projectImages = p && typeof p.images === 'object' && p.images ? p.images : {};
+      return true;
+    } catch (_e) {
+      return false;
+    }
+  }
 
   function ownImageCandidates(c) {
     if (!c) return [];
     const id = String(c.id || '').trim();
     const ver = String(c.version || '').trim();
     if (!id || !ver) return [];
-    const base = `c${id}_${ver}`;
-    const rev = `?v=${imageRevision}`;
-    return [
-      `${ASSET_BASE}/manual/${base}.png${rev}`,
-      `${ASSET_BASE}/manual/${base}.webp${rev}`,
-      `${ASSET_BASE}/manual/${base}.jpg${rev}`,
-      `${ASSET_BASE}/library/${base}.png${rev}`,
-      `${ASSET_BASE}/library/${base}.webp${rev}`,
-      `${ASSET_BASE}/library/${base}.jpg${rev}`
-    ];
+    const key = `${id}_${ver}`;
+    const paths = Array.isArray(projectImages[key]) ? projectImages[key] : [];
+    return paths.map(path => `${PROJECT_RAW_ROOT}/${String(path).replace(/^\/+/, '')}?v=${imageRevision}`);
   }
 
   function orderedImages(c) {
@@ -83,6 +92,7 @@
   async function refreshCatalog(showToast) {
     try {
       if (showToast) clearNativeImageCache();
+      await loadProjectManifest(!!showToast);
       const p = await readBundledCatalog();
       catalog = Array.isArray(p.characters) ? p.characters : [];
       const info = $('catalogInfo');
@@ -113,6 +123,7 @@
   }
 
   wireButtons();
+  loadProjectManifest(false).then(ok => { if (ok && catalog.length) render(); });
   recoverIfNeeded();
   setTimeout(recoverIfNeeded, 250);
   setTimeout(recoverIfNeeded, 1000);
