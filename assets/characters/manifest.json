@@ -1,5 +1,297 @@
 {
-  "version": 1,
-  "updated_at": null,
-  "images": {}
+  "version": 2,
+  "updated_at": "2026-09-06T18:43:25.031580+00:00",
+  "images": {
+    "010_00": [
+      "assets/characters/library/c010_00.webp"
+    ],
+    "011_00": [
+      "assets/characters/library/c011_00.webp"
+    ],
+    "012_00": [
+      "assets/characters/library/c012_00.webp"
+    ],
+    "013_00": [
+      "assets/characters/library/c013_00.webp"
+    ],
+    "014_00": [
+      "assets/characters/library/c014_00.webp"
+    ],
+    "015_00": [
+      "assets/characters/library/c015_00.webp"
+    ],
+    "020_00": [
+      "assets/characters/library/c020_00.webp"
+    ],
+    "022_00": [
+      "assets/characters/library/c022_00.webp"
+    ],
+    "030_00": [
+      "assets/characters/library/c030_00.webp"
+    ],
+    "032_00": [
+      "assets/characters/library/c032_00.webp"
+    ],
+    "040_00": [
+      "assets/characters/library/c040_00.webp"
+    ],
+    "060_00": [
+      "assets/characters/library/c060_00.webp"
+    ],
+    "061_00": [
+      "assets/characters/library/c061_00.webp"
+    ],
+    "070_00": [
+      "assets/characters/library/c070_00.webp"
+    ],
+    "071_00": [
+      "assets/characters/library/c071_00.webp"
+    ],
+    "072_00": [
+      "assets/characters/library/c072_00.webp"
+    ],
+    "080_00": [
+      "assets/characters/library/c080_00.webp"
+    ],
+    "082_00": [
+      "assets/characters/library/c082_00.webp"
+    ],
+    "090_00": [
+      "assets/characters/library/c090_00.webp"
+    ],
+    "091_00": [
+      "assets/characters/library/c091_00.webp"
+    ],
+    "092_00": [
+      "assets/characters/library/c092_00.webp"
+    ],
+    "100_00": [
+      "assets/characters/library/c100_00.webp"
+    ],
+    "101_00": [
+      "assets/characters/library/c101_00.webp"
+    ],
+    "102_00": [
+      "assets/characters/library/c102_00.webp"
+    ],
+    "110_00": [
+      "assets/characters/library/c110_00.webp"
+    ],
+    "111_00": [
+      "assets/characters/library/c111_00.webp"
+    ],
+    "112_00": [
+      "assets/characters/library/c112_00.webp"
+    ],
+    "120_00": [
+      "assets/characters/library/c120_00.webp"
+    ],
+    "121_00": [
+      "assets/characters/library/c121_00.webp"
+    ],
+    "130_00": [
+      "assets/characters/library/c130_00.webp"
+    ],
+    "131_00": [
+      "assets/characters/library/c131_00.webp"
+    ],
+    "132_00": [
+      "assets/characters/library/c132_00.webp"
+    ],
+    "140_00": [
+      "assets/characters/library/c140_00.webp"
+    ],
+    "141_00": [
+      "assets/characters/library/c141_00.webp"
+    ],
+    "142_00": [
+      "assets/characters/library/c142_00.webp"
+    ],
+    "150_00": [
+      "assets/characters/library/c150_00.webp"
+    ],
+    "160_00": [
+      "assets/characters/library/c160_00.webp"
+    ],
+    "161_00": [
+      "assets/characters/library/c161_00.webp"
+    ],
+    "170_00": [
+      "assets/characters/library/c170_00.webp"
+    ],
+    "171_00": [
+      "assets/characters/library/c171_00.webp"
+    ],
+    "172_00": [
+      "assets/characters/library/c172_00.webp"
+    ],
+    "180_00": [
+      "assets/characters/library/c180_00.webp"
+    ],
+    "181_00": [
+      "assets/characters/library/c181_00.webp"
+    ],
+    "190_00": [
+      "assets/characters/library/c190_00.webp"
+    ],
+    "191_00": [
+      "assets/characters/library/c191_00.webp"
+    ],
+    "193_00": [
+      "assets/characters/library/c193_00.webp"
+    ],
+    "200_00": [
+      "assets/characters/library/c200_00.webp"
+    ],
+    "201_00": [
+      "assets/characters/library/c201_00.webp"
+    ],
+    "202_00": [
+      "assets/characters/library/c202_00.webp"
+    ],
+    "203_00": [
+      "assets/characters/library/c203_00.webp"
+    ],
+    "210_00": [
+      "assets/characters/library/c210_00.webp"
+    ],
+    "212_00": [
+      "assets/characters/library/c212_00.webp"
+    ],
+    "220_00": [
+      "assets/characters/library/c220_00.webp"
+    ],
+    "221_00": [
+      "assets/characters/library/c221_00.webp"
+    ],
+    "222_00": [
+      "assets/characters/library/c222_00.webp"
+    ],
+    "230_00": [
+      "assets/characters/library/c230_00.webp"
+    ],
+    "231_00": [
+      "assets/characters/library/c231_00.webp"
+    ],
+    "232_00": [
+      "assets/characters/library/c232_00.webp"
+    ],
+    "233_00": [
+      "assets/characters/library/c233_00.webp"
+    ],
+    "240_00": [
+      "assets/characters/library/c240_00.webp"
+    ],
+    "241_00": [
+      "assets/characters/library/c241_00.webp"
+    ],
+    "242_00": [
+      "assets/characters/library/c242_00.webp"
+    ],
+    "254_00": [
+      "assets/characters/library/c254_00.webp"
+    ],
+    "260_00": [
+      "assets/characters/library/c260_00.webp"
+    ],
+    "261_00": [
+      "assets/characters/library/c261_00.webp"
+    ],
+    "270_00": [
+      "assets/characters/library/c270_00.webp"
+    ],
+    "271_00": [
+      "assets/characters/library/c271_00.webp"
+    ],
+    "280_00": [
+      "assets/characters/library/c280_00.webp"
+    ],
+    "282_00": [
+      "assets/characters/library/c282_00.webp"
+    ],
+    "291_00": [
+      "assets/characters/library/c291_00.webp"
+    ],
+    "300_00": [
+      "assets/characters/library/c300_00.webp"
+    ],
+    "301_00": [
+      "assets/characters/library/c301_00.webp"
+    ],
+    "302_00": [
+      "assets/characters/library/c302_00.webp"
+    ],
+    "303_00": [
+      "assets/characters/library/c303_00.webp"
+    ],
+    "304_00": [
+      "assets/characters/library/c304_00.webp"
+    ],
+    "305_00": [
+      "assets/characters/library/c305_00.webp"
+    ],
+    "306_00": [
+      "assets/characters/library/c306_00.webp"
+    ],
+    "307_00": [
+      "assets/characters/library/c307_00.webp"
+    ],
+    "308_00": [
+      "assets/characters/library/c308_00.webp"
+    ],
+    "311_00": [
+      "assets/characters/library/c311_00.webp"
+    ],
+    "312_00": [
+      "assets/characters/library/c312_00.webp"
+    ],
+    "350_00": [
+      "assets/characters/library/c350_00.webp"
+    ],
+    "351_00": [
+      "assets/characters/library/c351_00.webp"
+    ],
+    "352_00": [
+      "assets/characters/library/c352_00.webp"
+    ],
+    "353_00": [
+      "assets/characters/library/c353_00.webp"
+    ],
+    "380_00": [
+      "assets/characters/library/c380_00.webp"
+    ],
+    "381_00": [
+      "assets/characters/library/c381_00.webp"
+    ],
+    "392_00": [
+      "assets/characters/library/c392_00.webp"
+    ],
+    "400_00": [
+      "assets/characters/library/c400_00.webp"
+    ],
+    "401_00": [
+      "assets/characters/library/c401_00.webp"
+    ],
+    "402_00": [
+      "assets/characters/library/c402_00.webp"
+    ],
+    "430_00": [
+      "assets/characters/library/c430_00.webp"
+    ],
+    "431_00": [
+      "assets/characters/library/c431_00.webp"
+    ],
+    "432_00": [
+      "assets/characters/library/c432_00.webp"
+    ],
+    "800_00": [
+      "assets/characters/library/c800_00.webp"
+    ],
+    "801_00": [
+      "assets/characters/library/c801_00.webp"
+    ],
+    "802_00": [
+      "assets/characters/library/c802_00.webp"
+    ]
+  }
 }

@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "source": "https://github.com/Nikke-db/Nikke-db.github.io",
+  "last_checked": "2026-09-06T18:37:54.067944+00:00",
+  "source_entries": 267,
+  "characters": [
+    {
+      "id": "053",
+      "version": "00",
+      "key": "053_00",
+      "name": "liqueur",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c053",
+      "source_version": "00",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.063496+00:00"
+    },
+    {
+      "id": "081",
+      "version": "00",
+      "key": "081_00",
+      "name": "Acre",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c081",
+      "source_version": "00",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.063720+00:00"
+    },
+    {
+      "id": "320",
+      "version": "00",
+      "key": "320_00",
+      "name": "Bibli",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c320",
+      "source_version": "00",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.064246+00:00"
+    },
+    {
+      "id": "340",
+      "version": "00",
+      "key": "340_00",
+      "name": "Siren",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c340",
+      "source_version": "00",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.064401+00:00"
+    },
+    {
+      "id": "342",
+      "version": "00",
+      "key": "342_00",
+      "name": "Pin",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c342",
+      "source_version": "00",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.064554+00:00"
+    },
+    {
+      "id": "803",
+      "version": "01",
+      "key": "803_01",
+      "name": "Denji Chainsaw Man",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c803_01",
+      "source_version": "01",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.064818+00:00"
+    },
+    {
+      "id": "9999",
+      "version": "00",
+      "key": "9999_00",
+      "name": "Self",
+      "catalog_source": "nikke_db_online",
+      "source_id": "c9999",
+      "source_version": "00",
+      "needs_review": true,
+      "discovered_at": "2026-09-06T18:37:54.067776+00:00"
+    }
+  ]
+}
