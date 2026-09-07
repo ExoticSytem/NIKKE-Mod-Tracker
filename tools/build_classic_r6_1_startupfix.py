@@ -24,18 +24,12 @@ js = js.replace('Preview Alpha · Classic R6', 'Preview Alpha · Classic R6.1')
 js = js.replace('Classic R6 Spine render failed', 'Classic R6.1 Spine render failed')
 js = js.replace('Classic R6', 'Classic R6.1')
 
-# R6 had a generated syntax error because a single-quoted JS string contained:
-#   typeof r6RuntimeInfo==='function'
-# inside an inline onclick. Escape only the quotes that live inside that string.
+# R6 broke the whole app because the generated web/app.js had this inside a
+# single-quoted JS string: typeof r6RuntimeInfo==='function'. Escape those two
+# inner quotes so the catalog can load before any preview is opened.
 js = js.replace(
     "onclick=\"alert((typeof r6RuntimeInfo==='function'?r6RuntimeInfo():r5RuntimeInfo()).summary)\"",
     "onclick=\"alert((typeof r6RuntimeInfo===\\'function\\'?r6RuntimeInfo():r5RuntimeInfo()).summary)\"",
-)
-
-# Make the fallback button robust even if the exact inline attribute changes later.
-js = js.replace(
-    "<button id=\"r3OnlyTexture\">Mostrando textura fallback</button><button onclick=\"alert((typeof r6RuntimeInfo===\\'function\\'?r6RuntimeInfo():r5RuntimeInfo()).summary)\">Debug runtime R6.1</button>",
-    "<button id=\"r3OnlyTexture\">Mostrando textura fallback</button><button id=\"r61DebugRuntimeBtn\">Debug runtime R6.1</button>' ; const r61Dbg=document.getElementById('r61DebugRuntimeBtn'); if(r61Dbg) r61Dbg.onclick=()=>alert((typeof r6RuntimeInfo==='function'?r6RuntimeInfo():r5RuntimeInfo()).summary); controls.innerHTML += '",
 )
 
 base.APP_JS_OVERRIDE = js + '\n/* Classic R6.1 startup syntax guard */\n'
