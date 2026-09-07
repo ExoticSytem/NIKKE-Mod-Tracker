@@ -34,7 +34,8 @@ jobs:
               assert bad is None, bad
               names=set(z.namelist())
               assert any(n.endswith('/web/app.js') for n in names)
-              assert any(n.endswith('/catalog.json') for n in names)
+              assert any(n.endswith('/web/index.html') for n in names)
+              assert any(n.endswith('/src/scanner.py') for n in names)
           print('ZIP and app.js validated')
           PY
 
@@ -46,4 +47,4 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-# rebuild: r6.1-startupfix
+# rebuild: r6.1-validation-fixed
