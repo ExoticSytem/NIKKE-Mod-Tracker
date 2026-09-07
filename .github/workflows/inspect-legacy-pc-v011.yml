@@ -1,0 +1,49 @@
+name: Inspect legacy PC v0.11 sources
+
+on:
+  push:
+    branches:
+      - nmm-v0.13-classic-r2
+    paths:
+      - '.github/workflows/inspect-legacy-pc-v011.yml'
+  workflow_dispatch:
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Search repository history for desktop manager files
+        shell: bash
+        run: |
+          echo '=== CANDIDATE PATHS IN ALL HISTORY ==='
+          git log --all --name-only --pretty=format: | sort -u | grep -Ei 'INSTALAR_Y_ABRIR|Preview[_ -]?Alpha|Mod[_ -]?(Library|Manager)|pc_.*v0.?11|v0.?11|\.zip$|source\.zip' || true
+          echo
+          echo '=== COMMITS MENTIONING V0.11 / PREVIEW ALPHA ==='
+          git log --all --oneline --decorate --regexp-ignore-case --grep='v0\.11|Preview Alpha|PC manager' || true
+
+      - name: Inspect source.zip.b64 if present
+        shell: bash
+        run: |
+          echo '=== SOURCE.ZIP.B64 ==='
+          if [ -f source.zip.b64 ]; then
+            base64 -d source.zip.b64 > /tmp/source.zip || true
+            file /tmp/source.zip || true
+            unzip -l /tmp/source.zip | sed -n '1,260p' || true
+          else
+            echo 'source.zip.b64 not found'
+          fi
+
+      - name: Inspect split source parts if present
+        shell: bash
+        run: |
+          echo '=== SOURCE.PART FILES ==='
+          ls -lh source.part* 2>/dev/null || true
+          if ls source.part* >/dev/null 2>&1; then
+            cat source.part* > /tmp/source_parts.bin || true
+            file /tmp/source_parts.bin || true
+            head -c 120 /tmp/source_parts.bin | xxd || true
+          fi
