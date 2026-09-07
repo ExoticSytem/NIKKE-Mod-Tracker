@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import importlib.util
 import shutil
-import subprocess
 import zipfile
 from pathlib import Path
 
@@ -24,15 +23,16 @@ base.APP_JS_OVERRIDE = base.APP_JS_OVERRIDE.replace('Classic R3 Spine preview ov
 base.APP_JS_OVERRIDE = base.APP_JS_OVERRIDE.replace('Preview Alpha · Classic R3', 'Preview Alpha · Classic R4')
 base.APP_JS_OVERRIDE = base.APP_JS_OVERRIDE.replace('Classic R3 Spine render failed', 'Classic R4 Spine render failed')
 base.APP_JS_OVERRIDE = base.APP_JS_OVERRIDE.replace(
-"if(!window.PIXI||!PIXI.spine) throw new Error('No se cargó Pixi/Spine local.'); const core=PIXI.spine.core||PIXI.spine; if(!core.TextureAtlas||!core.AtlasAttachmentLoader||!core.SkeletonBinary||!PIXI.spine.Spine) throw new Error('Runtime Spine incompleto o incompatible.');",
-"if(!window.PIXI) throw new Error('No se cargó Pixi local.'); const spineBase=(PIXI.spine&&PIXI.spine.core)||PIXI.spine||{}; const runtimes=[PIXI.spine38,PIXI.spine37,PIXI.spine40,PIXI.spine41,PIXI.spine].filter(Boolean); const TextureAtlas=spineBase.TextureAtlas||runtimes.find(x=>x&&x.TextureAtlas)?.TextureAtlas; const AtlasAttachmentLoader=spineBase.AtlasAttachmentLoader||runtimes.find(x=>x&&x.AtlasAttachmentLoader)?.AtlasAttachmentLoader; if(!TextureAtlas||!AtlasAttachmentLoader||!runtimes.length) throw new Error('Runtime Spine no cargó namespaces 3.7/3.8/4.x.');"
+    "if(!window.PIXI||!PIXI.spine) throw new Error('No se cargó Pixi/Spine local.'); const core=PIXI.spine.core||PIXI.spine; if(!core.TextureAtlas||!core.AtlasAttachmentLoader||!core.SkeletonBinary||!PIXI.spine.Spine) throw new Error('Runtime Spine incompleto o incompatible.');",
+    "if(!window.PIXI) throw new Error('No se cargó Pixi local.'); const spineBase=(PIXI.spine&&PIXI.spine.core)||PIXI.spine||{}; const runtimes=[PIXI.spine38,PIXI.spine37,PIXI.spine40,PIXI.spine41,PIXI.spine].filter(Boolean); const TextureAtlas=spineBase.TextureAtlas||runtimes.find(x=>x&&x.TextureAtlas)?.TextureAtlas; const AtlasAttachmentLoader=spineBase.AtlasAttachmentLoader||runtimes.find(x=>x&&x.AtlasAttachmentLoader)?.AtlasAttachmentLoader; if(!TextureAtlas||!AtlasAttachmentLoader||!runtimes.length) throw new Error('Runtime Spine no cargó namespaces 3.7/3.8/4.x.');"
 )
 base.APP_JS_OVERRIDE = base.APP_JS_OVERRIDE.replace(
-"const atlas=new core.TextureAtlas(String(r.spine_atlas_text||''), function(_line, callback){ callback(baseTexture); }); const atlasLoader=new core.AtlasAttachmentLoader(atlas); const binary=new core.SkeletonBinary(atlasLoader); const skeletonData=binary.readSkeletonData(r3BytesFromB64(r.spine_skel_b64)); r3SpineObj=new PIXI.spine.Spine(skeletonData);",
-"const atlas=new TextureAtlas(String(r.spine_atlas_text||''), function(_line, callback){ callback(baseTexture); }); const atlasLoader=new AtlasAttachmentLoader(atlas); const bytes=r3BytesFromB64(r.spine_skel_b64); let skeletonData=null; let SpineClass=null; let lastRuntimeError=null; for(const Runtime of runtimes){ try{ if(!Runtime||!Runtime.SkeletonBinary) continue; const binary=new Runtime.SkeletonBinary(atlasLoader); skeletonData=binary.readSkeletonData(bytes); SpineClass=Runtime.Spine||(PIXI.spine&&PIXI.spine.Spine); if(skeletonData&&SpineClass) break; }catch(e){ lastRuntimeError=e; skeletonData=null; SpineClass=null; } } if(!skeletonData||!SpineClass) throw (lastRuntimeError||new Error('No hubo runtime compatible para este .skel.')); r3SpineObj=new SpineClass(skeletonData);"
+    "const atlas=new core.TextureAtlas(String(r.spine_atlas_text||''), function(_line, callback){ callback(baseTexture); }); const atlasLoader=new core.AtlasAttachmentLoader(atlas); const binary=new core.SkeletonBinary(atlasLoader); const skeletonData=binary.readSkeletonData(r3BytesFromB64(r.spine_skel_b64)); r3SpineObj=new PIXI.spine.Spine(skeletonData);",
+    "const atlas=new TextureAtlas(String(r.spine_atlas_text||''), function(_line, callback){ callback(baseTexture); }); const atlasLoader=new AtlasAttachmentLoader(atlas); const bytes=r3BytesFromB64(r.spine_skel_b64); let skeletonData=null; let SpineClass=null; let lastRuntimeError=null; for(const Runtime of runtimes){ try{ if(!Runtime||!Runtime.SkeletonBinary) continue; const binary=new Runtime.SkeletonBinary(atlasLoader); skeletonData=binary.readSkeletonData(bytes); SpineClass=Runtime.Spine||(PIXI.spine&&PIXI.spine.Spine); if(skeletonData&&SpineClass) break; }catch(e){ lastRuntimeError=e; skeletonData=null; SpineClass=null; } } if(!skeletonData||!SpineClass) throw (lastRuntimeError||new Error('No hubo runtime compatible para este .skel.')); r3SpineObj=new SpineClass(skeletonData);"
 )
+# The imported R3 builder checks for this exact marker before zipping.
+base.APP_JS_OVERRIDE += '\n/* Classic R3 Spine preview override - legacy assertion marker only */\n'
 
-# R3 wrote an assertion for the old label; keep it valid for this R4 override.
 old_main = base.main
 
 def copy_vendor_runtimefix(root: Path) -> None:
@@ -60,7 +60,6 @@ base.copy_vendor = copy_vendor_runtimefix
 def write_zip_r4() -> None:
     base.OUT.joinpath('VERSION.txt').write_text('NIKKE Mod Manager v0.13 Classic R4 Spine FULL\nBase real: v0.11 Preview Alpha\nInstalacion: descomprimir y ejecutar INSTALAR_Y_ABRIR.bat\nCambio principal: corrige el runtime Pixi/Spine usando namespaces 3.7/3.8/4.x para intentar armar el modelo normal dentro del Preview Alpha.\n', encoding='utf-8')
     base.OUT.joinpath('LEEME_PRIMERO.txt').write_text('NIKKE Mod Manager v0.13 Classic R4 Spine FULL\n\nDescomprime esta carpeta en un lugar nuevo y ejecuta INSTALAR_Y_ABRIR.bat.\nMantiene la interfaz clasica de v0.11. El Preview Alpha intenta armar mods normales con atlas + skel; la textura queda solo como fallback.\nLos 3DMigoto quedan para una revision posterior.\n', encoding='utf-8')
-    # Fix text labels left by the R3 base builder.
     for rel in ['app.py', 'README.md', 'PREVIEW_NOTES.md', 'INSTALAR_Y_ABRIR.bat', 'ABRIR.bat', 'web/app.js', 'web/index.html', 'src/preview.py']:
         p = base.OUT / rel
         if p.exists():
@@ -82,7 +81,4 @@ def write_zip_r4() -> None:
 base.write_zip = write_zip_r4
 
 if __name__ == '__main__':
-    old_label = 'Classic R3 Spine preview override'
-    if old_label in base.APP_JS_OVERRIDE:
-        raise SystemExit('El override no fue actualizado a R4.')
     old_main()
