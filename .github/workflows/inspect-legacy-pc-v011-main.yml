@@ -1,4 +1,4 @@
-name: Inspect legacy PC v0.11 sources MAIN TEMP
+name: Recover legacy PC v0.11 source MAIN TEMP
 
 on:
   push:
@@ -11,55 +11,46 @@ permissions:
   contents: write
 
 jobs:
-  inspect:
+  recover:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout recovery branch
+        uses: actions/checkout@v4
         with:
+          ref: recover-v011-source
           fetch-depth: 0
 
-      - name: Build inspection report
+      - name: Reconstruct split Base64 ZIP
         shell: bash
         run: |
-          REPORT="legacy_v011_report.txt"
-          {
-            echo '=== CANDIDATE PATHS IN ALL HISTORY ==='
-            git log --all --name-only --pretty=format: | sort -u | grep -Ei 'INSTALAR_Y_ABRIR|Preview[_ -]?Alpha|Mod[_ -]?(Library|Manager)|pc_.*v0.?11|v0.?11|\.zip$|source\.zip' || true
-            echo
-            echo '=== COMMITS MENTIONING V0.11 / PREVIEW ALPHA / PC MANAGER ==='
-            git log --all --oneline --decorate --regexp-ignore-case --grep='v0\.11|Preview Alpha|PC manager' || true
-            echo
-            echo '=== SOURCE.ZIP.B64 ==='
-            if [ -f source.zip.b64 ]; then
-              base64 -d source.zip.b64 > /tmp/source.zip || true
-              file /tmp/source.zip || true
-              unzip -l /tmp/source.zip | sed -n '1,500p' || true
-            else
-              echo 'source.zip.b64 not found'
-            fi
-            echo
-            echo '=== SPLIT SOURCE PARTS ==='
-            ls -lh source.part* 2>/dev/null || true
-            if ls source.part* >/dev/null 2>&1; then
-              cat source.part* > /tmp/source_parts.bin || true
-              file /tmp/source_parts.bin || true
-              echo 'First 256 bytes:'
-              head -c 256 /tmp/source_parts.bin | xxd || true
-            fi
-            echo
-            echo '=== CURRENT ROOT ==='
-            find . -maxdepth 2 -type f -printf '%p\n' | sort | sed -n '1,500p'
-          } > "$REPORT" 2>&1
+          set -euo pipefail
+          rm -rf legacy_v011_recovered
+          mkdir -p legacy_v011_recovered/source
+          cat source.part* | tr -d '\r\n\t ' > /tmp/source.b64
+          base64 -d /tmp/source.b64 > /tmp/source.zip
+          file /tmp/source.zip | tee legacy_v011_recovered/RECOVERY_REPORT.txt
+          sha256sum /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
+          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
+          echo '=== ZIP TEST ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
+          unzip -t /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
+          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
+          echo '=== ZIP CONTENTS ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
+          unzip -l /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
+          unzip -o /tmp/source.zip -d legacy_v011_recovered/source
+          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
+          echo '=== EXTRACTED FILES ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
+          find legacy_v011_recovered/source -type f -printf '%p\n' | sort | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
 
-      - name: Commit inspection report
+      - name: Commit recovered source to recovery branch
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add legacy_v011_report.txt
+          git add legacy_v011_recovered
           if git diff --cached --quiet; then
-            echo 'Report unchanged'
+            echo 'No changes'
           else
-            git commit -m 'Add generated legacy v0.11 inspection report'
-            git push
+            git commit -m 'Recover legacy v0.11 source archive'
+            git push origin HEAD:recover-v011-source
           fi
