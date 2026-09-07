@@ -69,7 +69,7 @@ recovered_pc/v012/NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL/web/index.html 14527
 recovered_pc/v012/NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL/web/index.html.v011.bak 14440 bytes
 recovered_pc/v012/NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL/web/styles.css 20027 bytes
 
-=== v011 text snippets ===
+=== v011 py/bat/txt snippets ===
 
 --- recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha/ABRIR.bat ---
 @echo off
@@ -490,6 +490,66 @@ if __name__ == '__main__':
       "id": "070",
       "version": "00",
       "key": "070_00",
+      "name": "Brid",
+      "is_placeholder": false
+    },
+    {
+      "id": "070",
+      "version": "01",
+      "key": "070_01",
+      "name": "Brid - Model Worker",
+      "is_placeholder": false
+    },
+    {
+      "id": "070",
+      "version": "02",
+      "key": "070_02",
+      "name": "Brid - Black Moon",
+      "is_placeholder": false
+    },
+    {
+      "id": "071",
+      "version": "00",
+      "key": "071_00",
+      "name": "Soline",
+      "is_placeholder": false
+    },
+    {
+      "id": "072",
+      "version": "00",
+      "key": "072_00",
+      "name": "Diesel",
+      "is_placeholder": false
+    },
+    {
+      "id": "072",
+      "version": "01",
+      "key": "072_01",
+      "name": "Diesel - Strawberry Flower",
+      "is_placeholder": false
+    },
+    {
+      "id": "072",
+      "version": "02",
+      "key": "072_02",
+      "name": "Diesel - Black Sunday",
+      "is_placeholder": false
+    },
+    {
+      "id": "072",
+      "version": "04",
+      "key": "072_04",
+      "name": "Diesel - Midnight Strawberry",
+      "is_placeholder": false
+    },
+    {
+      "id": "073",
+      "version": "00",
+      "key": "073_00",
+      "name": "Brid: Silent Track",
+      "is_placeholder": false
+    },
+    {
 
 --- recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha/data/prydwen_playable.json ---
 {
@@ -989,6 +1049,66 @@ class AppAPI:
         port = getattr(getattr(self, 'sync_server', None), 'port', 0) or int(self.settings.get('mobile_sync_port', 8765) or 8765)
         ip = self._lan_ip()
         host = f'http://{ip}:{port}'
+        token = self.settings.get('mobile_sync_token', '')
+        pair_uri = f'nikkemodtracker://pair?host={quote(host, safe="")}&token={quote(token, safe="")}&name={quote("NIKKE Mod Library PC", safe="")}'
+        qr = self.root / 'web' / 'assets' / 'mobile_pair_qr.png'
+        return {
+            'enabled': bool(getattr(getattr(self, 'sync_server', None), 'port', 0)),
+            'host': host,
+            'port': port,
+            'pair_uri': pair_uri,
+            'qr_url': f'assets/mobile_pair_qr.png?v={int(qr.stat().st_mtime)}' if qr.exists() else '',
+            'last_sync': self.settings.get('mobile_sync_last', ''),
+            'error': self.settings.get('mobile_sync_error', ''),
+        }
+
+    def _write_pair_qr(self) -> None:
+        info = self._mobile_sync_info()
+        if not info.get('pair_uri'):
+            return
+        target = self.root / 'web' / 'assets' / 'mobile_pair_qr.png'
+        img = qrcode.make(info['pair_uri'])
+        img.save(target)
+
+    def _record_mobile_sync(self) -> None:
+        with self._lock:
+            self.settings['mobile_sync_last'] = time.strftime('%Y-%m-%d %H:%M:%S')
+            self._save_settings()
+        if self.window is not None:
+            try:
+                self.window.evaluate_js("window.dispatchEvent(new Event('nikke-mobile-sync'))")
+            except Exception:
+                pass
+
+    def _mobile_inventory(self) -> dict[str, Any]:
+        state = self._state()
+        by_key: dict[str, dict[str, Any]] = {}
+        chars = {c['key']: c for c in state.get('characters', [])}
+        for key, char in chars.items():
+            by_key[key] = {
+                'name': char.get('name', ''),
+                'id': char.get('id', ''),
+                'version': char.get('version', ''),
+                'is_npc_extra': bool(char.get('is_npc_extra')),
+                'mods': [],
+                'counts': {'aim': 0, 'cover': 0, 'standing': 0},
+                'conflicts': [],
+            }
+        for item in state.get('items', []):
+            key = item.get('character_key', '')
+            entry = by_key.setdefault(key, {
+                'name': item.get('character_name', key), 'id': '', 'version': '',
+                'is_npc_extra': bool(item.get('is_npc_extra')), 'mods': [],
+                'counts': {'aim': 0, 'cover': 0, 'standing': 0}, 'conflicts': [],
+            })
+            action = item.get('action', '')
+            if action in entry['counts']:
+                entry['counts'][action] += 1
+            name = item.get('mod_title') or item.get('name') or Path(str(item.get('path', ''))).name
+            entry['mods'].append({
+                'name': str(name or ''),
+                'action': action,
+                'author': str(item.get('author_guess', '') or item.get('author', '') or ''),
 
 --- recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha/src/catalog.py ---
 from __future__ import annotations
@@ -1735,6 +1855,66 @@ class ModPreviewEngine:
         except Exception as exc:  # pragma: no cover
             raise PreviewError(
                 'Falta UnityPy. Cierra la app y ejecuta INSTALAR_Y_ABRIR.bat para instalar las nuevas dependencias.'
+            ) from exc
+
+        attempts: list[str] = []
+        last_error: Exception | None = None
+        for source_name, raw in _raw_candidates(target):
+            if not raw:
+                continue
+            attempts.append(source_name)
+            try:
+                plain, nkab_version = decrypt_nkab(raw)
+                env = UnityPy.load(plain)
+
+                textures: list[tuple[int, Any, str, int, int]] = []
+                atlas_names: list[str] = []
+                skel_names: list[str] = []
+                character_id = ''
+                pose = ''
+                skin_key: int | None = None
+
+                for obj in env.objects:
+                    type_name = getattr(getattr(obj, 'type', None), 'name', '')
+                    if type_name == 'Texture2D':
+                        try:
+                            data = _object_data(obj)
+                            width = int(getattr(data, 'm_Width', 0) or getattr(data, 'width', 0) or 0)
+                            height = int(getattr(data, 'm_Height', 0) or getattr(data, 'height', 0) or 0)
+                            textures.append((max(1, width) * max(1, height), data, _texture_name(data), width, height))
+                        except Exception:
+                            continue
+                    elif type_name == 'TextAsset':
+                        try:
+                            data = _object_data(obj)
+                            name = _text_asset_name(data)
+                            lname = name.lower()
+                            if '.atlas' in lname:
+                                atlas_names.append(name)
+                                m = self.ATLAS_NAME_RE.match(name)
+                                if m:
+                                    character_id = m.group(1)
+                                    pose = m.group(2) or 'idle'
+                                    try:
+                                        skin_key = int(m.group(3))
+                                    except Exception:
+                                        skin_key = None
+                            elif '.skel' in lname:
+                                skel_names.append(name)
+                        except Exception:
+                            continue
+
+                if not textures:
+                    raise PreviewError('El bundle se abrio, pero no contiene Texture2D que pueda mostrar.')
+
+                textures.sort(key=lambda x: x[0], reverse=True)
+                _, texture, texture_name, width, height = textures[0]
+                image = texture.image
+                if image is None:
+                    raise PreviewError('UnityPy encontro la textura pero no pudo convertirla a imagen.')
+                # Normalize to a PNG-compatible mode without altering the atlas layout.
+                if image.mode not in {'RGB', 'RGBA'}:
+                    image = image.convert('RGBA')
 
 --- recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha/src/scanner.py ---
 from __future__ import annotations
@@ -2581,6 +2761,39 @@ async function openPreview(itemId){
     const nkab=r.nkab_version?`NKAB v${r.nkab_version}`:'Unity bundle';
     $('previewContent').innerHTML=`<div class="preview-head"><div><div class="preview-kicker">${esc(t('preview_title'))}</div><h2>${esc(r.mod_name||m?.mod_title||m?.name||'Mod')}</h2><div class="preview-sub">${esc(r.character_name||m?.character_name||'')} · ID ${esc(r.id||m?.id||'')} · Ver ${esc(r.version||m?.version||'')} · ${esc(actionLabel(r.action||m?.action||''))}</div></div><span class="preview-alpha-badge">ALPHA</span></div><div class="preview-stage"><img src="${esc(r.preview_url)}?v=${Date.now()}" alt="Preview"/></div><div class="preview-note">⚠ ${esc(t('preview_raw_note'))}</div><div class="preview-meta-grid"><div><b>${esc(t('preview_texture'))}</b><span>${esc(r.texture_name||'Texture2D')} · ${esc(r.texture_width||'?')}×${esc(r.texture_height||'?')}</span></div><div><b>${esc(t('preview_detected'))}</b><span>${esc(detected)}</span></div><div><b>Bundle</b><span>${esc(nkab)}</span></div><div><b>${esc(t('preview_source'))}</b><span title="${esc(r.source_file||'')}">${esc(r.source_file||'—')}</span></div></div>`;
   }catch(e){
+    $('previewContent').innerHTML=`<div class="preview-error"><div class="preview-error-icon">⚠</div><h2>${esc(t('preview_title'))}</h2><p>${esc(t('preview_failed',{error:e.message||String(e)}))}</p></div>`;
+  }
+}
+
+function requestDelete(ids,closeDetail=false){pendingDelete=ids;$('confirmText').textContent=ids.length===1?t('delete_one_confirm'):t('delete_many_confirm');$('confirmModal').classList.remove('hidden');if(closeDetail)$('confirmModal').dataset.closeDetail='1';else delete $('confirmModal').dataset.closeDetail;}
+async function doDelete(){ $('confirmModal').classList.add('hidden');setBusy(true,t('deleting'));const s=await apiCall('delete_items',pendingDelete),n=s.delete_result?.deleted?.length||0,errors=s.delete_result?.errors||[];setState(s);setBusy(false);if($('confirmModal').dataset.closeDetail==='1')closeCharacter();toast(errors.length?t('delete_errors',{n,e:errors.length}):(n===1?t('delete_done_one'):t('delete_done_many',{n})),!!errors.length);pendingDelete=[]; }
+
+function switchView(view,updateVisibility=true){ currentView=view;if(updateVisibility){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));$(`view-${view}`).classList.add('active-view');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));}const meta={characters:[t('page_characters'),t('page_characters_sub')],mods:[t('page_mods'),t('page_mods_sub')],conflicts:[t('page_conflicts'),t('page_conflicts_sub')],settings:[t('page_settings'),t('page_settings_sub')]}[view];$('pageTitle').textContent=meta[0];$('pageSubtitle').textContent=meta[1]; }
+async function refresh(){setBusy(true,t('scanning'));const s=await apiCall('refresh');setState(s);setBusy(false);toast(t('scan_done',{n:s.stats.mods}));}
+
+function bind(){
+  document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view))); $('refreshBtn').onclick=refresh;$('sidebarScan').onclick=refresh;$('scanSettingsBtn').onclick=refresh;
+  $('characterSearch').addEventListener('input',renderCharacters);$('modSearch').addEventListener('input',renderMods);$('actionFilter').addEventListener('change',renderMods);$('characterCategory').addEventListener('change',e=>{characterCategory=e.target.value;renderCharacters();});$('characterTagFilter').addEventListener('change',e=>{characterTagFilter=e.target.value;renderCharacters();});
+  $('characterSort').addEventListener('change',async e=>{characterSort=e.target.value;renderCharacters();try{const s=await apiCall('set_character_sort',characterSort);state.settings=s.settings;}catch(_e){}});
+  $('characterFilterChips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;characterFilter=b.dataset.filter;document.querySelectorAll('#characterFilterChips .chip').forEach(x=>x.classList.toggle('active',x===b));renderCharacters();});
+  $('toggleCharacterSelectBtn').onclick=()=>{characterSelectionMode=!characterSelectionMode;if(!characterSelectionMode)selectedCharacters.clear();renderCharacters();updateBulkTagBar();};
+  $('selectVisibleCharactersBtn').onclick=()=>{visibleCharacterKeys.forEach(key=>selectedCharacters.add(key));renderCharacters();updateBulkTagBar();};
+  $('clearCharacterSelectionBtn').onclick=()=>{selectedCharacters.clear();renderCharacters();updateBulkTagBar();};
+  const applyBulkTag=async operation=>{const tag=$('bulkTagInput').value.trim();if(!tag){toast(t('tag_required'),true);return;}if(!selectedCharacters.size)return;setBusy(true,t('loading'));const s=await apiCall('update_character_tags',[...selectedCharacters],tag,operation),r=s.tag_update_result||{};setState(s);setBusy(false);$('bulkTagInput').value='';toast(operation==='add'?t('tag_added',{n:r.changed||0}):t('tag_removed',{n:r.changed||0}));};
+  $('addTagSelectedBtn').onclick=()=>applyBulkTag('add');$('removeTagSelectedBtn').onclick=()=>applyBulkTag('remove');
+  $('deleteSelected').onclick=()=>requestDelete([...selectedMods]);$('selectAllMods').addEventListener('change',e=>{const mods=filteredMods();if(e.target.checked)mods.forEach(m=>selectedMods.add(m.item_id));else mods.forEach(m=>selectedMods.delete(m.item_id));renderMods();});
+  $('chooseFolderBtn').onclick=async()=>{setBusy(true,t('selecting'));const s=await apiCall('choose_mods_folder');setState(s);setBusy(false);if(s.settings.mods_folder)toast(t('folder_configured'));};$('openFolderBtn').onclick=()=>apiCall('open_mods_folder');$('openImagesBtn').onclick=()=>apiCall('open_images_folder');
+  $('cacheImagesBtn').onclick=async()=>{setBusy(true,t('caching_images'));const s=await apiCall('cache_character_images'),r=s.image_cache_result||{};setState(s);setBusy(false);toast(t('cache_done',{n:r.downloaded||0,hq:r.high_quality||0,c:r.already_cached||0,f:r.failed||0}));};
+  if($('regeneratePairBtn')) $('regeneratePairBtn').onclick=async()=>{setBusy(true,t('loading'));const s=await apiCall('regenerate_mobile_pairing_token');setState(s);setBusy(false);toast(t('mobile_sync_ready'));};
+  $('languageSelect').addEventListener('change',async e=>{setBusy(true,t('loading'));const s=await apiCall('set_language',e.target.value);setState(s);setBusy(false);});
+  $('autoCatalogUpdates').addEventListener('change',async e=>{const s=await apiCall('set_auto_catalog_updates',e.target.checked);setState(s);});
+  $('checkCatalogUpdatesBtn').onclick=async()=>{setBusy(true,t('updating_catalog'));const s=await apiCall('check_catalog_updates'),r=s.catalog_update_result||{};setState(s);setBusy(false);if(r.ok)toast(r.added_count?t('update_added',{n:r.added_count}):t('update_none'));else toast(t('update_failed',{error:r.error||'—'}),true);};
+  document.querySelectorAll('[data-close-modal]').forEach(x=>x.addEventListener('click',closeCharacter));document.querySelectorAll('[data-close-preview]').forEach(x=>x.addEventListener('click',closePreview));$('cancelDelete').onclick=()=>{$('confirmModal').classList.add('hidden');pendingDelete=[];};$('confirmDelete').onclick=doDelete;document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeCharacter();closePreview();$('confirmModal').classList.add('hidden');}});
+}
+
+async function init(){bind();applyStaticI18n();setBusy(true,t('loading'));const s=await apiCall('get_state');setState(s);setBusy(false);}
+window.addEventListener('nikke-mobile-sync',async()=>{try{const s=await apiCall('get_state');setState(s);toast(t('mobile_sync_received'));}catch(_e){}});
+window.addEventListener('pywebviewready',init);
 
 --- recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha/web/index.html ---
 <!doctype html>
