@@ -31,78 +31,59 @@ jobs:
           mkdir -p dist
           cp -a "$SRC" "$OUT"
 
-          # Rename visible product text only; keep the original webview interface/layout.
-          python3 - <<'PY'
-from pathlib import Path
-root=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL')
-repls={
- 'NIKKE Mod Library':'NIKKE Mod Manager',
- 'NIKKE MOD LIBRARY':'NIKKE MOD MANAGER',
- 'Biblioteca de Mods':'NIKKE Mod Manager',
- 'BIBLIOTECA DE MODS':'MOD MANAGER',
- '0.11 Preview Alpha':'0.13 Classic R2',
- 'v0.11 Preview Alpha':'v0.13 Classic R2',
-}
-for rel in ['app.py','README.md','PREVIEW_NOTES.md','INSTALAR_Y_ABRIR.bat','ABRIR.bat','web/app.js','web/index.html']:
-    p=root/rel
-    if p.exists():
-        s=p.read_text(encoding='utf-8', errors='ignore')
-        for a,b in repls.items():
-            s=s.replace(a,b)
-        p.write_text(s,encoding='utf-8')
-# ensure install title/opening text is updated
-p=root/'INSTALAR_Y_ABRIR.bat'
-s=p.read_text(encoding='utf-8', errors='ignore')
-s=s.replace('title NIKKE Mod Manager - Instalador','title NIKKE Mod Manager v0.13 Classic R2')
-s=s.replace('echo Abriendo NIKKE Mod Manager...','echo Abriendo NIKKE Mod Manager v0.13 Classic R2...')
-p.write_text(s,encoding='utf-8')
-PY
+          cat > /tmp/patch_classic_r2.py <<'PY'
+          from pathlib import Path
+          root = Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL')
+          repls = {
+              'NIKKE Mod Library': 'NIKKE Mod Manager',
+              'NIKKE MOD LIBRARY': 'NIKKE MOD MANAGER',
+              'Biblioteca de Mods': 'NIKKE Mod Manager',
+              'BIBLIOTECA DE MODS': 'MOD MANAGER',
+              '0.11 Preview Alpha': '0.13 Classic R2',
+              'v0.11 Preview Alpha': 'v0.13 Classic R2',
+          }
+          for rel in ['app.py','README.md','PREVIEW_NOTES.md','INSTALAR_Y_ABRIR.bat','ABRIR.bat','web/app.js','web/index.html']:
+              p = root / rel
+              if p.exists():
+                  s = p.read_text(encoding='utf-8', errors='ignore')
+                  for a, b in repls.items():
+                      s = s.replace(a, b)
+                  p.write_text(s, encoding='utf-8')
+          p = root / 'INSTALAR_Y_ABRIR.bat'
+          s = p.read_text(encoding='utf-8', errors='ignore')
+          s = s.replace('title NIKKE Mod Manager - Instalador', 'title NIKKE Mod Manager v0.13 Classic R2')
+          s = s.replace('echo Abriendo NIKKE Mod Manager...', 'echo Abriendo NIKKE Mod Manager v0.13 Classic R2...')
+          p.write_text(s, encoding='utf-8')
 
-          # Patch preview engine: keep v0.11 modal/UI, but for normal Spine bundles export atlas + skeleton metadata
-          # and a cleaned/cropped preview image instead of only a raw full atlas where possible.
-          python3 - <<'PY'
-from pathlib import Path
-p=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL/src/preview.py')
-s=p.read_text(encoding='utf-8')
-s=s.replace("v0.11 intentionally renders the real Texture2D atlas extracted from the\n    selected mod. It does not yet reconstruct the Spine skeleton/animation.\n    The goal of this alpha is to verify bundle compatibility safely before\n    implementing the animated renderer.",
-"v0.13 Classic R2 keeps the v0.11 modal/interface, but tries to prepare a\n    normal Spine bundle for an assembled preview. When full skeleton playback is\n    not available in the embedded window, it shows a cleaned texture fallback.\n    3DMigoto-specific reconstruction is intentionally left for a later pass.")
-s=s.replace("# Normalize to a PNG-compatible mode without altering the atlas layout.\n                if image.mode not in {'RGB', 'RGBA'}:\n                    image = image.convert('RGBA')\n                image.save(image_path, format='PNG', optimize=True)",
-"# Normalize to a PNG-compatible mode. For normal Spine mods, crop transparent\n                # margins so the preview focuses on the character pieces instead of empty atlas space.\n                if image.mode != 'RGBA':\n                    image = image.convert('RGBA')\n                bbox = image.getbbox()\n                if bbox:\n                    # Keep this conservative: it does not distort atlas pieces, only removes empty borders.\n                    image = image.crop(bbox)\n                image.save(image_path, format='PNG', optimize=True)")
-s=s.replace("'preview_kind': 'texture_atlas_alpha',\n                    'warning': (\n                        'Vista previa experimental: esta primera version muestra la textura real del mod. '\n                        'Todavia no reconstruye el esqueleto/animacion Spine.'\n                    ),",
-"'preview_kind': 'classic_r2_spine_prepare' if skel_names and atlas_names else 'texture_fallback',\n                    'spine_ready': bool(skel_names and atlas_names),\n                    'warning': (\n                        'Classic R2: mod normal con atlas/skel detectado. Se prepara para vista armada; '\n                        'si el visor no puede reproducir el esqueleto completo, se muestra fallback limpio.'\n                        if skel_names and atlas_names else\n                        'Fallback: no se encontro conjunto atlas/skel completo en este mod.'\n                    ),")
-p.write_text(s,encoding='utf-8')
-PY
+          p = root / 'src' / 'preview.py'
+          s = p.read_text(encoding='utf-8')
+          s = s.replace(
+              "v0.11 intentionally renders the real Texture2D atlas extracted from the\n    selected mod. It does not yet reconstruct the Spine skeleton/animation.\n    The goal of this alpha is to verify bundle compatibility safely before\n    implementing the animated renderer.",
+              "v0.13 Classic R2 keeps the v0.11 modal/interface, but tries to prepare a\n    normal Spine bundle for an assembled preview. When full skeleton playback is\n    not available in the embedded window, it shows a cleaned texture fallback.\n    3DMigoto-specific reconstruction is intentionally left for a later pass."
+          )
+          s = s.replace(
+              "# Normalize to a PNG-compatible mode without altering the atlas layout.\n                if image.mode not in {'RGB', 'RGBA'}:\n                    image = image.convert('RGBA')\n                image.save(image_path, format='PNG', optimize=True)",
+              "# Normalize to a PNG-compatible mode. For normal Spine mods, crop transparent\n                # margins so the preview focuses on the character pieces instead of empty atlas space.\n                if image.mode != 'RGBA':\n                    image = image.convert('RGBA')\n                bbox = image.getbbox()\n                if bbox:\n                    # Conservative fallback: do not distort atlas pieces, only remove empty borders.\n                    image = image.crop(bbox)\n                image.save(image_path, format='PNG', optimize=True)"
+          )
+          s = s.replace(
+              "'preview_kind': 'texture_atlas_alpha',\n                    'warning': (\n                        'Vista previa experimental: esta primera version muestra la textura real del mod. '\n                        'Todavia no reconstruye el esqueleto/animacion Spine.'\n                    ),",
+              "'preview_kind': 'classic_r2_spine_prepare' if skel_names and atlas_names else 'texture_fallback',\n                    'spine_ready': bool(skel_names and atlas_names),\n                    'warning': (\n                        'Classic R2: mod normal con atlas/skel detectado. Se prepara para vista armada; '\n                        'si el visor no puede reproducir el esqueleto completo, se muestra fallback limpio.'\n                        if skel_names and atlas_names else\n                        'Fallback: no se encontro conjunto atlas/skel completo en este mod.'\n                    ),"
+          )
+          p.write_text(s, encoding='utf-8')
 
-          # Update UI texts for preview without changing layout or creating external viewer.
-          python3 - <<'PY'
-from pathlib import Path
-p=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL/web/app.js')
-s=p.read_text(encoding='utf-8', errors='ignore')
-s=s.replace('Extrayendo textura real del mod...','Preparando vista del mod normal...')
-s=s.replace('Extracting the real mod texture...','Preparing normal mod preview...')
-s=s.replace('Esta primera versión muestra la textura real extraída del bundle. Todavía no reconstruye la animación Spine.', 'Classic R2 intenta preparar el conjunto Spine del mod normal. Si no puede montarlo completo, muestra un fallback limpio.')
-s=s.replace('This first version displays the real texture extracted from the bundle. It does not reconstruct the Spine animation yet.', 'Classic R2 prepares the normal mod Spine data. If it cannot fully render it, it shows a clean fallback.')
-p.write_text(s,encoding='utf-8')
-PY
+          p = root / 'web' / 'app.js'
+          s = p.read_text(encoding='utf-8', errors='ignore')
+          s = s.replace('Extrayendo textura real del mod...', 'Preparando vista del mod normal...')
+          s = s.replace('Extracting the real mod texture...', 'Preparing normal mod preview...')
+          s = s.replace('Esta primera versión muestra la textura real extraída del bundle. Todavía no reconstruye la animación Spine.', 'Classic R2 intenta preparar el conjunto Spine del mod normal. Si no puede montarlo completo, muestra un fallback limpio.')
+          s = s.replace('This first version displays the real texture extracted from the bundle. It does not reconstruct the Spine animation yet.', 'Classic R2 prepares the normal mod Spine data. If it cannot fully render it, it shows a clean fallback.')
+          p.write_text(s, encoding='utf-8')
 
-          cat > "$OUT/VERSION.txt" <<'TXT'
-NIKKE Mod Manager v0.13 Classic R2 FULL
-Base: v0.11 Preview Alpha classic interface
-Install: extract this folder and run INSTALAR_Y_ABRIR.bat
-Notes: no separate localhost/browser viewer; normal mods first; 3DMigoto reconstruction later.
-TXT
-
-          cat > "$OUT/LEEME_PRIMERO.txt" <<'TXT'
-NIKKE Mod Manager v0.13 Classic R2 FULL
-
-1. Descomprime esta carpeta en un lugar nuevo.
-2. Ejecuta INSTALAR_Y_ABRIR.bat.
-3. Selecciona tu carpeta de mods.
-
-Esta FULL usa la interfaz clasica de v0.11. No es el rediseño v0.13 anterior.
-El preview queda dentro del mismo modal clasico. Los 3DMigoto quedan para una revision posterior.
-TXT
-
+          (root / 'VERSION.txt').write_text('NIKKE Mod Manager v0.13 Classic R2 FULL\nBase: v0.11 Preview Alpha classic interface\nInstall: extract this folder and run INSTALAR_Y_ABRIR.bat\nNotes: no separate localhost/browser viewer; normal mods first; 3DMigoto reconstruction later.\n', encoding='utf-8')
+          (root / 'LEEME_PRIMERO.txt').write_text('NIKKE Mod Manager v0.13 Classic R2 FULL\n\n1. Descomprime esta carpeta en un lugar nuevo.\n2. Ejecuta INSTALAR_Y_ABRIR.bat.\n3. Selecciona tu carpeta de mods.\n\nEsta FULL usa la interfaz clasica de v0.11. No es el rediseño v0.13 anterior.\nEl preview queda dentro del mismo modal clasico. Los 3DMigoto quedan para una revision posterior.\n', encoding='utf-8')
+          PY
+          sed -i 's/^          //' /tmp/patch_classic_r2.py
+          python3 /tmp/patch_classic_r2.py
           python3 -m py_compile "$OUT/app.py" "$OUT/src/api.py" "$OUT/src/preview.py" "$OUT/src/scanner.py" "$OUT/src/classifier.py"
           (cd dist && zip -qr NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL)
           unzip -t "$ZIP"
