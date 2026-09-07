@@ -22,6 +22,13 @@ jobs:
       - name: Build ZIP with low-level Spine runtimes
         run: python3 tools/build_classic_r6_lowlevel.py
 
+      - name: Validate generated app JS
+        shell: bash
+        run: |
+          node --check dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_SPINE_LOWLEVEL_FULL/web/app.js
+          grep -n "Preview Alpha" dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_SPINE_LOWLEVEL_FULL/web/app.js | head -20 || true
+          grep -n "r6RuntimeInfo\|r5RuntimeInfo\|onclick" dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_SPINE_LOWLEVEL_FULL/web/app.js | head -80 || true
+
       - name: Upload FULL artifact
         uses: actions/upload-artifact@v4
         with:
@@ -30,4 +37,4 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-# rebuild: r6-lowlevel-packagefix
+# rebuild: r6-js-validation
