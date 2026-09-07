@@ -1,4 +1,4 @@
-name: Build Classic R5 Spine Debug FULL Artifact
+name: Build Classic R6 Spine LowLevel FULL Artifact
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-classic-r5-spine-debug-full:
+  build-classic-r6-spine-lowlevel-full:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -19,15 +19,15 @@ jobs:
           ref: recover-v011-source
           fetch-depth: 1
 
-      - name: Build ZIP with bundled Spine runtime and debug
-        run: python3 tools/build_classic_r5_debugfix.py
+      - name: Build ZIP with low-level Spine runtimes
+        run: python3 tools/build_classic_r6_lowlevel.py
 
       - name: Upload FULL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R5_SPINE_DEBUG_FULL
-          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R5_SPINE_DEBUG_FULL.zip
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R6_SPINE_LOWLEVEL_FULL
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_SPINE_LOWLEVEL_FULL.zip
           if-no-files-found: error
           retention-days: 90
 
-# rebuild: r5-debugfix
+# rebuild: r6-lowlevel
