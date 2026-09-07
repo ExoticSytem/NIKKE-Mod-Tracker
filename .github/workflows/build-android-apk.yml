@@ -30,4 +30,4 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
-# rebuild: r6-lowlevel
+# rebuild: r6-lowlevel-packagefix
