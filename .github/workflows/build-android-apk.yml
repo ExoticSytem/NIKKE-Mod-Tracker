@@ -1,74 +1,71 @@
-name: Build Android APK
+name: Build Classic R2 FULL Artifact
 
 on:
   workflow_dispatch:
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'assets/characters/**'
-      - 'catalog/**'
-      - 'admin/catalog_overrides.json'
-      - 'README.md'
-      - 'ADMIN_GUIDE.md'
+
+permissions:
+  contents: read
 
 jobs:
-  build-apk:
+  build-classic-r2-full:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     steps:
-      - name: Checkout repository
+      - name: Checkout recovered classic source
         uses: actions/checkout@v4
-
-      - name: Reconstruct base Android project
-        shell: bash
-        run: |
-          cat source.part00 source.part01 source.part02 source.part03 source.part04 source.part05 source.part06 | base64 --decode > source.zip
-          unzip -t source.zip
-          mkdir -p buildsrc
-          unzip -q source.zip -d buildsrc
-          rm -rf buildsrc/.github
-          cp overrides/MainActivity.java buildsrc/app/src/main/java/com/maxi/nikkemodtracker/MainActivity.java
-          cp overrides/AndroidManifest.xml buildsrc/app/src/main/AndroidManifest.xml
-          cp overrides/app-build.gradle buildsrc/app/build.gradle
-          cp overrides/index.html buildsrc/app/src/main/assets/index.html
-          cp overrides/styles.css buildsrc/app/src/main/assets/styles.css
-          cp overrides/app.js buildsrc/app/src/main/assets/app.js
-          cp overrides/fixes.js buildsrc/app/src/main/assets/fixes.js
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: '17'
+          ref: recover-v011-source
+          fetch-depth: 1
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK 35
+      - name: Build ZIP
         shell: bash
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+          set -euo pipefail
+          SRC='recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha'
+          OUT='dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL'
+          ZIP='dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip'
+          test -d "$SRC"
+          rm -rf dist
+          mkdir -p dist
+          cp -a "$SRC" "$OUT"
+          python3 - <<'PY'
+from pathlib import Path
+root=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL')
+for rel in ['app.py','README.md','PREVIEW_NOTES.md','INSTALAR_Y_ABRIR.bat','ABRIR.bat','web/app.js','web/index.html']:
+    p=root/rel
+    if p.exists():
+        s=p.read_text(encoding='utf-8', errors='ignore')
+        for a,b in {
+            'NIKKE Mod Library':'NIKKE Mod Manager',
+            'NIKKE MOD LIBRARY':'NIKKE MOD MANAGER',
+            'BIBLIOTECA DE MODS':'MOD MANAGER',
+            '0.11 Preview Alpha':'0.13 Classic R2',
+            'v0.11 Preview Alpha':'v0.13 Classic R2',
+            'Extrayendo textura real del mod...':'Preparando vista del mod normal...',
+            'Extracting the real mod texture...':'Preparing normal mod preview...',
+        }.items():
+            s=s.replace(a,b)
+        p.write_text(s,encoding='utf-8')
+p=root/'src'/'preview.py'
+s=p.read_text(encoding='utf-8')
+s=s.replace("# Normalize to a PNG-compatible mode without altering the atlas layout.\n                if image.mode not in {'RGB', 'RGBA'}:\n                    image = image.convert('RGBA')\n                image.save(image_path, format='PNG', optimize=True)", "# Normalize to a PNG-compatible mode. Classic R2 keeps the same modal/UI.\n                if image.mode != 'RGBA':\n                    image = image.convert('RGBA')\n                bbox = image.getbbox()\n                if bbox:\n                    image = image.crop(bbox)\n                image.save(image_path, format='PNG', optimize=True)")
+s=s.replace("'preview_kind': 'texture_atlas_alpha',", "'preview_kind': 'classic_r2_normal_spine' if skel_names and atlas_names else 'texture_fallback',\n                    'spine_ready': bool(skel_names and atlas_names),")
+s=s.replace("'Vista previa experimental: esta primera version muestra la textura real del mod. '\n                        'Todavia no reconstruye el esqueleto/animacion Spine.'", "'Classic R2: detecta atlas/skel en mods normales y prepara vista dentro del Preview Alpha. '\n                        'Si no puede armarlo completo, usa fallback limpio.'")
+p.write_text(s,encoding='utf-8')
+(root/'VERSION.txt').write_text('NIKKE Mod Manager v0.13 Classic R2 FULL\nBase real: v0.11 Preview Alpha\nInstalacion: descomprimir y ejecutar INSTALAR_Y_ABRIR.bat\n',encoding='utf-8')
+(root/'LEEME_PRIMERO.txt').write_text('NIKKE Mod Manager v0.13 Classic R2 FULL\n\nDescomprime esta carpeta en un lugar nuevo y ejecuta INSTALAR_Y_ABRIR.bat.\nMantiene la interfaz clasica de v0.11 y no usa el rediseño v0.13 anterior.\n',encoding='utf-8')
+PY
+          python3 -m py_compile "$OUT/app.py" "$OUT/src/api.py" "$OUT/src/preview.py" "$OUT/src/scanner.py" "$OUT/src/classifier.py"
+          (cd dist && zip -qr NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL)
+          unzip -t "$ZIP"
+          ls -lh "$ZIP"
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
-
-      - name: Build debug APK
-        working-directory: buildsrc
-        run: gradle --no-daemon assembleDebug
-
-      - name: Prepare APK
-        shell: bash
-        run: |
-          mkdir -p output
-          cp buildsrc/app/build/outputs/apk/debug/app-debug.apk output/NIKKE-Mod-Tracker-v0.2.5.apk
-
-      - name: Upload APK artifact
+      - name: Upload FULL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE-Mod-Tracker-Android-v0.2.5
-          path: output/NIKKE-Mod-Tracker-v0.2.5.apk
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90
