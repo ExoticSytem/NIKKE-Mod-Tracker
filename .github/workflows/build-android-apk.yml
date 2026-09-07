@@ -29,3 +29,5 @@ jobs:
           path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R4_SPINE_FULL.zip
           if-no-files-found: error
           retention-days: 90
+
+# rebuild: r4-runtimefix-assertion
