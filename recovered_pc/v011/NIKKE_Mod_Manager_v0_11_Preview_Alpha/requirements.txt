@@ -1,0 +1,6 @@
+pywebview>=5.0,<7
+Send2Trash>=1.8,<2
+Pillow>=10,<13
+qrcode[pil]>=7.4
+UnityPy>=1.23,<2
+pycryptodome>=3.20,<4

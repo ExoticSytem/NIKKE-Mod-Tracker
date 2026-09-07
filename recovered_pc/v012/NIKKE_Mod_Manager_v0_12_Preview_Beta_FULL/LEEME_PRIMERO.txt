@@ -1,0 +1,14 @@
+NIKKE Mod Manager v0.12 Preview Beta FULL
+=========================================
+
+Esta es la versión COMPLETA para instalación limpia.
+No necesitas v0.11 ni el ZIP UPDATE.
+
+Primera vez: ejecuta INSTALAR_Y_ABRIR.bat
+Siguientes veces: ABRIR.bat
+
+Para probar la Beta:
+1) abre la vista previa de un mod;
+2) pulsa "Preview Beta".
+
+Pruebas principales: Summer Anis (Standing/Aim/Cover) y D Killer Wife 3DMigoto.

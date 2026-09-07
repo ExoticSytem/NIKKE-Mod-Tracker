@@ -1,0 +1,3 @@
+0.12 Preview Beta FULL
+Base: v0.11 Preview Alpha
+Beta renderer: Spine/Pixi + 3DMigoto texture preview

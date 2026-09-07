@@ -1,0 +1,12 @@
+{
+  "settings_version": 6,
+  "mods_folder": "",
+  "onboarding_complete": false,
+  "default_character_filter": "all",
+  "language": "es",
+  "character_sort": "id_asc",
+  "auto_catalog_updates": true,
+  "mobile_sync_port": 8765,
+  "mobile_sync_last": "",
+  "mobile_sync_error": ""
+}

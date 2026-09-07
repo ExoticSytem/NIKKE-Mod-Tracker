@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NIKKE Mod Library</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div id="app" class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div>
+        <div class="brand-title">NIKKE</div>
+        <div class="brand-sub"><span data-i18n="brand_sub">BIBLIOTECA DE MODS</span> <span class="version">v0.11 Preview Alpha</span></div>
+      </div>
+    </div>
+
+    <div class="nav-label" data-i18n="nav_label">NAVEGACIÓN</div>
+    <button class="nav-btn active" data-view="characters"><span class="nav-icon">▦</span><span data-i18n="nav_characters">Personajes</span></button>
+    <button class="nav-btn" data-view="mods"><span class="nav-icon">☰</span><span data-i18n="nav_mods">Mods</span></button>
+    <button class="nav-btn" data-view="conflicts"><span class="nav-icon">⚠</span><span data-i18n="nav_conflicts">Conflictos</span> <b id="sidebarConflictCount" class="count-pill">0</b></button>
+
+    <div class="nav-label settings-label" data-i18n="settings_label">AJUSTES</div>
+    <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span><span data-i18n="nav_settings">Configuración</span></button>
+
+    <div class="sidebar-spacer"></div>
+    <div class="folder-card">
+      <div class="tiny-label" data-i18n="scanned_folder">CARPETA ESCANEADA</div>
+      <div id="sidebarFolder" class="folder-path">Sin configurar</div>
+      <button id="sidebarScan" class="secondary-btn full"><span>↻</span> <span data-i18n="scan_now">Escanear ahora</span></button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Personajes</h1>
+        <div id="pageSubtitle" class="subtitle">Cada ID + Ver se trata como una skin/personaje independiente</div>
+      </div>
+      <div class="top-actions">
+        <div id="syncStatus" class="scan-status">● Listo</div>
+        <button id="refreshBtn" class="secondary-btn"><span>↻</span> <span data-i18n="refresh">Actualizar</span></button>
+      </div>
+    </header>
+
+    <section id="view-characters" class="view active-view">
+      <div class="toolbar cardish character-toolbar">
+        <div class="search-box"><span>⌕</span><input id="characterSearch" data-i18n-placeholder="search_character" placeholder="Buscar personaje, ID o versión..." /></div>
+        <select id="characterSort" class="select sort-select" aria-label="Ordenar personajes">
+          <option value="id_asc" data-i18n="sort_id_asc">ID: menor a mayor</option>
+          <option value="id_desc" data-i18n="sort_id_desc">ID: mayor a menor</option>
+          <option value="name_asc" data-i18n="sort_name_asc">Nombre: A-Z</option>
+          <option value="name_desc" data-i18n="sort_name_desc">Nombre: Z-A</option>
+          <option value="mods_desc" data-i18n="sort_mods_desc">Más mods primero</option>
+          <option value="conflicts_first" data-i18n="sort_conflicts_first">Conflictos primero</option>
+        </select>
+        <select id="characterCategory" class="select type-select" aria-label="NPC / Extra">
+          <option value="all" data-i18n="type_all">Todos</option>
+          <option value="npc_extra" data-i18n="type_npc_extra">Solo NPC / Extra</option>
+          <option value="non_npc" data-i18n="type_non_npc">Ocultar NPC / Extra</option>
+        </select>
+        <select id="characterTagFilter" class="select tag-filter" aria-label="Etiquetas">
+          <option value="all" data-i18n="tag_filter_all">Todas las etiquetas</option>
+          <option value="untagged" data-i18n="tag_filter_untagged">Sin etiquetas</option>
+        </select>
+        <div class="chips" id="characterFilterChips">
+          <button class="chip active" data-filter="all" data-i18n="filter_all">Todos</button>
+          <button class="chip" data-filter="with_mods" data-i18n="filter_with_mods">Con mods</button>
+          <button class="chip" data-filter="without_mods" data-i18n="filter_without_mods">Sin mods</button>
+          <button class="chip danger-chip" data-filter="conflicts"><span>⚠</span> <span data-i18n="filter_conflicts">Conflictos</span></button>
+        </div>
+        <button id="toggleCharacterSelectBtn" class="secondary-btn compact-select-btn">☑ <span data-i18n="select_multiple">Seleccionar varios</span></button>
+        <div class="stats-inline"><b id="variantCount">0</b> <span data-i18n="variants">variantes</span></div>
+      </div>
+      <div id="bulkTagBar" class="bulk-tag-bar cardish hidden">
+        <div class="bulk-selection"><b id="bulkSelectedCount">0</b> <span data-i18n="selected_characters">seleccionados</span></div>
+        <div class="bulk-tag-input-wrap">
+          <input id="bulkTagInput" list="tagSuggestions" data-i18n-placeholder="tag_placeholder" placeholder="Escribe una etiqueta..." maxlength="40" />
+          <datalist id="tagSuggestions"></datalist>
+        </div>
+        <button id="addTagSelectedBtn" class="primary-btn">＋ <span data-i18n="add_tag">Agregar etiqueta</span></button>
+        <button id="removeTagSelectedBtn" class="secondary-btn">− <span data-i18n="remove_tag">Quitar etiqueta</span></button>
+        <button id="selectVisibleCharactersBtn" class="secondary-btn" data-i18n="select_visible">Seleccionar visibles</button>
+        <button id="clearCharacterSelectionBtn" class="secondary-btn" data-i18n="clear_selection">Limpiar selección</button>
+      </div>
+      <div id="characterGrid" class="character-grid"></div>
+      <div id="characterEmpty" class="empty-state hidden">
+        <div class="empty-icon">◇</div>
+        <h3 data-i18n="no_results">No hay resultados</h3>
+        <p data-i18n="no_results_hint">Prueba otro filtro o selecciona la carpeta donde guardas tus mods.</p>
+      </div>
+    </section>
+
+    <section id="view-mods" class="view">
+      <div class="toolbar cardish mods-toolbar">
+        <div class="search-box"><span>⌕</span><input id="modSearch" data-i18n-placeholder="search_mod" placeholder="Buscar mod, personaje o autor..." /></div>
+        <select id="actionFilter" class="select">
+          <option value="all" data-i18n="all_actions">Todas las acciones</option>
+          <option value="standing" data-i18n="action_standing">Standing</option>
+          <option value="aim" data-i18n="action_aim">Aim</option>
+          <option value="cover" data-i18n="action_cover">Cover</option>
+          <option value="conflict" data-i18n="only_conflicts">Solo conflictos</option>
+        </select>
+        <button id="deleteSelected" class="danger-btn" disabled>🗑 <span data-i18n="send_selected_trash">Enviar seleccionados a Papelera</span></button>
+      </div>
+      <div class="table-wrap cardish">
+        <table class="mods-table">
+          <thead><tr><th class="check-col"><input type="checkbox" id="selectAllMods" /></th><th data-i18n="col_mod">Mod</th><th data-i18n="col_character">Personaje</th><th data-i18n="col_target">ID / Ver</th><th data-i18n="col_action">Acción</th><th data-i18n="col_status">Estado</th><th></th></tr></thead>
+          <tbody id="modsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="view-conflicts" class="view">
+      <div id="conflictIntro" class="notice info-notice">Un conflicto aparece cuando 2 o más mods apuntan al mismo <b>ID + Ver + acción</b>. No significa que dos acciones diferentes del mismo personaje entren en conflicto.</div>
+      <div id="conflictGrid" class="conflict-grid"></div>
+      <div id="conflictEmpty" class="empty-state hidden"><div class="empty-icon good">✓</div><h3 data-i18n="no_conflicts">No se detectaron conflictos</h3><p data-i18n="no_conflicts_hint">Con la carpeta actual no hay destinos duplicados.</p></div>
+    </section>
+
+    <section id="view-settings" class="view">
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h2 data-i18n="settings_mod_folder">Carpeta de mods</h2>
+          <p data-i18n-html="settings_mod_folder_desc">La app solo la <b>lee</b>. No activa ni desactiva mods; eso queda en tu activador externo.</p>
+          <div class="path-row"><div id="settingsFolder" class="path-display">Sin configurar</div><button id="chooseFolderBtn" class="primary-btn" data-i18n="choose_folder">Seleccionar carpeta</button></div>
+          <div class="button-row"><button id="scanSettingsBtn" class="secondary-btn">↻ <span data-i18n="scan">Escanear</span></button><button id="openFolderBtn" class="secondary-btn">📁 <span data-i18n="open_folder">Abrir carpeta</span></button></div>
+        </div>
+
+        <div class="settings-card">
+          <h2 data-i18n="settings_images">Imágenes de personajes</h2>
+          <p data-i18n-html="settings_images_desc">Se priorizan las imágenes publicadas por el proyecto; las fuentes externas quedan como respaldo. Los cambios globales de imágenes se hacen desde la herramienta de administración.</p>
+          <div id="cachedImagesText" class="settings-meta">0 imágenes guardadas localmente</div>
+          <div class="button-row">
+            <button id="cacheImagesBtn" class="primary-btn">⇩ <span data-i18n="cache_images">Descargar imágenes para uso sin conexión</span></button>
+            <button id="openImagesBtn" class="secondary-btn">📁 <span data-i18n="open_images_folder">Abrir carpeta de imágenes</span></button>
+          </div>
+        </div>
+
+        <div class="settings-card mobile-sync-card">
+          <h2 data-i18n="mobile_sync_title">Sincronización con Android</h2>
+          <p data-i18n-html="mobile_sync_desc">Escanea este QR con la cámara del teléfono. El móvil recibirá los nombres de tus mods y las etiquetas se sincronizarán en ambos sentidos por tu red Wi-Fi.</p>
+          <div class="mobile-sync-layout">
+            <div class="mobile-qr-wrap"><img id="mobilePairQr" class="mobile-pair-qr" alt="QR de vinculación"></div>
+            <div class="mobile-sync-info">
+              <div id="mobileSyncStatus" class="settings-meta">—</div>
+              <div id="mobileSyncHost" class="path-display">—</div>
+              <div id="mobileSyncLast" class="settings-meta">—</div>
+              <p class="small-note" data-i18n="mobile_sync_wifi">El PC y el teléfono deben estar en la misma Wi-Fi al sincronizar. No se usan cuentas ni servidores externos.</p>
+              <div class="button-row"><button id="regeneratePairBtn" class="secondary-btn" data-i18n="mobile_sync_new_code">Generar nuevo código</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h2 data-i18n="settings_language">Idioma</h2>
+          <p data-i18n="settings_language_desc">Cambia toda la interfaz sin reiniciar la aplicación. Aim, Cover y Standing permanecen en inglés.</p>
+          <div class="setting-control-row">
+            <label for="languageSelect" data-i18n="interface_language">Idioma de la interfaz</label>
+            <select id="languageSelect" class="select setting-select"><option value="es">Español</option><option value="en">English</option></select>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <h2 data-i18n="official_catalog">Catálogo</h2>
+          <div class="metric"><span id="catalogMetric">0</span><small data-i18n="catalog_metric">entradas ID + Ver</small></div>
+          <div id="baseCatalogText" class="settings-meta">0 + 0</div>
+          <p data-i18n-html="catalog_desc">Tu lista sigue siendo la base protegida. Las actualizaciones online solo pueden agregar entradas nuevas.</p>
+        </div>
+
+        <div class="settings-card">
+          <h2 data-i18n="classification_title">NPC / Extra</h2>
+          <div class="metric"><span id="npcMetric">0</span><small>NPC / Extra</small></div>
+          <p id="npcMetricText">—</p>
+          <p data-i18n-html="classification_desc">Solo se marca visualmente lo que parece NPC / Extra. Puedes corregir manualmente cualquier entrada desde su tarjeta.</p>
+          <div id="playableReferenceText" class="settings-meta">—</div>
+        </div>
+
+        <div class="settings-card update-card">
+          <h2 data-i18n="catalog_updates_title">Actualizaciones del catálogo</h2>
+          <p data-i18n-html="catalog_updates_desc">La app puede revisar el índice Live2D de Nikke-DB y agregar ID + Ver nuevos sin tocar tu catálogo base.</p>
+          <label class="toggle-row"><input id="autoCatalogUpdates" type="checkbox" /><span data-i18n="auto_updates">Comprobar automáticamente una vez al día</span></label>
+          <div id="catalogUpdateLast" class="settings-meta">Última comprobación: —</div>
+          <div id="catalogOnlineCount" class="settings-meta">0 entradas agregadas desde la fuente online</div>
+          <div class="button-row"><button id="checkCatalogUpdatesBtn" class="primary-btn">↻ <span data-i18n="check_updates">Buscar actualizaciones ahora</span></button></div>
+        </div>
+
+        <div class="settings-card warning-card">
+          <h2 data-i18n="safe_delete">Eliminación segura</h2>
+          <p data-i18n-html="safe_delete_desc">“Eliminar” manda el archivo o carpeta a la <b>Papelera de reciclaje</b>. La app no hace borrado permanente.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="characterModal" class="modal hidden">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close-modal>×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div id="previewModal" class="modal hidden">
+  <div class="modal-backdrop" data-close-preview></div>
+  <div class="modal-card preview-modal-card">
+    <button class="modal-close" data-close-preview>×</button>
+    <div id="previewContent"></div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="confirm-card">
+    <h3 data-i18n="send_trash_title">Enviar a la Papelera</h3>
+    <p id="confirmText">¿Quieres eliminar los elementos seleccionados?</p>
+    <div class="button-row end"><button id="cancelDelete" class="secondary-btn" data-i18n="cancel">Cancelar</button><button id="confirmDelete" class="danger-btn" data-i18n="send_trash">Enviar a Papelera</button></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+<script src="app.js"></script>
+</body>
+</html>
