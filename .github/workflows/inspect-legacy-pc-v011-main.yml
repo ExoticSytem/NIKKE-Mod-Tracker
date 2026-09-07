@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/inspect-legacy-pc-v011-main.yml'
 
+permissions:
+  contents: write
+
 jobs:
   inspect:
     runs-on: ubuntu-latest
@@ -18,7 +21,7 @@ jobs:
       - name: Build inspection report
         shell: bash
         run: |
-          REPORT="$RUNNER_TEMP/legacy_v011_report.txt"
+          REPORT="legacy_v011_report.txt"
           {
             echo '=== CANDIDATE PATHS IN ALL HISTORY ==='
             git log --all --name-only --pretty=format: | sort -u | grep -Ei 'INSTALAR_Y_ABRIR|Preview[_ -]?Alpha|Mod[_ -]?(Library|Manager)|pc_.*v0.?11|v0.?11|\.zip$|source\.zip' || true
@@ -28,9 +31,9 @@ jobs:
             echo
             echo '=== SOURCE.ZIP.B64 ==='
             if [ -f source.zip.b64 ]; then
-              base64 -d source.zip.b64 > "$RUNNER_TEMP/source.zip" || true
-              file "$RUNNER_TEMP/source.zip" || true
-              unzip -l "$RUNNER_TEMP/source.zip" | sed -n '1,500p' || true
+              base64 -d source.zip.b64 > /tmp/source.zip || true
+              file /tmp/source.zip || true
+              unzip -l /tmp/source.zip | sed -n '1,500p' || true
             else
               echo 'source.zip.b64 not found'
             fi
@@ -38,20 +41,25 @@ jobs:
             echo '=== SPLIT SOURCE PARTS ==='
             ls -lh source.part* 2>/dev/null || true
             if ls source.part* >/dev/null 2>&1; then
-              cat source.part* > "$RUNNER_TEMP/source_parts.bin" || true
-              file "$RUNNER_TEMP/source_parts.bin" || true
+              cat source.part* > /tmp/source_parts.bin || true
+              file /tmp/source_parts.bin || true
               echo 'First 256 bytes:'
-              head -c 256 "$RUNNER_TEMP/source_parts.bin" | xxd || true
+              head -c 256 /tmp/source_parts.bin | xxd || true
             fi
             echo
             echo '=== CURRENT ROOT ==='
             find . -maxdepth 2 -type f -printf '%p\n' | sort | sed -n '1,500p'
           } > "$REPORT" 2>&1
 
-      - name: Upload inspection report
-        uses: actions/upload-artifact@v4
-        with:
-          name: legacy-pc-v011-inspection
-          path: ${{ runner.temp }}/legacy_v011_report.txt
-          if-no-files-found: error
-          retention-days: 7
+      - name: Commit inspection report
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add legacy_v011_report.txt
+          if git diff --cached --quiet; then
+            echo 'Report unchanged'
+          else
+            git commit -m 'Add generated legacy v0.11 inspection report'
+            git push
+          fi
