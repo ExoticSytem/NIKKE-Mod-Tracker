@@ -1,0 +1,52 @@
+name: Build NIKKE Mod Manager v0.13 Classic R2
+
+on:
+  push:
+    branches:
+      - nmm-v0.13-classic-r2
+    paths:
+      - 'pc_v013_classic_r2/**'
+      - 'tools/build_v013_classic_r2.py'
+      - 'tools/build_v013_classic.py'
+      - 'pc_preview_v012/preview_beta_server.py'
+      - '.github/workflows/build-v013-classic-r2.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download local Pixi and Spine runtimes
+        run: |
+          mkdir -p pc_v013_classic_r2/vendor
+          curl -L --fail --retry 3 -o pc_v013_classic_r2/vendor/pixi.min.js \
+            https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.5.10/browser/pixi.min.js
+          curl -L --fail --retry 3 -o pc_v013_classic_r2/vendor/pixi-spine.umd.js \
+            https://cdn.jsdelivr.net/npm/pixi-spine@4.0.4/dist/pixi-spine.umd.js
+          test $(wc -c < pc_v013_classic_r2/vendor/pixi.min.js) -gt 100000
+          test $(wc -c < pc_v013_classic_r2/vendor/pixi-spine.umd.js) -gt 100000
+
+      - name: Build updater
+        run: python tools/build_v013_classic_r2.py
+
+      - name: Validate Python and injected JavaScript
+        run: |
+          python -m py_compile dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/update_from_v011_r2.py
+          python -m py_compile dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/tools/preview_classic_r2_server.py
+          node --check dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/inject_classic_r2.js
+
+      - name: Verify no external viewer in R2 server
+        run: |
+          ! grep -q 'u.path == "/viewer"' dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/tools/preview_classic_r2_server.py
+          test -f dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/vendor/pixi.min.js
+          test -f dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/vendor/pixi-spine.umd.js
+          test -f dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/INSTALAR_ACTUALIZACION_v0_13_R2.bat
+
+      - name: Upload updater
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_UPDATE/
+          retention-days: 90
