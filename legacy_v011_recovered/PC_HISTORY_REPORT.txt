@@ -1,0 +1,134 @@
+=== COMMITS TOUCHING ROOT INSTALAR_Y_ABRIR.bat ===
+d63a0690fc3f4b43cbe3e455d4da9604db3696a8 | 2026-09-06 20:22:26 -0300 | Build NIKKE Mod Manager v0.13 full preview and demo
+
+=== SNAPSHOTS WHERE ROOT LAUNCHER EXISTS ===
+
+--- d63a0690fc3f4b43cbe3e455d4da9604db3696a8 ---
+d63a0690fc3f4b43cbe3e455d4da9604db3696a8 | 2026-09-06 20:22:26 -0300 | Build NIKKE Mod Manager v0.13 full preview and demo
+[root files]
+INSTALAR_Y_ABRIR.bat
+README.txt
+catalog
+manager.py
+manager_core.py
+tools
+[likely PC files]
+INSTALAR_Y_ABRIR.bat
+README.txt
+manager.py
+manager_core.py
+tools/preview_beta_server.py
+tools/preview_beta_server_core.py
+[launcher content]
+@echo off
+setlocal EnableExtensions
+cd /d "%~dp0"
+title NIKKE Mod Manager v0.13 Preview ^& Demo
+
+echo ===============================================
+echo      NIKKE MOD MANAGER v0.13 FULL
+echo          PREVIEW ^& DEMO
+
+echo ===============================================
+echo.
+
+set "PY="
+if exist ".venv\Scripts\python.exe" set "PY=%CD%\.venv\Scripts\python.exe"
+if defined PY goto deps
+
+where py >nul 2>&1
+if not errorlevel 1 (
+  py -3.12 -c "import sys" >nul 2>&1
+  if not errorlevel 1 (
+    echo Creando entorno Python local...
+    py -3.12 -m venv .venv
+    set "PY=%CD%\.venv\Scripts\python.exe"
+    goto deps
+  )
+  py -3 -c "import sys" >nul 2>&1
+  if not errorlevel 1 (
+    echo Creando entorno Python local...
+    py -3 -m venv .venv
+    set "PY=%CD%\.venv\Scripts\python.exe"
+    goto deps
+  )
+)
+
+where python >nul 2>&1
+if not errorlevel 1 (
+  echo Creando entorno Python local...
+  python -m venv .venv
+  if exist ".venv\Scripts\python.exe" set "PY=%CD%\.venv\Scripts\python.exe"
+)
+
+if not defined PY (
+  echo.
+  echo No se encontro Python 3 en este PC.
+  echo Instala Python 3.11 o 3.12 desde python.org y marca Add Python to PATH.
+  pause
+  exit /b 1
+)
+
+:deps
+echo Verificando dependencias...
+"%PY%" -c "import UnityPy, PIL, cryptography, send2trash" >nul 2>&1
+if errorlevel 1 (
+  echo Instalando UnityPy, Pillow, cryptography y send2trash...
+  "%PY%" -m pip install --disable-pip-version-check --upgrade pip >nul
+  "%PY%" -m pip install --disable-pip-version-check UnityPy Pillow cryptography send2trash
+  if errorlevel 1 (
+    echo.
+    echo No se pudieron instalar las dependencias.
+    pause
+    exit /b 1
+  )
+)
+
+if not exist "manager.py" goto missing
+if not exist "manager_core.py" goto missing
+if not exist "tools\preview_beta_server.py" goto missing
+if not exist "tools\preview_beta_server_core.py" goto missing
+if not exist "catalog\base_catalog.json" goto missing
+
+echo Abriendo NIKKE Mod Manager v0.13...
+set "PYW=%CD%\.venv\Scripts\pythonw.exe"
+if exist "%PYW%" (
+  start "NIKKE Mod Manager" "%PYW%" "%CD%\manager.py"
+) else (
+  start "NIKKE Mod Manager" "%PY%" "%CD%\manager.py"
+)
+exit /b 0
+
+:missing
+echo.
+echo Faltan archivos de la instalacion v0.13.
+echo Extrae TODO el ZIP en una carpeta nueva y vuelve a ejecutar este archivo.
+pause
+exit /b 1
+
+=== ALL HISTORICAL PC-LIKE PATHS ===
+INSTALAR_Y_ABRIR.bat
+manager.py
+manager_core.py
+pc_full_v012/INSTALAR_Y_ABRIR.bat
+pc_full_v012/README.txt
+pc_full_v012/manager.py
+pc_full_v012/manager_server.py
+pc_full_v013_restored/INSTALAR_Y_ABRIR.bat
+pc_full_v013_restored/README.txt
+pc_full_v013_restored/manager_native.py
+pc_full_v013_restored/native_preview.py
+pc_preview_v012/ACTUALIZAR_A_V0_12.bat
+pc_preview_v012/README.txt
+pc_preview_v012/preview_beta_server.py
+pc_preview_v012/update_to_v012.py
+pc_v013_classic/INSTALAR_ACTUALIZACION_v0_13.bat
+pc_v013_classic/README.txt
+pc_v013_classic/inject_classic_v013.js
+pc_v013_classic/update_from_v011.py
+pc_v013_classic_r2/INSTALAR_ACTUALIZACION_v0_13_R2.bat
+pc_v013_classic_r2/README.txt
+pc_v013_classic_r2/inject_classic_r2.js
+pc_v013_classic_r2/update_from_v011_r2.py
+tools/preview_beta_server.py
+tools/preview_beta_server_core.py
