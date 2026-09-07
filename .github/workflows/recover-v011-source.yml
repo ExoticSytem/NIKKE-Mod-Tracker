@@ -1,4 +1,4 @@
-name: Recover legacy v0.11 source
+name: Inspect legacy PC manager history
 
 on:
   push:
@@ -12,49 +12,52 @@ permissions:
   contents: write
 
 jobs:
-  recover:
+  inspect:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Reconstruct and validate archive
+      - name: Inspect commits containing legacy launcher
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf legacy_v011_recovered
+          REPORT="legacy_v011_recovered/PC_HISTORY_REPORT.txt"
           mkdir -p legacy_v011_recovered
-          cat source.part* | tr -d '\r\n\t ' > /tmp/source.b64
-          base64 -d /tmp/source.b64 > /tmp/source.zip
-          file /tmp/source.zip | tee legacy_v011_recovered/RECOVERY_REPORT.txt
-          sha256sum /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo '=== ZIP TEST ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          unzip -t /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo '=== ZIP CONTENTS ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          unzip -l /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
+          {
+            echo '=== COMMITS TOUCHING ROOT INSTALAR_Y_ABRIR.bat ==='
+            git log --all --date=iso --format='%H | %ad | %s' -- INSTALAR_Y_ABRIR.bat || true
+            echo
+            echo '=== SNAPSHOTS WHERE ROOT LAUNCHER EXISTS ==='
+            for SHA in $(git rev-list --all -- INSTALAR_Y_ABRIR.bat); do
+              if git cat-file -e "$SHA:INSTALAR_Y_ABRIR.bat" 2>/dev/null; then
+                echo
+                echo "--- $SHA ---"
+                git show -s --date=iso --format='%H | %ad | %s' "$SHA"
+                echo '[root files]'
+                git ls-tree --name-only "$SHA" | sed -n '1,200p'
+                echo '[likely PC files]'
+                git ls-tree -r --name-only "$SHA" | grep -Ei '(^|/)(INSTALAR_Y_ABRIR\.bat|.*\.py|.*\.html|.*\.css|.*\.js|.*\.json|.*\.txt)$' | grep -Evi '(^|/)app/src|android|gradle|catalog\.json' | sed -n '1,400p' || true
+                echo '[launcher content]'
+                git show "$SHA:INSTALAR_Y_ABRIR.bat" | sed -n '1,200p' || true
+              fi
+            done
+            echo
+            echo '=== ALL HISTORICAL PC-LIKE PATHS ==='
+            git log --all --name-only --pretty=format: | sort -u | grep -Ei '(^|/)(pc|manager|preview|INSTALAR|ACTUALIZAR).*(\.py|\.bat|\.html|\.js|\.css|\.txt)?$' | sed -n '1,1000p' || true
+          } > "$REPORT"
 
-      - name: Extract recovered source
-        shell: bash
-        run: |
-          set -euo pipefail
-          unzip -o /tmp/source.zip -d legacy_v011_recovered/source
-          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo '=== EXTRACTED FILES ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          find legacy_v011_recovered/source -type f -printf '%p\n' | sort | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
-
-      - name: Commit recovered source
+      - name: Commit report
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add legacy_v011_recovered
+          git add legacy_v011_recovered/PC_HISTORY_REPORT.txt
           if git diff --cached --quiet; then
-            echo 'No recovery changes to commit'
+            echo 'No changes'
           else
-            git commit -m 'Recover legacy v0.11 source archive'
+            git commit -m 'Add legacy PC manager history report'
             git push
           fi
