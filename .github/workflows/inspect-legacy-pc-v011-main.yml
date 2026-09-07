@@ -1,4 +1,4 @@
-name: Recover legacy PC v0.11 source MAIN TEMP
+name: Extract recovered PC packages MAIN TEMP
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  recover:
+  extract:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout recovery branch
@@ -20,37 +20,40 @@ jobs:
           ref: recover-v011-source
           fetch-depth: 0
 
-      - name: Reconstruct split Base64 ZIP
+      - name: Download and extract recovered PC packages
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf legacy_v011_recovered
-          mkdir -p legacy_v011_recovered/source
-          cat source.part* | tr -d '\r\n\t ' > /tmp/source.b64
-          base64 -d /tmp/source.b64 > /tmp/source.zip
-          file /tmp/source.zip | tee legacy_v011_recovered/RECOVERY_REPORT.txt
-          sha256sum /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo '=== ZIP TEST ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          unzip -t /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo '=== ZIP CONTENTS ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          unzip -l /tmp/source.zip | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
-          unzip -o /tmp/source.zip -d legacy_v011_recovered/source
-          echo >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          echo '=== EXTRACTED FILES ===' >> legacy_v011_recovered/RECOVERY_REPORT.txt
-          find legacy_v011_recovered/source -type f -printf '%p\n' | sort | tee -a legacy_v011_recovered/RECOVERY_REPORT.txt
+          rm -rf recovered_pc
+          mkdir -p recovered_pc/v011 recovered_pc/v012
+          curl -L --retry 3 -o /tmp/v011.tar 'https://eu-central.storage.cloudconvert.com/tasks/0be07cd5-eaf1-41de-b9ff-48eb5e7c7e52/NIKKE_Mod_Manager_v0_11_Preview_Alpha.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260907%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260907T032352Z&X-Amz-Expires=86400&X-Amz-Signature=87bf2311dd0f2d40a617d31426ccdac1209cd2c020dd78fa9d68759665724e93&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_11_Preview_Alpha.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+          curl -L --retry 3 -o /tmp/v012.tar 'https://eu-central.storage.cloudconvert.com/tasks/97c3f103-06c2-44ab-a8d6-e25c11a5a010/NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260907%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260907T032402Z&X-Amz-Expires=86400&X-Amz-Signature=56e3477963d3d13efc09724bc2ef95f66755e5c02e12c5850e2e70aaf061a70e&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+          file /tmp/v011.tar /tmp/v012.tar
+          tar -xf /tmp/v011.tar -C recovered_pc/v011
+          tar -xf /tmp/v012.tar -C recovered_pc/v012
+          {
+            echo '=== v011 tree ==='
+            find recovered_pc/v011 -type f -printf '%p %s bytes\n' | sort
+            echo
+            echo '=== v012 tree ==='
+            find recovered_pc/v012 -type f -printf '%p %s bytes\n' | sort
+            echo
+            echo '=== v011 py/bat/txt snippets ==='
+            for f in $(find recovered_pc/v011 -type f | grep -Ei '\.(py|bat|txt|html|js|css|json)$' | sort); do
+              echo; echo "--- $f ---"; sed -n '1,320p' "$f" || true
+            done
+          } > recovered_pc/EXTRACT_REPORT.txt
 
-      - name: Commit recovered source to recovery branch
+      - name: Commit extracted packages to recovery branch
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add legacy_v011_recovered
+          git add recovered_pc
           if git diff --cached --quiet; then
             echo 'No changes'
           else
-            git commit -m 'Recover legacy v0.11 source archive'
+            git commit -m 'Extract recovered PC packages for rebuild'
             git push origin HEAD:recover-v011-source
           fi
