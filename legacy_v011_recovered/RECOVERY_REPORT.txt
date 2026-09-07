@@ -1,0 +1,68 @@
+/tmp/source.zip: Zip archive data, at least v2.0 to extract, compression method=store
+aed1e3d8849e525d66f0586a03234baefb98337841a87b34a1c38ab79543835d  /tmp/source.zip
+
+=== ZIP TEST ===
+Archive:  /tmp/source.zip
+    testing: .github/                 OK
+    testing: app/                     OK
+    testing: settings.gradle          OK
+    testing: build.gradle             OK
+    testing: README.md                OK
+    testing: app/src/                 OK
+    testing: app/build.gradle         OK
+    testing: app/src/main/            OK
+    testing: app/src/main/assets/     OK
+    testing: app/src/main/java/       OK
+    testing: app/src/main/AndroidManifest.xml   OK
+    testing: app/src/main/java/com/   OK
+    testing: app/src/main/java/com/maxi/   OK
+    testing: app/src/main/java/com/maxi/nikkemodtracker/   OK
+    testing: app/src/main/java/com/maxi/nikkemodtracker/MainActivity.java   OK
+    testing: app/src/main/assets/index.html   OK
+    testing: app/src/main/assets/styles.css   OK
+    testing: app/src/main/assets/catalog.json   OK
+    testing: app/src/main/assets/app.js   OK
+    testing: .github/workflows/       OK
+    testing: .github/workflows/build-apk.yml   OK
+No errors detected in compressed data of /tmp/source.zip.
+
+=== ZIP CONTENTS ===
+Archive:  /tmp/source.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2026-09-06 09:57   .github/
+        0  2026-09-06 09:57   app/
+      276  2026-09-06 09:57   settings.gradle
+       73  2026-09-06 09:57   build.gradle
+     1002  2026-09-06 09:57   README.md
+        0  2026-09-06 09:57   app/src/
+      277  2026-09-06 09:57   app/build.gradle
+        0  2026-09-06 09:57   app/src/main/
+        0  2026-09-06 09:57   app/src/main/assets/
+        0  2026-09-06 09:57   app/src/main/java/
+      680  2026-09-06 09:57   app/src/main/AndroidManifest.xml
+        0  2026-09-06 09:57   app/src/main/java/com/
+        0  2026-09-06 09:57   app/src/main/java/com/maxi/
+        0  2026-09-06 09:57   app/src/main/java/com/maxi/nikkemodtracker/
+     1171  2026-09-06 09:57   app/src/main/java/com/maxi/nikkemodtracker/MainActivity.java
+     3172  2026-09-06 09:57   app/src/main/assets/index.html
+     5793  2026-09-06 09:57   app/src/main/assets/styles.css
+   155319  2026-09-06 09:57   app/src/main/assets/catalog.json
+     8995  2026-09-06 09:57   app/src/main/assets/app.js
+        0  2026-09-06 09:57   .github/workflows/
+      600  2026-09-06 09:57   .github/workflows/build-apk.yml
+---------                     -------
+   177358                     21 files
+
+=== EXTRACTED FILES ===
+legacy_v011_recovered/source/.github/workflows/build-apk.yml
+legacy_v011_recovered/source/README.md
+legacy_v011_recovered/source/app/build.gradle
+legacy_v011_recovered/source/app/src/main/AndroidManifest.xml
+legacy_v011_recovered/source/app/src/main/assets/app.js
+legacy_v011_recovered/source/app/src/main/assets/catalog.json
+legacy_v011_recovered/source/app/src/main/assets/index.html
+legacy_v011_recovered/source/app/src/main/assets/styles.css
+legacy_v011_recovered/source/app/src/main/java/com/maxi/nikkemodtracker/MainActivity.java
+legacy_v011_recovered/source/build.gradle
+legacy_v011_recovered/source/settings.gradle

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>NIKKE Mod Tracker</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+<header class="top"><div><div class="brand">NIKKE <span>MOD TRACKER</span></div><div id="summary" class="summary"></div></div><button id="settingsBtn" class="iconbtn">⚙</button></header>
+<main>
+<section id="catalogView">
+  <div class="controls">
+    <div class="search"><span>⌕</span><input id="search" placeholder="Buscar nombre, ID o Ver..."></div>
+    <select id="sort"><option value="id">ID ↑</option><option value="name">Nombre A-Z</option><option value="owned">Con mods primero</option></select>
+    <select id="tagFilter"><option value="all">Todas las etiquetas</option><option value="untagged">Sin etiquetas</option></select>
+  </div>
+  <div class="chips" id="filters"><button data-f="all" class="active">Todos</button><button data-f="owned">Con mods</button><button data-f="empty">Sin mods</button><button data-f="npc">NPC / Extra</button></div>
+  <div class="selectrow"><button id="multiBtn" class="ghost">☑ Seleccionar varios</button><span id="count"></span></div>
+  <div id="bulk" class="bulk hidden"><b id="selectedCount">0 seleccionados</b><input id="bulkTag" placeholder="Etiqueta..."><button id="addBulk">+ Etiqueta</button><button id="removeBulk">− Etiqueta</button><button id="selectVisible">Visibles</button><button id="clearSelected">Limpiar</button></div>
+  <div id="grid" class="grid"></div>
+</section>
+<section id="settingsView" class="hidden">
+  <div class="settingshead"><button id="backSettings" class="ghost">← Volver</button><h2>Configuración</h2></div>
+  <div class="panel"><label>Idioma</label><select id="language"><option value="es">Español</option><option value="en">English</option></select><p>Aim, Cover y Standing permanecen en inglés.</p></div>
+  <div class="panel"><h3>Datos</h3><p>Los marcadores, notas, etiquetas y correcciones se guardan solo en este teléfono.</p><button id="resetBtn" class="danger">Borrar todos mis marcadores</button></div>
+  <div class="panel"><h3>Catálogo</h3><p id="catalogInfo"></p><p>La lista incluida corresponde al catálogo oficial que definimos para la versión de escritorio.</p></div>
+</section>
+</main>
+<div id="modal" class="overlay hidden"><div class="sheet"><button id="close" class="close">×</button><div class="hero"><img id="detailImg"><div><h2 id="detailName"></h2><div id="detailId" class="mono"></div><div id="npcBadge"></div></div></div><label class="field">Clasificación<select id="classSelect"><option value="auto">Automática</option><option value="normal">No NPC / Extra</option><option value="npc">NPC / Extra</option></select></label><div id="actions"></div><label class="field">Notas<textarea id="notes" placeholder="Nombre del mod, enlace, autor, etc."></textarea></label><div class="field"><span>Etiquetas</span><div id="tagList" class="taglist"></div><div class="tagadd"><input id="tagInput" placeholder="Nueva etiqueta"><button id="addTag">Agregar</button></div></div></div></div>
+<script src="app.js"></script></body></html>
