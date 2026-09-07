@@ -1,4 +1,4 @@
-name: Extract recovered PC packages MAIN TEMP
+name: Build NIKKE Mod Manager Classic R2 FULL
 
 on:
   push:
@@ -8,52 +8,110 @@ on:
       - '.github/workflows/inspect-legacy-pc-v011-main.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  extract:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout recovery branch
+      - name: Checkout recovered classic source
         uses: actions/checkout@v4
         with:
           ref: recover-v011-source
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - name: Download and extract recovered PC packages
+      - name: Build FULL from v0.11 classic base
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf recovered_pc
-          mkdir -p recovered_pc/v011 recovered_pc/v012
-          curl -L --retry 3 -o /tmp/v011.tar 'https://eu-central.storage.cloudconvert.com/tasks/0be07cd5-eaf1-41de-b9ff-48eb5e7c7e52/NIKKE_Mod_Manager_v0_11_Preview_Alpha.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260907%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260907T032352Z&X-Amz-Expires=86400&X-Amz-Signature=87bf2311dd0f2d40a617d31426ccdac1209cd2c020dd78fa9d68759665724e93&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_11_Preview_Alpha.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
-          curl -L --retry 3 -o /tmp/v012.tar 'https://eu-central.storage.cloudconvert.com/tasks/97c3f103-06c2-44ab-a8d6-e25c11a5a010/NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260907%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260907T032402Z&X-Amz-Expires=86400&X-Amz-Signature=56e3477963d3d13efc09724bc2ef95f66755e5c02e12c5850e2e70aaf061a70e&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
-          file /tmp/v011.tar /tmp/v012.tar
-          tar -xf /tmp/v011.tar -C recovered_pc/v011
-          tar -xf /tmp/v012.tar -C recovered_pc/v012
-          {
-            echo '=== v011 tree ==='
-            find recovered_pc/v011 -type f -printf '%p %s bytes\n' | sort
-            echo
-            echo '=== v012 tree ==='
-            find recovered_pc/v012 -type f -printf '%p %s bytes\n' | sort
-            echo
-            echo '=== v011 py/bat/txt snippets ==='
-            for f in $(find recovered_pc/v011 -type f | grep -Ei '\.(py|bat|txt|html|js|css|json)$' | sort); do
-              echo; echo "--- $f ---"; sed -n '1,320p' "$f" || true
-            done
-          } > recovered_pc/EXTRACT_REPORT.txt
+          SRC='recovered_pc/v011/NIKKE_Mod_Manager_v0_11_Preview_Alpha'
+          OUT='dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL'
+          ZIP='dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip'
+          rm -rf dist
+          mkdir -p dist
+          cp -a "$SRC" "$OUT"
 
-      - name: Commit extracted packages to recovery branch
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add recovered_pc
-          if git diff --cached --quiet; then
-            echo 'No changes'
-          else
-            git commit -m 'Extract recovered PC packages for rebuild'
-            git push origin HEAD:recover-v011-source
-          fi
+          # Rename visible product text only; keep the original webview interface/layout.
+          python3 - <<'PY'
+from pathlib import Path
+root=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL')
+repls={
+ 'NIKKE Mod Library':'NIKKE Mod Manager',
+ 'NIKKE MOD LIBRARY':'NIKKE MOD MANAGER',
+ 'Biblioteca de Mods':'NIKKE Mod Manager',
+ 'BIBLIOTECA DE MODS':'MOD MANAGER',
+ '0.11 Preview Alpha':'0.13 Classic R2',
+ 'v0.11 Preview Alpha':'v0.13 Classic R2',
+}
+for rel in ['app.py','README.md','PREVIEW_NOTES.md','INSTALAR_Y_ABRIR.bat','ABRIR.bat','web/app.js','web/index.html']:
+    p=root/rel
+    if p.exists():
+        s=p.read_text(encoding='utf-8', errors='ignore')
+        for a,b in repls.items():
+            s=s.replace(a,b)
+        p.write_text(s,encoding='utf-8')
+# ensure install title/opening text is updated
+p=root/'INSTALAR_Y_ABRIR.bat'
+s=p.read_text(encoding='utf-8', errors='ignore')
+s=s.replace('title NIKKE Mod Manager - Instalador','title NIKKE Mod Manager v0.13 Classic R2')
+s=s.replace('echo Abriendo NIKKE Mod Manager...','echo Abriendo NIKKE Mod Manager v0.13 Classic R2...')
+p.write_text(s,encoding='utf-8')
+PY
+
+          # Patch preview engine: keep v0.11 modal/UI, but for normal Spine bundles export atlas + skeleton metadata
+          # and a cleaned/cropped preview image instead of only a raw full atlas where possible.
+          python3 - <<'PY'
+from pathlib import Path
+p=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL/src/preview.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace("v0.11 intentionally renders the real Texture2D atlas extracted from the\n    selected mod. It does not yet reconstruct the Spine skeleton/animation.\n    The goal of this alpha is to verify bundle compatibility safely before\n    implementing the animated renderer.",
+"v0.13 Classic R2 keeps the v0.11 modal/interface, but tries to prepare a\n    normal Spine bundle for an assembled preview. When full skeleton playback is\n    not available in the embedded window, it shows a cleaned texture fallback.\n    3DMigoto-specific reconstruction is intentionally left for a later pass.")
+s=s.replace("# Normalize to a PNG-compatible mode without altering the atlas layout.\n                if image.mode not in {'RGB', 'RGBA'}:\n                    image = image.convert('RGBA')\n                image.save(image_path, format='PNG', optimize=True)",
+"# Normalize to a PNG-compatible mode. For normal Spine mods, crop transparent\n                # margins so the preview focuses on the character pieces instead of empty atlas space.\n                if image.mode != 'RGBA':\n                    image = image.convert('RGBA')\n                bbox = image.getbbox()\n                if bbox:\n                    # Keep this conservative: it does not distort atlas pieces, only removes empty borders.\n                    image = image.crop(bbox)\n                image.save(image_path, format='PNG', optimize=True)")
+s=s.replace("'preview_kind': 'texture_atlas_alpha',\n                    'warning': (\n                        'Vista previa experimental: esta primera version muestra la textura real del mod. '\n                        'Todavia no reconstruye el esqueleto/animacion Spine.'\n                    ),",
+"'preview_kind': 'classic_r2_spine_prepare' if skel_names and atlas_names else 'texture_fallback',\n                    'spine_ready': bool(skel_names and atlas_names),\n                    'warning': (\n                        'Classic R2: mod normal con atlas/skel detectado. Se prepara para vista armada; '\n                        'si el visor no puede reproducir el esqueleto completo, se muestra fallback limpio.'\n                        if skel_names and atlas_names else\n                        'Fallback: no se encontro conjunto atlas/skel completo en este mod.'\n                    ),")
+p.write_text(s,encoding='utf-8')
+PY
+
+          # Update UI texts for preview without changing layout or creating external viewer.
+          python3 - <<'PY'
+from pathlib import Path
+p=Path('dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL/web/app.js')
+s=p.read_text(encoding='utf-8', errors='ignore')
+s=s.replace('Extrayendo textura real del mod...','Preparando vista del mod normal...')
+s=s.replace('Extracting the real mod texture...','Preparing normal mod preview...')
+s=s.replace('Esta primera versión muestra la textura real extraída del bundle. Todavía no reconstruye la animación Spine.', 'Classic R2 intenta preparar el conjunto Spine del mod normal. Si no puede montarlo completo, muestra un fallback limpio.')
+s=s.replace('This first version displays the real texture extracted from the bundle. It does not reconstruct the Spine animation yet.', 'Classic R2 prepares the normal mod Spine data. If it cannot fully render it, it shows a clean fallback.')
+p.write_text(s,encoding='utf-8')
+PY
+
+          cat > "$OUT/VERSION.txt" <<'TXT'
+NIKKE Mod Manager v0.13 Classic R2 FULL
+Base: v0.11 Preview Alpha classic interface
+Install: extract this folder and run INSTALAR_Y_ABRIR.bat
+Notes: no separate localhost/browser viewer; normal mods first; 3DMigoto reconstruction later.
+TXT
+
+          cat > "$OUT/LEEME_PRIMERO.txt" <<'TXT'
+NIKKE Mod Manager v0.13 Classic R2 FULL
+
+1. Descomprime esta carpeta en un lugar nuevo.
+2. Ejecuta INSTALAR_Y_ABRIR.bat.
+3. Selecciona tu carpeta de mods.
+
+Esta FULL usa la interfaz clasica de v0.11. No es el rediseño v0.13 anterior.
+El preview queda dentro del mismo modal clasico. Los 3DMigoto quedan para una revision posterior.
+TXT
+
+          python3 -m py_compile "$OUT/app.py" "$OUT/src/api.py" "$OUT/src/preview.py" "$OUT/src/scanner.py" "$OUT/src/classifier.py"
+          (cd dist && zip -qr NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL)
+          unzip -t "$ZIP"
+          ls -lh "$ZIP"
+
+      - name: Upload FULL zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R2_FULL.zip
+          if-no-files-found: error
+          retention-days: 90
