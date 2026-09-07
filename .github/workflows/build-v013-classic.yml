@@ -1,0 +1,39 @@
+name: Build NIKKE Mod Manager v0.13 Classic
+
+on:
+  push:
+    branches:
+      - nmm-v0.13-classic
+    paths:
+      - 'pc_v013_classic/**'
+      - 'tools/build_v013_classic.py'
+      - 'pc_preview_v012/preview_beta_server.py'
+      - '.github/workflows/build-v013-classic.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build updater
+        run: python tools/build_v013_classic.py
+
+      - name: Validate Python files
+        run: |
+          python -m py_compile dist/NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE/update_from_v011.py
+          python -m py_compile dist/NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE/tools/preview_classic_server.py
+
+      - name: Verify package structure
+        run: |
+          test -f dist/NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE/INSTALAR_ACTUALIZACION_v0_13.bat
+          test -f dist/NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE/inject_classic_v013.js
+          test -f dist/NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE/tools/preview_classic_server.py
+
+      - name: Upload updater
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_UPDATE/
+          retention-days: 90
