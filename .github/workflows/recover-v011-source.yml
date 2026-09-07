@@ -1,4 +1,4 @@
-name: Inspect legacy PC manager history
+name: Extract recovered PC packages
 
 on:
   push:
@@ -12,52 +12,46 @@ permissions:
   contents: write
 
 jobs:
-  inspect:
+  extract:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Inspect commits containing legacy launcher
+      - name: Download recovered tar packages
         shell: bash
         run: |
           set -euo pipefail
-          REPORT="legacy_v011_recovered/PC_HISTORY_REPORT.txt"
-          mkdir -p legacy_v011_recovered
+          rm -rf recovered_pc
+          mkdir -p recovered_pc/v011 recovered_pc/v012
+          curl -L --retry 3 -o /tmp/v011.tar 'https://eu-central.storage.cloudconvert.com/tasks/0be07cd5-eaf1-41de-b9ff-48eb5e7c7e52/NIKKE_Mod_Manager_v0_11_Preview_Alpha.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260907%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260907T032352Z&X-Amz-Expires=86400&X-Amz-Signature=87bf2311dd0f2d40a617d31426ccdac1209cd2c020dd78fa9d68759665724e93&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_11_Preview_Alpha.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+          curl -L --retry 3 -o /tmp/v012.tar 'https://eu-central.storage.cloudconvert.com/tasks/97c3f103-06c2-44ab-a8d6-e25c11a5a010/NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260907%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260907T032402Z&X-Amz-Expires=86400&X-Amz-Signature=56e3477963d3d13efc09724bc2ef95f66755e5c02e12c5850e2e70aaf061a70e&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_12_Preview_Beta_FULL.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+          tar -xf /tmp/v011.tar -C recovered_pc/v011
+          tar -xf /tmp/v012.tar -C recovered_pc/v012
           {
-            echo '=== COMMITS TOUCHING ROOT INSTALAR_Y_ABRIR.bat ==='
-            git log --all --date=iso --format='%H | %ad | %s' -- INSTALAR_Y_ABRIR.bat || true
+            echo '=== v011 tree ==='
+            find recovered_pc/v011 -type f -printf '%p %s bytes\n' | sort
             echo
-            echo '=== SNAPSHOTS WHERE ROOT LAUNCHER EXISTS ==='
-            for SHA in $(git rev-list --all -- INSTALAR_Y_ABRIR.bat); do
-              if git cat-file -e "$SHA:INSTALAR_Y_ABRIR.bat" 2>/dev/null; then
-                echo
-                echo "--- $SHA ---"
-                git show -s --date=iso --format='%H | %ad | %s' "$SHA"
-                echo '[root files]'
-                git ls-tree --name-only "$SHA" | sed -n '1,200p'
-                echo '[likely PC files]'
-                git ls-tree -r --name-only "$SHA" | grep -Ei '(^|/)(INSTALAR_Y_ABRIR\.bat|.*\.py|.*\.html|.*\.css|.*\.js|.*\.json|.*\.txt)$' | grep -Evi '(^|/)app/src|android|gradle|catalog\.json' | sed -n '1,400p' || true
-                echo '[launcher content]'
-                git show "$SHA:INSTALAR_Y_ABRIR.bat" | sed -n '1,200p' || true
-              fi
+            echo '=== v012 tree ==='
+            find recovered_pc/v012 -type f -printf '%p %s bytes\n' | sort
+            echo
+            echo '=== v011 text snippets ==='
+            for f in $(find recovered_pc/v011 -type f | grep -Ei '\.(py|bat|txt|html|js|css|json)$' | sort); do
+              echo; echo "--- $f ---"; sed -n '1,260p' "$f" || true
             done
-            echo
-            echo '=== ALL HISTORICAL PC-LIKE PATHS ==='
-            git log --all --name-only --pretty=format: | sort -u | grep -Ei '(^|/)(pc|manager|preview|INSTALAR|ACTUALIZAR).*(\.py|\.bat|\.html|\.js|\.css|\.txt)?$' | sed -n '1,1000p' || true
-          } > "$REPORT"
+          } > recovered_pc/EXTRACT_REPORT.txt
 
-      - name: Commit report
+      - name: Commit extracted packages
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add legacy_v011_recovered/PC_HISTORY_REPORT.txt
+          git add recovered_pc
           if git diff --cached --quiet; then
             echo 'No changes'
           else
-            git commit -m 'Add legacy PC manager history report'
+            git commit -m 'Extract recovered PC packages for rebuild'
             git push
           fi
