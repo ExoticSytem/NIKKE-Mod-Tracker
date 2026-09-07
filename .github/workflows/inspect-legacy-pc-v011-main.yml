@@ -1,0 +1,31 @@
+name: Inspect legacy PC v0.11 sources MAIN TEMP
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/inspect-legacy-pc-v011-main.yml'
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Search all history and inspect source archive
+        shell: bash
+        run: |
+          echo '=== CANDIDATE PATHS IN ALL HISTORY ==='
+          git log --all --name-only --pretty=format: | sort -u | grep -Ei 'INSTALAR_Y_ABRIR|Preview[_ -]?Alpha|Mod[_ -]?(Library|Manager)|pc_.*v0.?11|v0.?11|\.zip$|source\.zip' || true
+          echo '=== COMMITS ==='
+          git log --all --oneline --decorate --regexp-ignore-case --grep='v0\.11|Preview Alpha|PC manager' || true
+          echo '=== SOURCE.ZIP.B64 ==='
+          if [ -f source.zip.b64 ]; then
+            base64 -d source.zip.b64 > /tmp/source.zip || true
+            file /tmp/source.zip || true
+            unzip -l /tmp/source.zip | sed -n '1,300p' || true
+          fi
+          echo '=== SPLIT PARTS ==='
+          ls -lh source.part* 2>/dev/null || true
