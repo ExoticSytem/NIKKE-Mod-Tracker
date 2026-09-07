@@ -1,4 +1,4 @@
-name: Build Classic R3 Spine FULL Artifact
+name: Build Classic R4 Spine FULL Artifact
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-classic-r3-spine-full:
+  build-classic-r4-spine-full:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -19,13 +19,13 @@ jobs:
           ref: recover-v011-source
           fetch-depth: 1
 
-      - name: Build ZIP with in-modal Spine renderer
-        run: python3 tools/build_classic_r3_spine.py
+      - name: Build ZIP with fixed in-modal Spine runtime
+        run: python3 tools/build_classic_r4_runtimefix.py
 
       - name: Upload FULL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R3_SPINE_FULL
-          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R3_SPINE_FULL.zip
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R4_SPINE_FULL
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R4_SPINE_FULL.zip
           if-no-files-found: error
           retention-days: 90
