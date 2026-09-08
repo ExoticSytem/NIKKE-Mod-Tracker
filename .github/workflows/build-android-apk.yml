@@ -1,4 +1,4 @@
-name: Build v0.14.1 Claude PaddingFix ZIP
+name: Build v0.14.2 Claude PILImage ImportFix ZIP
 
 on:
   workflow_dispatch:
@@ -9,24 +9,23 @@ permissions:
   contents: read
 
 jobs:
-  patch-v0141-paddingfix:
+  patch-v0142-pilimage-importfix:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       TAR_URL: 'https://eu-central.storage.cloudconvert.com/tasks/ab145fcb-621e-486c-a917-338556dfcc7e/NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260908%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260908T015517Z&X-Amz-Expires=86400&X-Amz-Signature=218c44397098afc5baad5de0fed57eda763a18c9c7ba1e090c4ae413f3e0e888&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
-      OUT_NAME: NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL
+      OUT_NAME: NIKKE_Mod_Manager_v0_14_2_Classic_Integrated_Viewer_PILIMAGEFIX_FULL
     steps:
-      - name: Download source ZIP converted to TAR
+      - name: Download Claude source converted to TAR
         shell: bash
         run: |
           set -euo pipefail
           curl -L "$TAR_URL" -o source.tar
           mkdir extracted
           tar -xf source.tar -C extracted
-          echo "Extracted preview.py files:"
-          find extracted -path '*/src/preview.py' -print
+          find extracted -maxdepth 4 -type f -path '*/src/preview.py' -print
 
-      - name: Patch Pillow padding bug
+      - name: Patch Pillow Image.new / PILImage import bug
         shell: bash
         run: |
           set -euo pipefail
@@ -35,46 +34,71 @@ jobs:
           files = list(Path('extracted').rglob('src/preview.py'))
           if not files:
               raise SystemExit('No se encontro src/preview.py')
+
+          def ensure_pilimage_import(src: str) -> str:
+              # Remove old direct PIL Image import to avoid confusion with PIL.Image.Image class.
+              src = src.replace('from PIL import Image\n', 'from PIL import Image as PILImage\n')
+              src = src.replace('from PIL import Image\r\n', 'from PIL import Image as PILImage\r\n')
+              if 'from PIL import Image as PILImage' in src:
+                  return src
+              lines = src.splitlines(True)
+              insert_at = 0
+              # Keep shebang/coding comments first.
+              while insert_at < len(lines) and (lines[insert_at].startswith('#!') or 'coding' in lines[insert_at][:80]):
+                  insert_at += 1
+              # Preserve module docstring at the top if present.
+              if insert_at < len(lines) and lines[insert_at].lstrip().startswith(('"""', "'''")):
+                  quote = '"""' if lines[insert_at].lstrip().startswith('"""') else "'''"
+                  insert_at += 1
+                  while insert_at < len(lines) and quote not in lines[insert_at]:
+                      insert_at += 1
+                  if insert_at < len(lines):
+                      insert_at += 1
+              # Future imports must stay before normal imports.
+              while insert_at < len(lines) and lines[insert_at].startswith('from __future__ import'):
+                  insert_at += 1
+              lines.insert(insert_at, 'from PIL import Image as PILImage\n')
+              return ''.join(lines)
+
           for p in files:
               s = p.read_text(encoding='utf-8', errors='ignore')
-              p.with_suffix('.py.bak_paddingfix').write_text(s, encoding='utf-8')
-              if 'PILImage' not in s:
-                  marker = 'from __future__ import annotations\n'
-                  imp = 'from PIL import Image as PILImage\n'
-                  if marker in s:
-                      s = s.replace(marker, marker + imp, 1)
-                  else:
-                      s = imp + s
+              p.with_suffix('.py.bak_pilimagefix').write_text(s, encoding='utf-8')
+              s = ensure_pilimage_import(s)
+              # Fix the original bad line and any previous partial fixes.
               s = s.replace('img.__class__.new(', 'PILImage.new(')
               s = s.replace('image.__class__.new(', 'PILImage.new(')
-              # In this codebase Image may be shadowed by the PIL Image class, so force module alias.
+              s = s.replace('Image.Image.new(', 'PILImage.new(')
+              # Only replace module Image.new calls if they are not already PILImage.new.
+              s = s.replace(' PILImage.PILImage.new(', ' PILImage.new(')
+              # If code still has Image.new, make it explicit. This is safe because we import PILImage.
               s = s.replace('Image.new(', 'PILImage.new(')
-              s = s.replace('NIKKE Mod Manager v0.14 Classic Integrated Viewer', 'NIKKE Mod Manager v0.14.1 Classic Integrated Viewer PaddingFix')
-              s = s.replace('Classic v0.14 Integrated Viewer', 'Classic v0.14.1 PaddingFix')
+              # If the previous replace touched PILImage.new into PILPILImage, undo common accidents.
+              s = s.replace('PILPILImage.new(', 'PILImage.new(')
+              if 'PILImage.new(' in s and 'from PIL import Image as PILImage' not in s:
+                  raise SystemExit('PILImage.new existe pero falta import')
               p.write_text(s, encoding='utf-8')
-              print('patched', p)
               compile(s, str(p), 'exec')
+              print('patched', p)
           PY
 
-      - name: Rename and update notes
+      - name: Rename package and write notes
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
           root = Path('extracted')
-          entries = [p for p in root.iterdir()]
-          if len(entries) == 1 and entries[0].is_dir():
-              app = entries[0]
-          else:
-              app = root / 'NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer'
-          target = root / 'NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL'
+          dirs = [p for p in root.iterdir() if p.is_dir()]
+          app = dirs[0] if len(dirs) == 1 else root / 'NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer'
+          target = root / 'NIKKE_Mod_Manager_v0_14_2_Classic_Integrated_Viewer_PILIMAGEFIX_FULL'
+          if target.exists():
+              import shutil; shutil.rmtree(target)
           if app != target:
               app.rename(target)
           for rel in ['VERSION.txt', 'LEEME_PRIMERO.txt']:
               p = target / rel
               old = p.read_text(encoding='utf-8', errors='ignore') if p.exists() else ''
-              p.write_text('NIKKE Mod Manager v0.14.1 Classic Integrated Viewer PaddingFix FULL\n\nCorrige el error de Pillow en _pad_image_to: type object Image has no attribute new.\nBase: v0.14 Classic Integrated Viewer generado por Claude.\nInstalacion: descomprimir y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
+              p.write_text('NIKKE Mod Manager v0.14.2 Classic Integrated Viewer PILImageFix FULL\n\nCorrige el fallo posterior al padding: name PILImage is not defined.\nTambien conserva el fix anterior de Image.new/Pillow.\nInstalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
           print(target)
           PY
 
@@ -87,10 +111,16 @@ jobs:
           from pathlib import Path
           out = Path('dist')
           out.mkdir(exist_ok=True)
-          root = Path('extracted') / 'NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL'
-          assert (root / 'src' / 'preview.py').exists(), 'preview.py missing'
-          assert (root / 'web' / 'app.js').exists(), 'web/app.js missing'
-          zip_path = out / 'NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL.zip'
+          root = Path('extracted') / 'NIKKE_Mod_Manager_v0_14_2_Classic_Integrated_Viewer_PILIMAGEFIX_FULL'
+          preview = root / 'src' / 'preview.py'
+          appjs = root / 'web' / 'app.js'
+          assert preview.exists(), 'preview.py missing'
+          assert appjs.exists(), 'web/app.js missing'
+          txt = preview.read_text(encoding='utf-8', errors='ignore')
+          assert 'from PIL import Image as PILImage' in txt, 'PILImage import missing'
+          assert 'PILImage.new(' in txt, 'PILImage.new not used'
+          compile(txt, str(preview), 'exec')
+          zip_path = out / 'NIKKE_Mod_Manager_v0_14_2_Classic_Integrated_Viewer_PILIMAGEFIX_FULL.zip'
           if zip_path.exists():
               zip_path.unlink()
           with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as z:
@@ -107,7 +137,7 @@ jobs:
       - name: Upload patched ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL
-          path: dist/NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL.zip
+          name: NIKKE_Mod_Manager_v0_14_2_Classic_Integrated_Viewer_PILIMAGEFIX_FULL
+          path: dist/NIKKE_Mod_Manager_v0_14_2_Classic_Integrated_Viewer_PILIMAGEFIX_FULL.zip
           if-no-files-found: error
           retention-days: 90
