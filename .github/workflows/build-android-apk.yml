@@ -1,4 +1,4 @@
-name: Build Classic R6.1 Spine StartupFix FULL Artifact
+name: Build Classic R7 ViewerPad FULL Artifact
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-classic-r61-spine-startupfix-full:
+  build-classic-r7-viewerpad-full:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -19,32 +19,33 @@ jobs:
           ref: recover-v011-source
           fetch-depth: 1
 
-      - name: Build ZIP with startup JS fix
-        run: python3 tools/build_classic_r6_1_startupfix.py
+      - name: Build ZIP with viewer atlas padding
+        run: python3 tools/build_classic_r7_viewerpad.py
 
       - name: Validate generated app JS
         shell: bash
         run: |
-          node --check dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_1_SPINE_STARTUPFIX_FULL/web/app.js
+          node --check dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R7_VIEWERPAD_FULL/web/app.js
           python3 - <<'PY'
           import zipfile
-          p='dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_1_SPINE_STARTUPFIX_FULL.zip'
+          p='dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R7_VIEWERPAD_FULL.zip'
           with zipfile.ZipFile(p) as z:
               bad=z.testzip()
               assert bad is None, bad
               names=set(z.namelist())
               assert any(n.endswith('/web/app.js') for n in names)
               assert any(n.endswith('/web/index.html') for n in names)
-              assert any(n.endswith('/src/scanner.py') for n in names)
+              assert any(n.endswith('/src/preview.py') for n in names)
+              assert any(n.endswith('/web/assets/vendor/nikke-spine-runtime.js') for n in names)
           print('ZIP and app.js validated')
           PY
 
       - name: Upload FULL artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R6_1_SPINE_STARTUPFIX_FULL
-          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R6_1_SPINE_STARTUPFIX_FULL.zip
+          name: NIKKE_Mod_Manager_v0_13_CLASSIC_R7_VIEWERPAD_FULL
+          path: dist/NIKKE_Mod_Manager_v0_13_CLASSIC_R7_VIEWERPAD_FULL.zip
           if-no-files-found: error
           retention-days: 90
 
-# rebuild: r6.1-validation-fixed
+# rebuild: r7-viewerpad
