@@ -33,7 +33,6 @@ jobs:
           for p in preview_files:
               s = p.read_text(encoding='utf-8', errors='ignore')
               old = s
-              # Robust import: PIL module alias, not the Image.Image class.
               if 'from PIL import Image as PILImage' not in s:
                   lines = s.splitlines()
                   insert_at = 0
@@ -42,17 +41,14 @@ jobs:
                           insert_at = i + 1
                   lines.insert(insert_at, 'from PIL import Image as PILImage')
                   s = '\n'.join(lines) + ('\n' if old.endswith('\n') else '')
-              # Main Claude bug: img.__class__ is PIL.Image.Image class and has no .new()
               s = s.replace('img.__class__.new(', 'PILImage.new(')
               s = s.replace('image.__class__.new(', 'PILImage.new(')
-              # Extra safety if the exact code used another variable.
               s = re.sub(r'([A-Za-z_][A-Za-z0-9_]*)\.__class__\.new\(', 'PILImage.new(', s)
               p.write_text(s, encoding='utf-8')
               print('PATCHED', p)
               print('  had bug:', '.__class__.new(' in old)
               print('  changed:', s != old)
               print('  remaining __class__.new:', '.__class__.new(' in s)
-              # show local context for _pad_image_to
               for m in re.finditer(r'def\s+_pad_image_to\b', s):
                   start = s[:m.start()].count('\n') + 1
                   chunk = s.splitlines()[start-1:start+35]
@@ -107,3 +103,5 @@ jobs:
           path: out/NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL.zip
           if-no-files-found: error
           retention-days: 90
+
+# rebuild paddingfix trigger 2
