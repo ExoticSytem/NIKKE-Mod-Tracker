@@ -1,0 +1,35 @@
+name: Inspect v0.15.0 Attachment Null
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inspect-v0150:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download artifact and grep
+        shell: bash
+        env:
+          SOURCE_ARTIFACT_ID: '10040467989'
+        run: |
+          set -euo pipefail
+          curl -L -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/ExoticSytem/NIKKE-Mod-Tracker/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip" -o artifact.zip
+          mkdir -p artifact extracted
+          unzip -q artifact.zip -d artifact
+          appzip=$(find artifact -maxdepth 1 -name '*.zip' | head -n 1)
+          unzip -q "$appzip" -d extracted
+          echo '--- files containing message ---'
+          grep -R "Attachment name must not be null" -n extracted || true
+          echo '--- name must not be null broader ---'
+          grep -R "name must not be null" -n extracted || true
+          echo '--- attachment functions hints ---'
+          grep -R "newPointAttachment\|newMeshAttachment\|newRegionAttachment\|readAttachment\|Attachment(name" -n extracted/web extracted/tools 2>/dev/null | head -200 || true
+          echo '--- lowlevel markers ---'
+          grep -R "lowver\|Viewer LowLevel\|classic-r6-lowlevel" -n extracted/web 2>/dev/null | head -100 || true
