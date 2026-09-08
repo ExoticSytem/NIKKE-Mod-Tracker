@@ -1,0 +1,307 @@
+name: Build v0.14.7 RuntimeDiagnostic from Artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-v0147-runtime-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SOURCE_ARTIFACT_ID: '10039765820'
+      OUT_NAME: NIKKE_Mod_Manager_v0_14_7_Classic_Integrated_Viewer_RUNTIME_DIAGNOSTIC_FULL
+    steps:
+      - name: Download v0.14.6 artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/ExoticSytem/NIKKE-Mod-Tracker/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip" -o artifact.zip
+          mkdir -p artifact extracted
+          unzip -q artifact.zip -d artifact
+          appzip=$(find artifact -maxdepth 1 -name '*.zip' | head -n 1)
+          test -n "$appzip"
+          unzip -q "$appzip" -d extracted
+          find extracted -maxdepth 5 -type f -path '*/web/app.js' -print
+          find extracted -maxdepth 5 -type f -path '*/src/preview.py' -print
+
+      - name: Patch Runtime Diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > patch_runtime_diag.py <<'PY'
+          from pathlib import Path
+          import textwrap
+
+          roots = [p.parent.parent for p in Path('extracted').rglob('web/app.js')]
+          if not roots:
+              raise SystemExit('No app root found')
+
+          JS_DIAG = textwrap.dedent(r'''
+
+          // --- NMM v0.14.7 Runtime Diagnostic --------------------------------------
+          (function () {
+            if (window.__NMM_V0147_RUNTIME_DIAG__) return;
+            window.__NMM_V0147_RUNTIME_DIAG__ = true;
+            window.__nmmDiagErrors = window.__nmmDiagErrors || [];
+            window.__nmmDiagCalls = window.__nmmDiagCalls || [];
+
+            function pushErr(type, err) {
+              try {
+                var msg = '';
+                if (err && err.message) msg = err.message;
+                else if (err && err.reason && err.reason.message) msg = err.reason.message;
+                else msg = String(err || '');
+                var stack = (err && err.stack) || (err && err.error && err.error.stack) || '';
+                window.__nmmDiagErrors.push({time: new Date().toISOString(), type:type, message:msg, stack:String(stack).slice(0, 1200)});
+                if (window.__nmmDiagErrors.length > 20) window.__nmmDiagErrors.shift();
+              } catch(e) {}
+            }
+            window.addEventListener('error', function(e){ pushErr('window.error', e.error || e.message || e); });
+            window.addEventListener('unhandledrejection', function(e){ pushErr('unhandledrejection', e.reason || e); });
+
+            function add(arr, label, obj) {
+              if (obj && arr.every(function(x){ return x.obj !== obj; })) arr.push({label:label, obj:obj});
+            }
+            function namespaces() {
+              var P = window.PIXI, a = [];
+              add(a, 'window.spine', window.spine);
+              add(a, 'window.spine.core', window.spine && window.spine.core);
+              add(a, 'window.spine38', window.spine38);
+              add(a, 'window.spine41', window.spine41);
+              add(a, 'window.pixi_spine', window.pixi_spine);
+              add(a, 'window.pixi_spine.core', window.pixi_spine && window.pixi_spine.core);
+              add(a, 'window.pixi_spine.base', window.pixi_spine && window.pixi_spine.base);
+              add(a, 'window.pixi_spine.spine37', window.pixi_spine && window.pixi_spine.spine37);
+              add(a, 'window.pixi_spine.spine38', window.pixi_spine && window.pixi_spine.spine38);
+              add(a, 'window.pixi_spine.spine40', window.pixi_spine && window.pixi_spine.spine40);
+              add(a, 'window.pixi_spine.spine41', window.pixi_spine && window.pixi_spine.spine41);
+              add(a, 'PIXI.spine', P && P.spine);
+              add(a, 'PIXI.spine.core', P && P.spine && P.spine.core);
+              add(a, 'PIXI.spine.base', P && P.spine && P.spine.base);
+              add(a, 'PIXI.spine.spine37', P && P.spine && P.spine.spine37);
+              add(a, 'PIXI.spine.spine38', P && P.spine && P.spine.spine38);
+              add(a, 'PIXI.spine.spine40', P && P.spine && P.spine.spine40);
+              add(a, 'PIXI.spine.spine41', P && P.spine && P.spine.spine41);
+              return a;
+            }
+            var classNames = [
+              'TextureAtlas','TextureAtlasPage','TextureAtlasRegion','AtlasAttachmentLoader',
+              'SkeletonBinary','SkeletonJson','Skeleton','Spine','Skin','Slot','SlotData','Bone','BoneData',
+              'RegionAttachment','MeshAttachment','PointAttachment','BoundingBoxAttachment','PathAttachment','ClippingAttachment',
+              'AttachmentType','Sequence','SequenceMode','Animation','AnimationState','AnimationStateData',
+              'IkConstraint','TransformConstraint','PathConstraint','Event','EventData',
+              'Color','Vector2','Utils','BinaryInput'
+            ];
+            function classMap(ns) {
+              var yes = [], no = [];
+              classNames.forEach(function(k){
+                var v = ns && ns[k];
+                var ok = (typeof v === 'function') || (typeof v === 'object' && v !== null);
+                (ok ? yes : no).push(k);
+              });
+              return {yes: yes, no: no};
+            }
+            function scripts() {
+              try {
+                return Array.prototype.slice.call(document.scripts).map(function(s){ return s.getAttribute('src') || '[inline]'; }).filter(Boolean);
+              } catch(e) { return []; }
+            }
+            function visiblePreviewText() {
+              try {
+                var candidates = ['#previewContent','.preview-content','.preview-modal','.modal-content','#previewModal'];
+                for (var i=0;i<candidates.length;i++) {
+                  var el = document.querySelector(candidates[i]);
+                  if (el && el.innerText) return el.innerText.slice(0, 2500);
+                }
+                return (document.body && document.body.innerText || '').slice(0, 2500);
+              } catch(e) { return ''; }
+            }
+            function summarize(extra) {
+              var P = window.PIXI;
+              var ns = namespaces();
+              var lines = [];
+              lines.push('NMM RUNTIME DIAGNOSTIC v0.14.7');
+              lines.push('PIXI=' + (!!P) + (P && P.VERSION ? ' version=' + P.VERSION : ''));
+              lines.push('location=' + String(location.href));
+              lines.push('userAgent=' + navigator.userAgent);
+              lines.push('scripts=' + scripts().join(' | '));
+              lines.push('namespaces=' + ns.map(function(x){return x.label;}).join(', '));
+              ns.forEach(function(x){
+                var m = classMap(x.obj);
+                lines.push('[' + x.label + '] OK=' + m.yes.join(', '));
+                lines.push('[' + x.label + '] MISSING=' + m.no.join(', '));
+              });
+              if (window.__nmmDiagCalls && window.__nmmDiagCalls.length) {
+                lines.push('CALLS=' + JSON.stringify(window.__nmmDiagCalls.slice(-10)));
+              }
+              if (window.__nmmDiagErrors && window.__nmmDiagErrors.length) {
+                lines.push('ERRORS=' + JSON.stringify(window.__nmmDiagErrors.slice(-8)));
+              }
+              var visible = visiblePreviewText();
+              if (visible) lines.push('VISIBLE_PREVIEW=' + visible.replace(/\s+/g, ' ').slice(0, 1600));
+              if (extra) lines.push('EXTRA=' + String(extra).slice(0, 2000));
+              return lines.join('\n');
+            }
+            window.__nmmRuntimeDiagnostic = summarize;
+
+            function wrapMethod(proto, method, label) {
+              if (!proto || typeof proto[method] !== 'function' || proto[method].__nmm_diag_wrapped) return false;
+              var old = proto[method];
+              proto[method] = function(){
+                var args = Array.prototype.slice.call(arguments).map(function(v){
+                  if (v == null) return null;
+                  if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') return v;
+                  if (v && v.name) return {name:v.name, type:(v.constructor&&v.constructor.name)||typeof v};
+                  return (v.constructor && v.constructor.name) || typeof v;
+                });
+                try { window.__nmmDiagCalls.push({method: label + '.' + method, args: args}); if (window.__nmmDiagCalls.length > 50) window.__nmmDiagCalls.shift(); } catch(e) {}
+                try { return old.apply(this, arguments); }
+                catch(err) { pushErr(label + '.' + method, err); throw err; }
+              };
+              proto[method].__nmm_diag_wrapped = true;
+              return true;
+            }
+            function patchForDiagnostics() {
+              var ok = false;
+              namespaces().forEach(function(x){
+                try {
+                  if (x.obj && x.obj.AtlasAttachmentLoader && x.obj.AtlasAttachmentLoader.prototype) {
+                    ['newRegionAttachment','newMeshAttachment','newBoundingBoxAttachment','newPathAttachment','newPointAttachment','newClippingAttachment'].forEach(function(m){ ok = wrapMethod(x.obj.AtlasAttachmentLoader.prototype, m, x.label + '.AtlasAttachmentLoader') || ok; });
+                  }
+                  if (x.obj && x.obj.TextureAtlas && x.obj.TextureAtlas.prototype) ok = wrapMethod(x.obj.TextureAtlas.prototype, 'findRegion', x.label + '.TextureAtlas') || ok;
+                  if (x.obj && x.obj.SkeletonBinary && x.obj.SkeletonBinary.prototype) {
+                    ['readSkeletonData','readAttachment','readSkin','readAnimation'].forEach(function(m){ ok = wrapMethod(x.obj.SkeletonBinary.prototype, m, x.label + '.SkeletonBinary') || ok; });
+                  }
+                  if (x.obj && x.obj.SkeletonJson && x.obj.SkeletonJson.prototype) {
+                    ['readSkeletonData','readAttachment','readSkin','readAnimation'].forEach(function(m){ ok = wrapMethod(x.obj.SkeletonJson.prototype, m, x.label + '.SkeletonJson') || ok; });
+                  }
+                } catch(e) {}
+              });
+              return ok;
+            }
+            window.__nmmPatchRuntimeDiagnostics = patchForDiagnostics;
+            var tries = 0;
+            var timer = setInterval(function(){ tries++; if (patchForDiagnostics() || tries > 800) clearInterval(timer); }, 20);
+
+            function injectBox() {
+              try {
+                var bodyText = (document.body && document.body.innerText) || '';
+                if (bodyText.indexOf('No se pudo armar') < 0 && bodyText.indexOf('Mostrando textura fallback') < 0 && bodyText.indexOf('DEBUG v0.14') < 0) return;
+                var host = document.querySelector('#previewContent') || document.querySelector('.preview-content') || document.querySelector('#previewModal .modal-content') || document.querySelector('.modal-content') || document.body;
+                if (!host) return;
+                var box = document.getElementById('nmm-runtime-diagnostic-box');
+                if (!box) {
+                  var wrap = document.createElement('div');
+                  wrap.id = 'nmm-runtime-diagnostic-wrap';
+                  wrap.style.cssText = 'margin:10px 12px 12px;padding:10px;border:1px solid #facc15;border-radius:8px;background:#111827;color:#e5e7eb;font:12px/1.35 Consolas,monospace;white-space:pre-wrap;max-height:360px;overflow:auto;';
+                  var title = document.createElement('div');
+                  title.textContent = 'DIAGNÓSTICO RUNTIME v0.14.7 — copia este bloque completo';
+                  title.style.cssText = 'font-weight:700;color:#facc15;margin-bottom:6px;';
+                  var btn = document.createElement('button');
+                  btn.textContent = 'Copiar diagnóstico';
+                  btn.style.cssText = 'margin:0 0 8px 0;padding:6px 10px;cursor:pointer;';
+                  box = document.createElement('pre');
+                  box.id = 'nmm-runtime-diagnostic-box';
+                  box.style.cssText = 'margin:0;white-space:pre-wrap;';
+                  btn.onclick = function(){ try { navigator.clipboard.writeText(box.textContent); btn.textContent = 'Copiado'; } catch(e) { alert(box.textContent); } };
+                  wrap.appendChild(title); wrap.appendChild(btn); wrap.appendChild(box); host.appendChild(wrap);
+                }
+                box.textContent = summarize();
+              } catch(e) {}
+            }
+            setInterval(injectBox, 1000);
+            setTimeout(injectBox, 1200);
+            setTimeout(injectBox, 3000);
+          })();
+          // --- end NMM v0.14.7 -----------------------------------------------------
+          ''')
+
+          for root in roots:
+              appjs = root / 'web' / 'app.js'
+              js = appjs.read_text(encoding='utf-8', errors='ignore')
+              appjs.with_suffix('.js.bak_v0147diag').write_text(js, encoding='utf-8')
+              js = js.replace('Classic v0.14.6 MeshFallback', 'Classic v0.14.7 RuntimeDiagnostic')
+              js = js.replace('Classic v0.14.5 AttachmentNullFix', 'Classic v0.14.7 RuntimeDiagnostic')
+              js = js.replace('Classic v0.14.4 SequenceAttachFix', 'Classic v0.14.7 RuntimeDiagnostic')
+              js = js.replace('Debug v0.14.6', 'Debug v0.14.7')
+              js = js.replace('DEBUG v0.14.6', 'DEBUG v0.14.7')
+              js = js.replace('Debug v0.14.5', 'Debug v0.14.7')
+              js = js.replace('DEBUG v0.14.5', 'DEBUG v0.14.7')
+              if 'NMM v0.14.7 Runtime Diagnostic' not in js:
+                  lines = js.splitlines()
+                  out = []
+                  for line in lines:
+                      trigger = ('.readSkeletonData' in line or ('new ' in line and any(k in line for k in ['TextureAtlas','AtlasAttachmentLoader','SkeletonBinary','SkeletonJson'])))
+                      if trigger and '__nmmPatchRuntimeDiagnostics' not in line:
+                          indent = line[:len(line)-len(line.lstrip())]
+                          out.append(indent + 'try { window.__nmmPatchRuntimeDiagnostics && window.__nmmPatchRuntimeDiagnostics(); } catch(e) {}')
+                      out.append(line)
+                  js = '\n'.join(out) + '\n' + JS_DIAG + '\n'
+              appjs.write_text(js, encoding='utf-8')
+
+              preview = root / 'src' / 'preview.py'
+              if preview.exists():
+                  ps = preview.read_text(encoding='utf-8', errors='ignore')
+                  preview.with_suffix('.py.bak_v0147diag').write_text(ps, encoding='utf-8')
+                  ps = ps.replace('Classic v0.14.6 MeshFallback', 'Classic v0.14.7 RuntimeDiagnostic')
+                  ps = ps.replace('Classic v0.14.5 AttachmentNullFix', 'Classic v0.14.7 RuntimeDiagnostic')
+                  ps = ps.replace('Classic v0.14.4 SequenceAttachFix', 'Classic v0.14.7 RuntimeDiagnostic')
+                  compile(ps, str(preview), 'exec')
+                  preview.write_text(ps, encoding='utf-8')
+
+              for rel in ['VERSION.txt','LEEME_PRIMERO.txt','DIAGNOSTICO_RUNTIME.md']:
+                  p = root / rel
+                  old = p.read_text(encoding='utf-8', errors='ignore') if p.exists() and rel != 'DIAGNOSTICO_RUNTIME.md' else ''
+                  p.write_text('NIKKE Mod Manager v0.14.7 Classic Integrated Viewer RuntimeDiagnostic FULL\n\nEsta version no intenta ser fix final. Agrega un bloque DIAGNOSTICO RUNTIME v0.14.7 dentro del Preview Alpha. Abre c015_00_aim, pulsa Copiar diagnostico y envia ese bloque completo.\n\n' + old, encoding='utf-8')
+              print('patched diagnostic', root)
+          PY
+          sed -i 's/^          //' patch_runtime_diag.py
+          python3 patch_runtime_diag.py
+
+      - name: Rename and zip
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil, zipfile
+          root = Path('extracted')
+          dirs = [p for p in root.iterdir() if p.is_dir()]
+          if not dirs:
+              raise SystemExit('no app dir')
+          app = dirs[0]
+          target = root / 'NIKKE_Mod_Manager_v0_14_7_Classic_Integrated_Viewer_RUNTIME_DIAGNOSTIC_FULL'
+          if app != target:
+              if target.exists(): shutil.rmtree(target)
+              app.rename(target)
+          appjs = target / 'web' / 'app.js'
+          txt = appjs.read_text(encoding='utf-8', errors='ignore')
+          assert 'NMM v0.14.7 Runtime Diagnostic' in txt
+          assert '__nmmRuntimeDiagnostic' in txt
+          assert 'nmm-runtime-diagnostic-box' in txt
+          preview = target / 'src' / 'preview.py'
+          if preview.exists(): compile(preview.read_text(encoding='utf-8', errors='ignore'), str(preview), 'exec')
+          out = Path('dist'); out.mkdir(exist_ok=True)
+          zip_path = out / 'NIKKE_Mod_Manager_v0_14_7_Classic_Integrated_Viewer_RUNTIME_DIAGNOSTIC_FULL.zip'
+          with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for p in target.rglob('*'):
+                  if p.is_file(): z.write(p, p.relative_to(target.parent))
+          with zipfile.ZipFile(zip_path) as z:
+              bad = z.testzip()
+              if bad: raise RuntimeError('zip corrupto: ' + bad)
+          print(zip_path, zip_path.stat().st_size)
+          PY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_14_7_Classic_Integrated_Viewer_RUNTIME_DIAGNOSTIC_FULL
+          path: dist/NIKKE_Mod_Manager_v0_14_7_Classic_Integrated_Viewer_RUNTIME_DIAGNOSTIC_FULL.zip
+          if-no-files-found: error
+          retention-days: 90
