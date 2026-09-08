@@ -1,0 +1,109 @@
+name: Build Claude v0.14.1 PaddingFix FULL
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-v0141-paddingfix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download Claude v0.14 tar
+        run: |
+          set -eux
+          mkdir -p work out
+          curl -L "https://eu-central.storage.cloudconvert.com/tasks/0744bfc8-4589-4245-b659-d0ce8e52ca2d/NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260908%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260908T013613Z&X-Amz-Expires=86400&X-Amz-Signature=9bdcbcf908b5b8030f644e6eefd16f0d2d97edd50f98175ecce08a9a6821a447&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject" -o source.tar
+          tar -xf source.tar -C work
+          find work -maxdepth 3 -type f | head -80
+
+      - name: Patch Pillow Image.new bug
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root = Path('work')
+          preview_files = list(root.rglob('src/preview.py'))
+          if not preview_files:
+              raise SystemExit('No se encontro src/preview.py')
+          for p in preview_files:
+              s = p.read_text(encoding='utf-8', errors='ignore')
+              old = s
+              # Robust import: PIL module alias, not the Image.Image class.
+              if 'from PIL import Image as PILImage' not in s:
+                  lines = s.splitlines()
+                  insert_at = 0
+                  for i, line in enumerate(lines[:80]):
+                      if line.startswith('import ') or line.startswith('from '):
+                          insert_at = i + 1
+                  lines.insert(insert_at, 'from PIL import Image as PILImage')
+                  s = '\n'.join(lines) + ('\n' if old.endswith('\n') else '')
+              # Main Claude bug: img.__class__ is PIL.Image.Image class and has no .new()
+              s = s.replace('img.__class__.new(', 'PILImage.new(')
+              s = s.replace('image.__class__.new(', 'PILImage.new(')
+              # Extra safety if the exact code used another variable.
+              s = re.sub(r'([A-Za-z_][A-Za-z0-9_]*)\.__class__\.new\(', 'PILImage.new(', s)
+              p.write_text(s, encoding='utf-8')
+              print('PATCHED', p)
+              print('  had bug:', '.__class__.new(' in old)
+              print('  changed:', s != old)
+              print('  remaining __class__.new:', '.__class__.new(' in s)
+              # show local context for _pad_image_to
+              for m in re.finditer(r'def\s+_pad_image_to\b', s):
+                  start = s[:m.start()].count('\n') + 1
+                  chunk = s.splitlines()[start-1:start+35]
+                  print('--- _pad_image_to context ---')
+                  print('\n'.join(f'{start+i}: {line}' for i,line in enumerate(chunk)))
+          PY
+
+      - name: Update version/readme notes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path('work')
+          for p in list(root.rglob('VERSION.txt')) + list(root.rglob('LEEME_PRIMERO.txt')) + list(root.rglob('README.md')):
+              try:
+                  s = p.read_text(encoding='utf-8', errors='ignore')
+              except Exception:
+                  continue
+              if 'v0.14.1 PaddingFix' not in s:
+                  s = 'NIKKE Mod Manager v0.14.1 PaddingFix\nCorrige _pad_image_to: usa PILImage.new(...) en vez de img.__class__.new(...).\n\n' + s
+                  p.write_text(s, encoding='utf-8')
+                  print('updated note', p)
+          PY
+
+      - name: Validate and ZIP
+        run: |
+          set -eux
+          python3 - <<'PY'
+          from pathlib import Path
+          import py_compile, zipfile
+          root = Path('work')
+          p = next(root.rglob('src/preview.py'))
+          py_compile.compile(str(p), doraise=True)
+          s = p.read_text(encoding='utf-8', errors='ignore')
+          assert '.__class__.new(' not in s
+          assert 'PILImage.new(' in s
+          out = Path('out/NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL.zip')
+          with zipfile.ZipFile(out, 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for f in root.rglob('*'):
+                  if f.is_file():
+                      z.write(f, f.relative_to(root))
+          with zipfile.ZipFile(out) as z:
+              bad = z.testzip()
+              assert bad is None, bad
+              print('zip entries', len(z.namelist()))
+          print(out, out.stat().st_size)
+          PY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL
+          path: out/NIKKE_Mod_Manager_v0_14_1_Classic_Integrated_Viewer_PADDINGFIX_FULL.zip
+          if-no-files-found: error
+          retention-days: 90
