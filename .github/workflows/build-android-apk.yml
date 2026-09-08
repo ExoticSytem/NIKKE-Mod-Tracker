@@ -1,4 +1,4 @@
-name: Build v0.14.3 Atlas PreserveFix ZIP
+name: Build v0.14.4 Sequence AttachmentFix ZIP
 
 on:
   workflow_dispatch:
@@ -9,14 +9,14 @@ permissions:
   contents: read
 
 jobs:
-  patch-v0143-atlas-preservefix:
+  patch-v0144-sequence-attachfix:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       TAR_URL: 'https://eu-central.storage.cloudconvert.com/tasks/ab145fcb-621e-486c-a917-338556dfcc7e/NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260908%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260908T015517Z&X-Amz-Expires=86400&X-Amz-Signature=218c44397098afc5baad5de0fed57eda763a18c9c7ba1e090c4ae413f3e0e888&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
-      OUT_NAME: NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL
+      OUT_NAME: NIKKE_Mod_Manager_v0_14_4_Classic_Integrated_Viewer_SEQUENCE_ATTACHFIX_FULL
     steps:
-      - name: Download Claude source converted to TAR
+      - name: Download Claude v0.14 source TAR
         shell: bash
         run: |
           set -euo pipefail
@@ -24,125 +24,223 @@ jobs:
           mkdir extracted
           tar -xf source.tar -C extracted
           find extracted -maxdepth 4 -type f -path '*/src/preview.py' -print
+          find extracted -maxdepth 4 -type f -path '*/web/app.js' -print
 
-      - name: Patch preview.py Atlas PreserveFix
+      - name: Patch preview.py and app.js
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import re
           import textwrap
-          files = list(Path('extracted').rglob('src/preview.py'))
-          if not files:
-              raise SystemExit('No se encontro src/preview.py')
 
-          append = textwrap.dedent(r'''
-              
-              # --- NMM v0.14.3 Atlas PreserveFix -----------------------------------------
-              # Do not delete atlas regions by suspicious names: the .skel may still need them.
-              # Preserve the original atlas and expand the transparent Spine canvas instead.
-              try:
-                  _nmm_v0143_original_sanitize_atlas = _sanitize_atlas
-              except NameError:
-                  _nmm_v0143_original_sanitize_atlas = None
-              import re as _nmm_v0143_re
-              
-              def _nmm_v0143_needed_canvas(atlas_text, base_w=0, base_h=0, hard_limit=8192):
-                  text = atlas_text or ''
-                  bw = int(base_w or 0)
-                  bh = int(base_h or 0)
-                  m = _nmm_v0143_re.search(r'(?im)^\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text)
-                  if (bw <= 0 or bh <= 0) and m:
-                      bw, bh = int(m.group(1)), int(m.group(2))
-                  need_w, need_h = max(1, bw), max(1, bh)
-                  for m in _nmm_v0143_re.finditer(r'(?im)^\s*bounds\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text):
-                      x, y, w, h = map(int, m.groups())
+          roots = [p.parent.parent for p in Path('extracted').rglob('src/preview.py')]
+          if not roots:
+              raise SystemExit('No se encontro app root con src/preview.py')
+
+          PREVIEW_APPEND = textwrap.dedent(r'''
+
+          # --- NMM v0.14.4 Atlas PreserveFix -----------------------------------------
+          # Preserve every atlas region. Do not delete suspicious/sequence-looking names:
+          # the binary .skel can still reference them. Only compute the padded canvas size.
+          import re as _nmm_v0144_re
+
+          def _sanitize_atlas(text: str, tex_w: int, tex_h: int) -> tuple[str, int, int, list[str]]:
+              atlas = text or ''
+              need_w = max(1, int(tex_w or 1))
+              need_h = max(1, int(tex_h or 1))
+
+              # NIKKE atlas format: bounds:x,y,w,h
+              for m in _nmm_v0144_re.finditer(
+                  r'(?im)^\s*bounds\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*$',
+                  atlas,
+              ):
+                  x, y, w, h = map(int, m.groups())
+                  if w > 0 and h > 0:
+                      need_w = max(need_w, x + w)
+                      need_h = max(need_h, y + h)
+
+              # Classic Spine fallback: xy + size
+              last_xy = None
+              for line in atlas.splitlines():
+                  mxy = _nmm_v0144_re.match(r'\s*xy\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
+                  if mxy:
+                      last_xy = (int(mxy.group(1)), int(mxy.group(2)))
+                      continue
+                  ms = _nmm_v0144_re.match(r'\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
+                  if ms and last_xy:
+                      x, y = last_xy
+                      w, h = int(ms.group(1)), int(ms.group(2))
                       if w > 0 and h > 0:
                           need_w = max(need_w, x + w)
                           need_h = max(need_h, y + h)
-                  last_xy = None
-                  for line in text.splitlines():
-                      mxy = _nmm_v0143_re.match(r'\s*xy\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
-                      if mxy:
-                          last_xy = (int(mxy.group(1)), int(mxy.group(2)))
-                          continue
-                      ms = _nmm_v0143_re.match(r'\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
-                      if ms and last_xy:
-                          x, y = last_xy
-                          w, h = int(ms.group(1)), int(ms.group(2))
-                          if w > 0 and h > 0:
-                              need_w = max(need_w, x + w)
-                              need_h = max(need_h, y + h)
-                          last_xy = None
-                  return max(1, min(int(need_w), hard_limit)), max(1, min(int(need_h), hard_limit))
-              
-              def _nmm_v0143_base_size(args, kwargs, atlas_text):
-                  for wk, hk in (('texture_width','texture_height'), ('tex_width','tex_height'), ('width','height'), ('base_width','base_height'), ('image_width','image_height')):
-                      if isinstance(kwargs.get(wk), int) and isinstance(kwargs.get(hk), int):
-                          return int(kwargs[wk]), int(kwargs[hk])
-                  for a in args[1:]:
-                      if isinstance(a, (tuple, list)) and len(a) >= 2 and isinstance(a[0], int) and isinstance(a[1], int):
-                          return int(a[0]), int(a[1])
-                  ints = [int(a) for a in args[1:] if isinstance(a, int)]
-                  if len(ints) >= 2:
-                      return ints[0], ints[1]
-                  return _nmm_v0143_needed_canvas(atlas_text, 0, 0)
-              
-              def _nmm_v0143_shape(result, atlas_text, need_w, need_h):
-                  if isinstance(result, dict):
-                      out = dict(result)
-                      for k in ('atlas_text', 'atlas', 'sanitized_atlas', 'spine_atlas_text'):
-                          if k in out: out[k] = atlas_text
-                      for k in ('width', 'atlas_width', 'canvas_width', 'needed_width', 'spine_width'):
-                          if isinstance(out.get(k), int): out[k] = need_w
-                      for k in ('height', 'atlas_height', 'canvas_height', 'needed_height', 'spine_height'):
-                          if isinstance(out.get(k), int): out[k] = need_h
-                      return out
-                  if isinstance(result, str):
-                      return atlas_text
-                  if not isinstance(result, (tuple, list)):
-                      return result
-                  seq = list(result)
-                  ret = tuple if isinstance(result, tuple) else list
-                  atlas_i = next((i for i,v in enumerate(seq) if isinstance(v, str) and ('bounds:' in v or '\nsize:' in v or '.png' in v)), None)
-                  if atlas_i is None:
-                      atlas_i = next((i for i,v in enumerate(seq) if isinstance(v, str)), None)
-                  if atlas_i is not None:
-                      seq[atlas_i] = atlas_text
-                  for i,v in enumerate(seq):
-                      if isinstance(v, tuple) and len(v) >= 2 and isinstance(v[0], int) and isinstance(v[1], int):
-                          seq[i] = (need_w, need_h) + tuple(v[2:])
-                      elif isinstance(v, list) and len(v) >= 2 and isinstance(v[0], int) and isinstance(v[1], int):
-                          v[0], v[1] = need_w, need_h
-                  start = (atlas_i + 1) if atlas_i is not None else 0
-                  for i in range(start, len(seq)-1):
-                      if isinstance(seq[i], int) and isinstance(seq[i+1], int):
-                          seq[i], seq[i+1] = need_w, need_h
-                          break
-                  return ret(seq)
-              
-              def _sanitize_atlas(*args, **kwargs):
-                  atlas_text = args[0] if args and isinstance(args[0], str) else ''
-                  if not atlas_text:
-                      for k in ('atlas_text', 'atlas', 'raw_atlas'):
-                          if isinstance(kwargs.get(k), str):
-                              atlas_text = kwargs[k]
-                              break
-                  bw, bh = _nmm_v0143_base_size(args, kwargs, atlas_text)
-                  need_w, need_h = _nmm_v0143_needed_canvas(atlas_text, bw, bh)
-                  if _nmm_v0143_original_sanitize_atlas is None:
-                      return atlas_text, need_w, need_h, ['AtlasPreserveFix activo']
-                  try:
-                      old = _nmm_v0143_original_sanitize_atlas(*args, **kwargs)
-                  except Exception:
-                      return atlas_text, need_w, need_h, ['AtlasPreserveFix: sanitizer antiguo omitido']
-                  return _nmm_v0143_shape(old, atlas_text, need_w, need_h)
-              # --- end NMM v0.14.3 Atlas PreserveFix -------------------------------------
+                      last_xy = None
+
+              # Safety cap. Current NIKKE cases are below this, but avoid absurd allocation.
+              need_w = max(1, min(int(need_w), 8192))
+              need_h = max(1, min(int(need_h), 8192))
+              return atlas, need_w, need_h, []
+          # --- end NMM v0.14.4 Atlas PreserveFix -------------------------------------
           ''')
 
-          for p in files:
+          JS_PATCH = textwrap.dedent(r'''
+
+          // --- NMM v0.14.4 Spine sequence + nullable attachment patch ----------------
+          (function () {
+            if (window.__NMM_V0144_SEQUENCE_ATTACH_PATCH__) return;
+            window.__NMM_V0144_SEQUENCE_ATTACH_PATCH__ = true;
+
+            function variants(name) {
+              var s = String(name == null ? '' : name);
+              var out = [];
+              function add(v) { if (v && v !== s && out.indexOf(v) < 0) out.push(v); }
+              add(s.replace(/\d+$/, ''));
+              add(s.replace(/[_-]?\d+$/, ''));
+              add(s.replace(/t\d+$/, 't'));
+              add(s.replace(/([a-z_]+)[0-9]+$/i, '$1'));
+              return out;
+            }
+
+            function cleanName(name, path, prefix) {
+              var n = (name == null || name === '') ? (path || '') : name;
+              if (n == null || n === '') n = (prefix || 'attachment') + '_unnamed';
+              return String(n);
+            }
+
+            function scanRegions(atlas, wanted) {
+              var list = variants(wanted);
+              var regs = atlas && atlas.regions;
+              if (!regs || !regs.length) return null;
+              for (var n = 0; n < list.length; n++) {
+                for (var i = 0; i < regs.length; i++) {
+                  var r = regs[i];
+                  if (r && r.name === list[n]) return r;
+                }
+              }
+              return null;
+            }
+
+            function patchTextureAtlasClass(Ctor) {
+              if (!Ctor || !Ctor.prototype) return false;
+              var p = Ctor.prototype;
+              if (p.__nmm_v0144_findRegion_patched) return true;
+              var original = p.findRegion;
+              if (typeof original !== 'function') return false;
+              p.findRegion = function (name) {
+                var r = original.call(this, name);
+                if (r) return r;
+                var vs = variants(name);
+                for (var i = 0; i < vs.length; i++) {
+                  try {
+                    r = original.call(this, vs[i]);
+                    if (r) return r;
+                  } catch (e) {}
+                }
+                r = scanRegions(this, name);
+                return r || null;
+              };
+              p.__nmm_v0144_findRegion_patched = true;
+              return true;
+            }
+
+            function patchLoaderClass(Ctor) {
+              if (!Ctor || !Ctor.prototype) return false;
+              var p = Ctor.prototype;
+              if (p.__nmm_v0144_loader_patched) return true;
+
+              function wrapRegionLike(method, prefix) {
+                var original = p[method];
+                if (typeof original !== 'function') return;
+                p[method] = function (skin, name, path) {
+                  var args = Array.prototype.slice.call(arguments);
+                  var fixedPath = (path == null || path === '') ? (name || '') : path;
+                  var fixedName = cleanName(name, fixedPath, prefix);
+                  args[1] = fixedName;
+                  args[2] = fixedPath || fixedName;
+                  try {
+                    return original.apply(this, args);
+                  } catch (err) {
+                    var msg = String((err && err.message) || err || '');
+                    var retryable = /Region not found|Attachment name must not be null/i.test(msg);
+                    if (!retryable) throw err;
+                    var vs = variants(args[2]);
+                    for (var i = 0; i < vs.length; i++) {
+                      var retryArgs = args.slice();
+                      retryArgs[1] = cleanName(fixedName, vs[i], prefix);
+                      retryArgs[2] = vs[i];
+                      try { return original.apply(this, retryArgs); } catch (e) {}
+                    }
+                    throw err;
+                  }
+                };
+              }
+
+              function wrapNameOnly(method, prefix) {
+                var original = p[method];
+                if (typeof original !== 'function') return;
+                p[method] = function (skin, name) {
+                  var args = Array.prototype.slice.call(arguments);
+                  args[1] = cleanName(name, null, prefix);
+                  return original.apply(this, args);
+                };
+              }
+
+              wrapRegionLike('newRegionAttachment', 'region');
+              wrapRegionLike('newMeshAttachment', 'mesh');
+              wrapNameOnly('newBoundingBoxAttachment', 'bbox');
+              wrapNameOnly('newPathAttachment', 'path');
+              wrapNameOnly('newPointAttachment', 'point');
+              wrapNameOnly('newClippingAttachment', 'clip');
+
+              p.__nmm_v0144_loader_patched = true;
+              return true;
+            }
+
+            function collectNamespaces() {
+              var out = [];
+              function add(x) { if (x && out.indexOf(x) < 0) out.push(x); }
+              add(window.spine);
+              add(window.spine && window.spine.core);
+              add(window.spine38);
+              add(window.spine41);
+              add(window.pixi_spine);
+              add(window.pixi_spine && window.pixi_spine.core);
+              add(window.pixi_spine && window.pixi_spine.base);
+              add(window.pixi_spine && window.pixi_spine.spine38);
+              add(window.pixi_spine && window.pixi_spine.spine41);
+              add(window.PIXI && window.PIXI.spine);
+              add(window.PIXI && window.PIXI.spine && window.PIXI.spine.core);
+              add(window.PIXI && window.PIXI.spine && window.PIXI.spine.base);
+              add(window.PIXI && window.PIXI.spine && window.PIXI.spine.spine38);
+              add(window.PIXI && window.PIXI.spine && window.PIXI.spine.spine41);
+              return out;
+            }
+
+            window.__nmmPatchSpineAtlasSequences = function () {
+              var ok = false;
+              var ns = collectNamespaces();
+              for (var i = 0; i < ns.length; i++) {
+                try {
+                  ok = patchTextureAtlasClass(ns[i].TextureAtlas) || ok;
+                  ok = patchLoaderClass(ns[i].AtlasAttachmentLoader) || ok;
+                } catch (e) {}
+              }
+              return ok;
+            };
+
+            var tries = 0;
+            var timer = setInterval(function () {
+              tries++;
+              if (window.__nmmPatchSpineAtlasSequences() || tries > 600) clearInterval(timer);
+            }, 20);
+          })();
+          // --- end NMM v0.14.4 --------------------------------------------------------
+          ''')
+
+          def patch_preview(p: Path):
               s = p.read_text(encoding='utf-8', errors='ignore')
-              p.with_suffix('.py.bak_v0143_atlaspreserve').write_text(s, encoding='utf-8')
+              p.with_suffix('.py.bak_v0144').write_text(s, encoding='utf-8')
               if 'from PIL import Image' not in s and 'import PIL.Image' not in s:
                   marker = 'from __future__ import annotations\n'
                   s = s.replace(marker, marker + 'from PIL import Image\n', 1) if marker in s else 'from PIL import Image\n' + s
@@ -150,13 +248,46 @@ jobs:
               s = s.replace('img.__class__.new(', 'Image.new(')
               s = s.replace('image.__class__.new(', 'Image.new(')
               s = s.replace('PILImage.new(', 'Image.new(')
-              if 'NMM v0.14.3 Atlas PreserveFix' not in s:
-                  s = s.rstrip() + append + '\n'
-              s = s.replace('NIKKE Mod Manager v0.14 Classic Integrated Viewer', 'NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix')
-              s = s.replace('Classic v0.14 Integrated Viewer', 'Classic v0.14.3 AtlasPreserveFix')
-              p.write_text(s, encoding='utf-8')
+              # Remove only visible misleading drop warning if present.
+              s = s.replace('Classic v0.14: visor integrado (runtime low-level + JS del NIKKE Spine Viewer) con atlas saneado dentro del Preview Alpha.', 'Classic v0.14.4: visor integrado con atlas conservado y fix de secuencias.')
+              if 'NMM v0.14.4 Atlas PreserveFix' not in s:
+                  s = s.rstrip() + PREVIEW_APPEND + '\n'
+              s = s.replace('NIKKE Mod Manager v0.14 Classic Integrated Viewer', 'NIKKE Mod Manager v0.14.4 Classic Integrated Viewer SequenceAttachFix')
+              s = s.replace('Classic v0.14 Integrated Viewer', 'Classic v0.14.4 SequenceAttachFix')
               compile(s, str(p), 'exec')
-              print('patched', p)
+              p.write_text(s, encoding='utf-8')
+
+          def patch_appjs(p: Path):
+              j = p.read_text(encoding='utf-8', errors='ignore')
+              p.with_suffix('.js.bak_v0144').write_text(j, encoding='utf-8')
+              # Ensure patch is available by the time preview render functions run.
+              if 'NMM v0.14.4 Spine sequence + nullable attachment patch' not in j:
+                  lines = j.splitlines()
+                  out = []
+                  for line in lines:
+                      trigger = (
+                          ('new ' in line or '.readSkeletonData' in line) and
+                          any(k in line for k in ['TextureAtlas', 'AtlasAttachmentLoader', 'SkeletonBinary', 'SkeletonJson', 'readSkeletonData']) and
+                          '__nmmPatchSpineAtlasSequences' not in line
+                      )
+                      if trigger:
+                          indent = re.match(r'\s*', line).group(0)
+                          out.append(indent + 'try { window.__nmmPatchSpineAtlasSequences && window.__nmmPatchSpineAtlasSequences(); } catch(e) {}')
+                      out.append(line)
+                  j = '\n'.join(out) + '\n' + JS_PATCH + '\n'
+              j = j.replace('Classic v0.14 Integrated Viewer', 'Classic v0.14.4 SequenceAttachFix')
+              j = j.replace('Debug R8', 'Debug v0.14.4')
+              j = j.replace('DEBUG R8', 'DEBUG v0.14.4')
+              p.write_text(j, encoding='utf-8')
+
+          for root in roots:
+              preview = root / 'src' / 'preview.py'
+              appjs = root / 'web' / 'app.js'
+              if not appjs.exists():
+                  raise SystemExit(f'No existe {appjs}')
+              patch_preview(preview)
+              patch_appjs(appjs)
+              print('patched', root)
           PY
 
       - name: Rename package and write notes
@@ -165,22 +296,23 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import shutil
           root = Path('extracted')
           dirs = [p for p in root.iterdir() if p.is_dir()]
           app = dirs[0] if len(dirs) == 1 else root / 'NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer'
-          target = root / 'NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL'
+          target = root / 'NIKKE_Mod_Manager_v0_14_4_Classic_Integrated_Viewer_SEQUENCE_ATTACHFIX_FULL'
           if target.exists():
-              import shutil; shutil.rmtree(target)
+              shutil.rmtree(target)
           if app != target:
               app.rename(target)
           for rel in ['VERSION.txt', 'LEEME_PRIMERO.txt']:
               p = target / rel
               old = p.read_text(encoding='utf-8', errors='ignore') if p.exists() else ''
-              p.write_text('NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix FULL\n\nCorrige Region not found in atlas: conserva todas las regiones del atlas y expande el canvas transparente cuando el atlas supera la textura base. Tambien corrige el padding Pillow Image.new.\nInstalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
+              p.write_text('NIKKE Mod Manager v0.14.4 Classic Integrated Viewer SequenceAttachFix FULL\n\nCorrige el nuevo error Attachment name must not be null y el caso Region not found con secuencias tipo body_t0000 -> body_t. Mantiene atlas completo, padding con Image.new e interfaz clasica.\nInstalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
           print(target)
           PY
 
-      - name: Validate and zip
+      - name: Validate and ZIP
         shell: bash
         run: |
           set -euo pipefail
@@ -189,16 +321,19 @@ jobs:
           from pathlib import Path
           out = Path('dist')
           out.mkdir(exist_ok=True)
-          root = Path('extracted') / 'NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL'
+          root = Path('extracted') / 'NIKKE_Mod_Manager_v0_14_4_Classic_Integrated_Viewer_SEQUENCE_ATTACHFIX_FULL'
           preview = root / 'src' / 'preview.py'
           appjs = root / 'web' / 'app.js'
           assert preview.exists(), 'preview.py missing'
-          assert appjs.exists(), 'web/app.js missing'
-          txt = preview.read_text(encoding='utf-8', errors='ignore')
-          assert 'Atlas PreserveFix' in txt or 'AtlasPreserveFix' in txt, 'atlas preserve patch missing'
-          assert 'Image.new(' in txt, 'Image.new not used'
-          compile(txt, str(preview), 'exec')
-          zip_path = out / 'NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL.zip'
+          assert appjs.exists(), 'app.js missing'
+          pt = preview.read_text(encoding='utf-8', errors='ignore')
+          jt = appjs.read_text(encoding='utf-8', errors='ignore')
+          assert 'NMM v0.14.4 Atlas PreserveFix' in pt, 'preview atlas patch missing'
+          assert 'Image.new(' in pt, 'Image.new fix missing'
+          assert 'nullable attachment patch' in jt, 'JS attachment patch missing'
+          assert '__nmmPatchSpineAtlasSequences' in jt, 'JS sequence patch missing'
+          compile(pt, str(preview), 'exec')
+          zip_path = out / 'NIKKE_Mod_Manager_v0_14_4_Classic_Integrated_Viewer_SEQUENCE_ATTACHFIX_FULL.zip'
           if zip_path.exists():
               zip_path.unlink()
           with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as z:
@@ -208,14 +343,14 @@ jobs:
           with zipfile.ZipFile(zip_path) as z:
               bad = z.testzip()
               if bad:
-                  raise RuntimeError(f'zip corrupto: {bad}')
+                  raise RuntimeError(f'ZIP corrupto: {bad}')
           print(zip_path, zip_path.stat().st_size)
           PY
 
-      - name: Upload patched ZIP
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL
-          path: dist/NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL.zip
+          name: NIKKE_Mod_Manager_v0_14_4_Classic_Integrated_Viewer_SEQUENCE_ATTACHFIX_FULL
+          path: dist/NIKKE_Mod_Manager_v0_14_4_Classic_Integrated_Viewer_SEQUENCE_ATTACHFIX_FULL.zip
           if-no-files-found: error
           retention-days: 90
