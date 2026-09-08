@@ -1,0 +1,36 @@
+name: Inspect v0.15.0 JS Context
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  inspect-context:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Download and print JS context
+        shell: bash
+        env:
+          SOURCE_ARTIFACT_ID: '10040467989'
+        run: |
+          set -euo pipefail
+          curl -L -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/ExoticSytem/NIKKE-Mod-Tracker/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip" -o artifact.zip
+          mkdir -p artifact extracted
+          unzip -q artifact.zip -d artifact
+          appzip=$(find artifact -maxdepth 1 -name '*.zip' | head -n 1)
+          unzip -q "$appzip" -d extracted
+          app=$(find extracted -maxdepth 1 -type d | head -n 1)
+          echo '--- nikke-spine-runtime around 53560-53605 ---'
+          nl -ba "$app/web/assets/vendor/nikke-spine-runtime.js" | sed -n '53560,53605p'
+          echo '--- nikke-spine-runtime around 64280-64325 ---'
+          nl -ba "$app/web/assets/vendor/nikke-spine-runtime.js" | sed -n '64280,64325p'
+          echo '--- pixi-spine viewer around 22020-22065 ---'
+          nl -ba "$app/web/assets/vendor/viewer/pixi-spine.js" | sed -n '22020,22065p'
+          echo '--- app.js around 540-620 ---'
+          nl -ba "$app/web/app.js" | sed -n '540,620p'
