@@ -1,0 +1,266 @@
+name: Build v0.14.6 MeshFallback from Artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-v0146-meshfallback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SOURCE_ARTIFACT_ID: '10039663859'
+      OUT_NAME: NIKKE_Mod_Manager_v0_14_6_Classic_Integrated_Viewer_MESHFALLBACK_FULL
+    steps:
+      - name: Download v0.14.5 artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/ExoticSytem/NIKKE-Mod-Tracker/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip" -o artifact.zip
+          mkdir artifact extracted
+          unzip -q artifact.zip -d artifact
+          appzip=$(find artifact -maxdepth 1 -name '*.zip' | head -n 1)
+          test -n "$appzip"
+          unzip -q "$appzip" -d extracted
+          find extracted -maxdepth 4 -type f -path '*/web/app.js' -print
+
+      - name: Patch MeshAttachment fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, textwrap
+          roots = [p.parent.parent for p in Path('extracted').rglob('web/app.js')]
+          if not roots:
+              raise SystemExit('No app root found')
+          JS_PATCH = textwrap.dedent(r'''
+          
+          // --- NMM v0.14.6 MeshAttachment fallback patch --------------------------
+          (function(){
+            if (window.__NMM_V0146_MESH_FALLBACK__) return;
+            window.__NMM_V0146_MESH_FALLBACK__ = true;
+            var seq = 0;
+            function nsList(){
+              var out=[]; function add(x){ if(x && out.indexOf(x)<0) out.push(x); }
+              add(window.spine); add(window.spine&&window.spine.core); add(window.spine38); add(window.spine41);
+              add(window.pixi_spine); add(window.pixi_spine&&window.pixi_spine.core); add(window.pixi_spine&&window.pixi_spine.base); add(window.pixi_spine&&window.pixi_spine.spine38); add(window.pixi_spine&&window.pixi_spine.spine41);
+              add(window.PIXI&&window.PIXI.spine); add(window.PIXI&&window.PIXI.spine&&window.PIXI.spine.core); add(window.PIXI&&window.PIXI.spine&&window.PIXI.spine.base); add(window.PIXI&&window.PIXI.spine&&window.PIXI.spine.spine38); add(window.PIXI&&window.PIXI.spine&&window.PIXI.spine.spine41);
+              return out;
+            }
+            function ctor(name){
+              var ns=nsList();
+              for(var i=0;i<ns.length;i++) if(typeof ns[i][name] === 'function') return ns[i][name];
+              return null;
+            }
+            function safeName(name,path,prefix){
+              var n = (name == null || name === '') ? (path || '') : name;
+              if(n == null || n === '') n = (prefix || 'attachment') + '_auto_' + (++seq);
+              return String(n);
+            }
+            function variants(name){
+              var s=String(name == null ? '' : name), out=[];
+              function add(v){ if(v && v!==s && out.indexOf(v)<0) out.push(v); }
+              add(s.replace(/\d+$/,''));
+              add(s.replace(/[_-]?\d+$/,''));
+              add(s.replace(/([a-z_]+)[0-9]+$/i,'$1'));
+              add(s.replace(/t\d+$/,'t'));
+              return out;
+            }
+            function findRegion(atlas, name){
+              if(!atlas) return null;
+              var r=null;
+              try{ if(typeof atlas.findRegion==='function') r=atlas.findRegion(name); }catch(e){}
+              if(r) return r;
+              var vs=variants(name);
+              for(var i=0;i<vs.length;i++){ try{ r=atlas.findRegion(vs[i]); if(r) return r; }catch(e){} }
+              var regs=atlas.regions||[];
+              for(var j=0;j<regs.length;j++){
+                if(!regs[j]) continue;
+                if(regs[j].name===name || vs.indexOf(regs[j].name)>=0) return regs[j];
+              }
+              return null;
+            }
+            function setRegion(att, reg, path){
+              if(!att) return att;
+              try{ att.region = reg || att.region || null; }catch(e){}
+              try{ att.rendererObject = reg || att.rendererObject || null; }catch(e){}
+              try{ if(path) att.path = String(path); }catch(e){}
+              try{ if(reg && att.setRegion) att.setRegion(reg); }catch(e){}
+              try{ if(att.updateUVs) att.updateUVs(); }catch(e){}
+              return att;
+            }
+            function makeMeshPolyfill(){
+              var existing = ctor('MeshAttachment');
+              if(existing) return existing;
+              var RC = ctor('RegionAttachment');
+              function MeshAttachment(name){
+                this.name = safeName(name, null, 'mesh');
+                this.path = this.name;
+                this.region = null;
+                this.rendererObject = null;
+                this.regionUVs = [];
+                this.uvs = [];
+                this.triangles = [];
+                this.vertices = [];
+                this.bones = null;
+                this.worldVerticesLength = 0;
+                this.hullLength = 0;
+                this.edges = [];
+                this.width = 0;
+                this.height = 0;
+                this.parentMesh = null;
+                this.inheritDeform = false;
+                this.color = { r:1, g:1, b:1, a:1 };
+              }
+              if(RC && RC.prototype){
+                MeshAttachment.prototype = Object.create(RC.prototype);
+                MeshAttachment.prototype.constructor = MeshAttachment;
+              }
+              MeshAttachment.prototype.setRegion = function(region){ this.region=region; this.rendererObject=region; };
+              MeshAttachment.prototype.updateUVs = function(){
+                if(this.uvs && this.regionUVs && this.regionUVs.length && this.uvs.length !== this.regionUVs.length){
+                  this.uvs = Array.prototype.slice.call(this.regionUVs);
+                }
+              };
+              MeshAttachment.prototype.applyDeform = function(){ return true; };
+              MeshAttachment.prototype.computeWorldVertices = function(){ return; };
+              MeshAttachment.prototype.copy = function(){
+                var m = new MeshAttachment(this.name);
+                for(var k in this){ try{ m[k]=Array.isArray(this[k]) ? this[k].slice() : this[k]; }catch(e){} }
+                return m;
+              };
+              var ns=nsList();
+              for(var i=0;i<ns.length;i++){ try{ if(!ns[i].MeshAttachment) ns[i].MeshAttachment = MeshAttachment; }catch(e){} }
+              return MeshAttachment;
+            }
+            function patchLoader(C){
+              if(!C || !C.prototype || C.prototype.__nmm_v0146_meshfallback) return false;
+              var p=C.prototype;
+              p.newMeshAttachment = function(skin, name, path, sequence){
+                var atlas = this.atlas || this.textureAtlas || this._atlas;
+                var pth = path || name;
+                var n = safeName(name, pth, 'mesh');
+                var MC = makeMeshPolyfill();
+                var att = new MC(n);
+                var reg = findRegion(atlas, pth) || findRegion(atlas, n);
+                setRegion(att, reg, pth || n);
+                if(sequence) try{ att.sequence = sequence; }catch(e){}
+                return att;
+              };
+              var oldRegion = p.newRegionAttachment;
+              p.newRegionAttachment = function(skin, name, path, sequence){
+                var atlas = this.atlas || this.textureAtlas || this._atlas;
+                var pth = path || name;
+                var n = safeName(name, pth, 'region');
+                var RC = ctor('RegionAttachment');
+                if(RC){
+                  var a = new RC(n);
+                  var reg = findRegion(atlas, pth) || findRegion(atlas, n);
+                  if(!reg && oldRegion) return oldRegion.apply(this, arguments);
+                  setRegion(a, reg, pth || n);
+                  if(sequence) try{ a.sequence = sequence; }catch(e){}
+                  return a;
+                }
+                return oldRegion.apply(this, arguments);
+              };
+              p.__nmm_v0146_meshfallback=true;
+              return true;
+            }
+            function patchParser(C){
+              if(!C || !C.prototype || C.prototype.__nmm_v0146_parser) return false;
+              var old=C.prototype.readAttachment;
+              if(typeof old==='function'){
+                C.prototype.readAttachment=function(){
+                  makeMeshPolyfill();
+                  var args=Array.prototype.slice.call(arguments);
+                  for(var i=0;i<args.length;i++){
+                    if(i>0 && (args[i]===null || args[i]==='')) args[i]='auto_attachment_'+(++seq);
+                  }
+                  return old.apply(this,args);
+                };
+              }
+              C.prototype.__nmm_v0146_parser=true;
+              return true;
+            }
+            function patchAll(){
+              makeMeshPolyfill();
+              var ok=false, ns=nsList();
+              for(var i=0;i<ns.length;i++){
+                try{ ok=patchLoader(ns[i].AtlasAttachmentLoader)||ok; }catch(e){}
+                try{ ok=patchParser(ns[i].SkeletonBinary)||ok; }catch(e){}
+                try{ ok=patchParser(ns[i].SkeletonJson)||ok; }catch(e){}
+              }
+              return ok;
+            }
+            window.__nmmV0146MeshFallback = patchAll;
+            var t=0, timer=setInterval(function(){ t++; if(patchAll() || t>800) clearInterval(timer); },20);
+          })();
+          // --- end NMM v0.14.6 ---------------------------------------------------
+          ''')
+          for root in roots:
+              appjs = root / 'web' / 'app.js'
+              js = appjs.read_text(encoding='utf-8', errors='ignore')
+              appjs.with_suffix('.js.bak_v0146').write_text(js, encoding='utf-8')
+              js = js.replace("var MC = ctor('MeshAttachment'); if(!MC) throw new Error('MeshAttachment class not available');", "var MC = ctor('MeshAttachment') || (window.__nmmV0146MeshFallback && window.__nmmV0146MeshFallback() && ctor('MeshAttachment')) || ctor('RegionAttachment');")
+              if 'NMM v0.14.6 MeshAttachment fallback patch' not in js:
+                  lines = js.splitlines(); out=[]
+                  for line in lines:
+                      if ('.readSkeletonData' in line or 'SkeletonBinary' in line or 'SkeletonJson' in line) and '__nmmV0146MeshFallback' not in line:
+                          indent = re.match(r'\s*', line).group(0)
+                          out.append(indent + 'try { window.__nmmV0146MeshFallback && window.__nmmV0146MeshFallback(); } catch(e) {}')
+                      out.append(line)
+                  js = '\n'.join(out) + '\n' + JS_PATCH + '\n'
+              js = js.replace('Classic v0.14.5 AttachmentNullFix', 'Classic v0.14.6 MeshFallback')
+              js = js.replace('Debug v0.14.5', 'Debug v0.14.6')
+              js = js.replace('DEBUG v0.14.5', 'DEBUG v0.14.6')
+              js = js.replace('MeshAttachment class not available', 'MeshAttachment fallback activo')
+              appjs.write_text(js, encoding='utf-8')
+              print('patched', appjs)
+          PY
+
+      - name: Rename and zip
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil, zipfile
+          root = Path('extracted')
+          dirs = [p for p in root.iterdir() if p.is_dir()]
+          app = dirs[0]
+          target = root / 'NIKKE_Mod_Manager_v0_14_6_Classic_Integrated_Viewer_MESHFALLBACK_FULL'
+          if app != target:
+              if target.exists(): shutil.rmtree(target)
+              app.rename(target)
+          for rel in ['VERSION.txt','LEEME_PRIMERO.txt']:
+              p = target / rel
+              old = p.read_text(encoding='utf-8', errors='ignore') if p.exists() else ''
+              p.write_text('NIKKE Mod Manager v0.14.6 Classic Integrated Viewer MeshFallback FULL\n\nCorrige el bloqueo MeshAttachment class not available agregando fallback/polyfill de MeshAttachment y manteniendo fixes anteriores de atlas, secuencias y attachments null.\nInstalar limpio y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
+          appjs = target / 'web' / 'app.js'
+          txt = appjs.read_text(encoding='utf-8', errors='ignore')
+          assert 'NMM v0.14.6 MeshAttachment fallback patch' in txt
+          assert '__nmmV0146MeshFallback' in txt
+          out = Path('dist'); out.mkdir(exist_ok=True)
+          zip_path = out / 'NIKKE_Mod_Manager_v0_14_6_Classic_Integrated_Viewer_MESHFALLBACK_FULL.zip'
+          with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for p in target.rglob('*'):
+                  if p.is_file(): z.write(p, p.relative_to(target.parent))
+          with zipfile.ZipFile(zip_path) as z:
+              bad=z.testzip()
+              if bad: raise RuntimeError('zip corrupto: '+bad)
+          print(zip_path, zip_path.stat().st_size)
+          PY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_14_6_Classic_Integrated_Viewer_MESHFALLBACK_FULL
+          path: dist/NIKKE_Mod_Manager_v0_14_6_Classic_Integrated_Viewer_MESHFALLBACK_FULL.zip
+          if-no-files-found: error
+          retention-days: 90
