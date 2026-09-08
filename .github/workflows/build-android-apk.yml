@@ -1,4 +1,4 @@
-name: Inspect v0.14 Preview Source
+name: Build v0.14.3 Atlas PreserveFix ZIP
 
 on:
   workflow_dispatch:
@@ -9,34 +9,277 @@ permissions:
   contents: read
 
 jobs:
-  inspect-v014-preview:
+  patch-v0143-atlas-preservefix:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       TAR_URL: 'https://eu-central.storage.cloudconvert.com/tasks/ab145fcb-621e-486c-a917-338556dfcc7e/NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260908%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260908T015517Z&X-Amz-Expires=86400&X-Amz-Signature=218c44397098afc5baad5de0fed57eda763a18c9c7ba1e090c4ae413f3e0e888&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer.tar%22&response-content-type=application%2Fx-tar&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+      OUT_NAME: NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL
     steps:
-      - name: Download and inspect source
+      - name: Download Claude source converted to TAR
         shell: bash
         run: |
           set -euo pipefail
           curl -L "$TAR_URL" -o source.tar
           mkdir extracted
           tar -xf source.tar -C extracted
+          find extracted -maxdepth 4 -type f -path '*/src/preview.py' -print
+
+      - name: Patch preview.py Atlas PreserveFix
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
-          p = next(Path('extracted').rglob('src/preview.py'))
-          s = p.read_text(encoding='utf-8', errors='ignore')
-          print('PATH', p)
-          print('LEN', len(s))
-          keys = ['def _sanitize_atlas', 'def _pad_image_to', 'def _atlas_needed_canvas', '_sanitize_atlas(', '_pad_image_to(', 'spine_preview']
-          lines = s.splitlines()
-          for key in keys:
-              print('\n### KEY', key)
-              for i,l in enumerate(lines,1):
-                  if key in l:
-                      print('@@', i, l[:220])
-                      a=max(1,i-12); b=min(len(lines),i+45)
-                      for j in range(a,b+1):
-                          print(f'{j:04d}: {lines[j-1]}')
-                      print('---')
+          files = list(Path('extracted').rglob('src/preview.py'))
+          if not files:
+              raise SystemExit('No se encontro src/preview.py')
+
+          APPEND = r'''
+
+# --- NMM v0.14.3 Atlas PreserveFix -----------------------------------------
+# Claude's v0.14 sanitizer could remove atlas regions with unusual names.
+# That breaks Spine because the .skel still references those region names.
+# This override preserves the original atlas text and only expands the canvas
+# size that the caller should generate for the Spine texture.
+try:
+    _nmm_v0143_original_sanitize_atlas = _sanitize_atlas
+except NameError:  # pragma: no cover
+    _nmm_v0143_original_sanitize_atlas = None
+
+import re as _nmm_v0143_re
+
+def _nmm_v0143_parse_int_pair(text):
+    nums = _nmm_v0143_re.findall(r'-?\d+', str(text))
+    if len(nums) >= 2:
+        return int(nums[0]), int(nums[1])
+    return None
+
+def _nmm_v0143_atlas_needed_canvas_preserve_all(atlas_text, base_w=None, base_h=None, hard_limit=8192):
+    text = atlas_text or ''
+    if base_w is None or base_h is None or int(base_w or 0) <= 0 or int(base_h or 0) <= 0:
+        # Spine atlas page headers commonly contain: size: W,H
+        m = _nmm_v0143_re.search(r'(?im)^\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text)
+        if m:
+            base_w, base_h = int(m.group(1)), int(m.group(2))
+        else:
+            base_w, base_h = int(base_w or 0), int(base_h or 0)
+    needed_w, needed_h = int(base_w or 0), int(base_h or 0)
+
+    # NIKKE-style atlas lines: bounds:x,y,w,h
+    for m in _nmm_v0143_re.finditer(r'(?im)^\s*bounds\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text):
+        x, y, w, h = map(int, m.groups())
+        if w > 0 and h > 0:
+            needed_w = max(needed_w, x + w)
+            needed_h = max(needed_h, y + h)
+
+    # Classic Spine format: region block with xy: X,Y and size: W,H.
+    last_xy = None
+    for line in text.splitlines():
+        mxy = _nmm_v0143_re.match(r'\s*xy\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
+        if mxy:
+            last_xy = (int(mxy.group(1)), int(mxy.group(2)))
+            continue
+        ms = _nmm_v0143_re.match(r'\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
+        if ms and last_xy:
+            x, y = last_xy
+            w, h = int(ms.group(1)), int(ms.group(2))
+            if w > 0 and h > 0:
+                needed_w = max(needed_w, x + w)
+                needed_h = max(needed_h, y + h)
+            last_xy = None
+
+    # Avoid absurd memory allocation. The current failing NIKKE cases are well below this.
+    needed_w = max(1, min(int(needed_w or 1), int(hard_limit)))
+    needed_h = max(1, min(int(needed_h or 1), int(hard_limit)))
+    return needed_w, needed_h
+
+def _nmm_v0143_find_base_size(args, kwargs, atlas_text):
+    keys_w = ('texture_width', 'tex_width', 'width', 'base_width', 'image_width')
+    keys_h = ('texture_height', 'tex_height', 'height', 'base_height', 'image_height')
+    w = next((kwargs[k] for k in keys_w if k in kwargs and isinstance(kwargs[k], int)), None)
+    h = next((kwargs[k] for k in keys_h if k in kwargs and isinstance(kwargs[k], int)), None)
+    if w and h:
+        return int(w), int(h)
+    for a in args[1:]:
+        if isinstance(a, (tuple, list)) and len(a) >= 2 and isinstance(a[0], int) and isinstance(a[1], int):
+            return int(a[0]), int(a[1])
+    ints = [int(a) for a in args[1:] if isinstance(a, int)]
+    if len(ints) >= 2:
+        return ints[0], ints[1]
+    return _nmm_v0143_atlas_needed_canvas_preserve_all(atlas_text, None, None)
+
+def _nmm_v0143_replace_result_shape(result, atlas_text, needed_w, needed_h):
+    # dictionary-style sanitizer result
+    if isinstance(result, dict):
+        out = dict(result)
+        for key in ('atlas_text', 'atlas', 'sanitized_atlas', 'spine_atlas_text'):
+            if key in out:
+                out[key] = atlas_text
+        for key in ('width', 'atlas_width', 'canvas_width', 'needed_width', 'spine_width'):
+            if key in out and isinstance(out[key], int):
+                out[key] = needed_w
+        for key in ('height', 'atlas_height', 'canvas_height', 'needed_height', 'spine_height'):
+            if key in out and isinstance(out[key], int):
+                out[key] = needed_h
+        for key in ('warnings', 'notes', 'messages'):
+            if isinstance(out.get(key), list):
+                out[key].append('AtlasPreserveFix: regiones conservadas; canvas expandido si era necesario.')
+        return out
+
+    # tuple/list-style sanitizer result, common shapes:
+    # (atlas_text, w, h, warnings) or (atlas_text, (w,h), warnings)
+    if isinstance(result, tuple):
+        seq = list(result)
+        ret_type = tuple
+    elif isinstance(result, list):
+        seq = list(result)
+        ret_type = list
+    else:
+        if isinstance(result, str):
+            return atlas_text
+        return result
+
+    atlas_index = None
+    for i, value in enumerate(seq):
+        if isinstance(value, str) and ('bounds:' in value or '\nsize:' in value or '.png' in value):
+            atlas_index = i
+            break
+    if atlas_index is None:
+        for i, value in enumerate(seq):
+            if isinstance(value, str):
+                atlas_index = i
+                break
+    if atlas_index is not None:
+        seq[atlas_index] = atlas_text
+
+    # Replace tuple/list size pair if present.
+    for i, value in enumerate(seq):
+        if isinstance(value, tuple) and len(value) >= 2 and isinstance(value[0], int) and isinstance(value[1], int):
+            seq[i] = (needed_w, needed_h) + tuple(value[2:])
+        elif isinstance(value, list) and len(value) >= 2 and isinstance(value[0], int) and isinstance(value[1], int):
+            value[0], value[1] = needed_w, needed_h
+
+    # Replace two consecutive ints immediately after atlas text, or the first plausible width/height pair.
+    changed_pair = False
+    start = (atlas_index + 1) if atlas_index is not None else 0
+    for i in range(start, max(start, len(seq) - 1)):
+        if i + 1 < len(seq) and isinstance(seq[i], int) and isinstance(seq[i+1], int):
+            seq[i], seq[i+1] = needed_w, needed_h
+            changed_pair = True
+            break
+    if not changed_pair:
+        # Some implementations store width/height as namedtuple-like tuple fields; leave untouched.
+        pass
+
+    return ret_type(seq)
+
+def _sanitize_atlas(*args, **kwargs):
+    atlas_text = ''
+    if args and isinstance(args[0], str):
+        atlas_text = args[0]
+    else:
+        for k in ('atlas_text', 'atlas', 'raw_atlas'):
+            if isinstance(kwargs.get(k), str):
+                atlas_text = kwargs[k]
+                break
+
+    base_w, base_h = _nmm_v0143_find_base_size(args, kwargs, atlas_text)
+    needed_w, needed_h = _nmm_v0143_atlas_needed_canvas_preserve_all(atlas_text, base_w, base_h)
+
+    if _nmm_v0143_original_sanitize_atlas is None:
+        return atlas_text, needed_w, needed_h, ['AtlasPreserveFix activo']
+
+    try:
+        old_result = _nmm_v0143_original_sanitize_atlas(*args, **kwargs)
+    except Exception:
+        # If Claude's old sanitizer crashes, preserve atlas and return the common shape.
+        return atlas_text, needed_w, needed_h, ['AtlasPreserveFix: sanitizer antiguo omitido']
+    return _nmm_v0143_replace_result_shape(old_result, atlas_text, needed_w, needed_h)
+# --- end NMM v0.14.3 Atlas PreserveFix -------------------------------------
+'''
+
+          for p in files:
+              s = p.read_text(encoding='utf-8', errors='ignore')
+              p.with_suffix('.py.bak_v0143_atlaspreserve').write_text(s, encoding='utf-8')
+              # Fix Pillow padding bug without breaking other Image.* uses.
+              if 'from PIL import Image' not in s and 'import PIL.Image' not in s:
+                  marker = 'from __future__ import annotations\n'
+                  if marker in s:
+                      s = s.replace(marker, marker + 'from PIL import Image\n', 1)
+                  else:
+                      s = 'from PIL import Image\n' + s
+              s = s.replace('img.__class__.new(', 'Image.new(')
+              s = s.replace('image.__class__.new(', 'Image.new(')
+              s = s.replace('PILImage.new(', 'Image.new(')
+              # Make sure previous partial alias import does not leave Image undefined.
+              s = s.replace('from PIL import Image as PILImage', 'from PIL import Image')
+              if 'NMM v0.14.3 Atlas PreserveFix' not in s:
+                  s = s.rstrip() + APPEND + '\n'
+              s = s.replace('NIKKE Mod Manager v0.14 Classic Integrated Viewer', 'NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix')
+              s = s.replace('Classic v0.14 Integrated Viewer', 'Classic v0.14.3 AtlasPreserveFix')
+              p.write_text(s, encoding='utf-8')
+              compile(s, str(p), 'exec')
+              print('patched', p)
           PY
+
+      - name: Rename package and write notes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path('extracted')
+          dirs = [p for p in root.iterdir() if p.is_dir()]
+          app = dirs[0] if len(dirs) == 1 else root / 'NIKKE_Mod_Manager_v0_14_Classic_Integrated_Viewer'
+          target = root / 'NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL'
+          if target.exists():
+              import shutil; shutil.rmtree(target)
+          if app != target:
+              app.rename(target)
+          for rel in ['VERSION.txt', 'LEEME_PRIMERO.txt']:
+              p = target / rel
+              old = p.read_text(encoding='utf-8', errors='ignore') if p.exists() else ''
+              p.write_text('NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix FULL\n\nCorrige Region not found in atlas: no elimina regiones raras del atlas. Conserva todas las regiones y expande el canvas transparente cuando el atlas supera la textura base. Tambien corrige el padding Pillow Image.new.\nInstalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
+          print(target)
+          PY
+
+      - name: Validate and zip
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          out = Path('dist')
+          out.mkdir(exist_ok=True)
+          root = Path('extracted') / 'NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL'
+          preview = root / 'src' / 'preview.py'
+          appjs = root / 'web' / 'app.js'
+          assert preview.exists(), 'preview.py missing'
+          assert appjs.exists(), 'web/app.js missing'
+          txt = preview.read_text(encoding='utf-8', errors='ignore')
+          assert 'Atlas PreserveFix' in txt or 'AtlasPreserveFix' in txt, 'atlas preserve patch missing'
+          assert 'Image.new(' in txt, 'Image.new not used'
+          compile(txt, str(preview), 'exec')
+          zip_path = out / 'NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL.zip'
+          if zip_path.exists():
+              zip_path.unlink()
+          with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_DEFLATED) as z:
+              for p in root.rglob('*'):
+                  if p.is_file():
+                      z.write(p, p.relative_to(root.parent))
+          with zipfile.ZipFile(zip_path) as z:
+              bad = z.testzip()
+              if bad:
+                  raise RuntimeError(f'zip corrupto: {bad}')
+          print(zip_path, zip_path.stat().st_size)
+          PY
+
+      - name: Upload patched ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL
+          path: dist/NIKKE_Mod_Manager_v0_14_3_Classic_Integrated_Viewer_ATLASPRESERVE_FULL.zip
+          if-no-files-found: error
+          retention-days: 90
