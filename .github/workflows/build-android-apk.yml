@@ -31,191 +31,127 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import textwrap
           files = list(Path('extracted').rglob('src/preview.py'))
           if not files:
               raise SystemExit('No se encontro src/preview.py')
 
-          APPEND = r'''
-
-# --- NMM v0.14.3 Atlas PreserveFix -----------------------------------------
-# Claude's v0.14 sanitizer could remove atlas regions with unusual names.
-# That breaks Spine because the .skel still references those region names.
-# This override preserves the original atlas text and only expands the canvas
-# size that the caller should generate for the Spine texture.
-try:
-    _nmm_v0143_original_sanitize_atlas = _sanitize_atlas
-except NameError:  # pragma: no cover
-    _nmm_v0143_original_sanitize_atlas = None
-
-import re as _nmm_v0143_re
-
-def _nmm_v0143_parse_int_pair(text):
-    nums = _nmm_v0143_re.findall(r'-?\d+', str(text))
-    if len(nums) >= 2:
-        return int(nums[0]), int(nums[1])
-    return None
-
-def _nmm_v0143_atlas_needed_canvas_preserve_all(atlas_text, base_w=None, base_h=None, hard_limit=8192):
-    text = atlas_text or ''
-    if base_w is None or base_h is None or int(base_w or 0) <= 0 or int(base_h or 0) <= 0:
-        # Spine atlas page headers commonly contain: size: W,H
-        m = _nmm_v0143_re.search(r'(?im)^\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text)
-        if m:
-            base_w, base_h = int(m.group(1)), int(m.group(2))
-        else:
-            base_w, base_h = int(base_w or 0), int(base_h or 0)
-    needed_w, needed_h = int(base_w or 0), int(base_h or 0)
-
-    # NIKKE-style atlas lines: bounds:x,y,w,h
-    for m in _nmm_v0143_re.finditer(r'(?im)^\s*bounds\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text):
-        x, y, w, h = map(int, m.groups())
-        if w > 0 and h > 0:
-            needed_w = max(needed_w, x + w)
-            needed_h = max(needed_h, y + h)
-
-    # Classic Spine format: region block with xy: X,Y and size: W,H.
-    last_xy = None
-    for line in text.splitlines():
-        mxy = _nmm_v0143_re.match(r'\s*xy\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
-        if mxy:
-            last_xy = (int(mxy.group(1)), int(mxy.group(2)))
-            continue
-        ms = _nmm_v0143_re.match(r'\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
-        if ms and last_xy:
-            x, y = last_xy
-            w, h = int(ms.group(1)), int(ms.group(2))
-            if w > 0 and h > 0:
-                needed_w = max(needed_w, x + w)
-                needed_h = max(needed_h, y + h)
-            last_xy = None
-
-    # Avoid absurd memory allocation. The current failing NIKKE cases are well below this.
-    needed_w = max(1, min(int(needed_w or 1), int(hard_limit)))
-    needed_h = max(1, min(int(needed_h or 1), int(hard_limit)))
-    return needed_w, needed_h
-
-def _nmm_v0143_find_base_size(args, kwargs, atlas_text):
-    keys_w = ('texture_width', 'tex_width', 'width', 'base_width', 'image_width')
-    keys_h = ('texture_height', 'tex_height', 'height', 'base_height', 'image_height')
-    w = next((kwargs[k] for k in keys_w if k in kwargs and isinstance(kwargs[k], int)), None)
-    h = next((kwargs[k] for k in keys_h if k in kwargs and isinstance(kwargs[k], int)), None)
-    if w and h:
-        return int(w), int(h)
-    for a in args[1:]:
-        if isinstance(a, (tuple, list)) and len(a) >= 2 and isinstance(a[0], int) and isinstance(a[1], int):
-            return int(a[0]), int(a[1])
-    ints = [int(a) for a in args[1:] if isinstance(a, int)]
-    if len(ints) >= 2:
-        return ints[0], ints[1]
-    return _nmm_v0143_atlas_needed_canvas_preserve_all(atlas_text, None, None)
-
-def _nmm_v0143_replace_result_shape(result, atlas_text, needed_w, needed_h):
-    # dictionary-style sanitizer result
-    if isinstance(result, dict):
-        out = dict(result)
-        for key in ('atlas_text', 'atlas', 'sanitized_atlas', 'spine_atlas_text'):
-            if key in out:
-                out[key] = atlas_text
-        for key in ('width', 'atlas_width', 'canvas_width', 'needed_width', 'spine_width'):
-            if key in out and isinstance(out[key], int):
-                out[key] = needed_w
-        for key in ('height', 'atlas_height', 'canvas_height', 'needed_height', 'spine_height'):
-            if key in out and isinstance(out[key], int):
-                out[key] = needed_h
-        for key in ('warnings', 'notes', 'messages'):
-            if isinstance(out.get(key), list):
-                out[key].append('AtlasPreserveFix: regiones conservadas; canvas expandido si era necesario.')
-        return out
-
-    # tuple/list-style sanitizer result, common shapes:
-    # (atlas_text, w, h, warnings) or (atlas_text, (w,h), warnings)
-    if isinstance(result, tuple):
-        seq = list(result)
-        ret_type = tuple
-    elif isinstance(result, list):
-        seq = list(result)
-        ret_type = list
-    else:
-        if isinstance(result, str):
-            return atlas_text
-        return result
-
-    atlas_index = None
-    for i, value in enumerate(seq):
-        if isinstance(value, str) and ('bounds:' in value or '\nsize:' in value or '.png' in value):
-            atlas_index = i
-            break
-    if atlas_index is None:
-        for i, value in enumerate(seq):
-            if isinstance(value, str):
-                atlas_index = i
-                break
-    if atlas_index is not None:
-        seq[atlas_index] = atlas_text
-
-    # Replace tuple/list size pair if present.
-    for i, value in enumerate(seq):
-        if isinstance(value, tuple) and len(value) >= 2 and isinstance(value[0], int) and isinstance(value[1], int):
-            seq[i] = (needed_w, needed_h) + tuple(value[2:])
-        elif isinstance(value, list) and len(value) >= 2 and isinstance(value[0], int) and isinstance(value[1], int):
-            value[0], value[1] = needed_w, needed_h
-
-    # Replace two consecutive ints immediately after atlas text, or the first plausible width/height pair.
-    changed_pair = False
-    start = (atlas_index + 1) if atlas_index is not None else 0
-    for i in range(start, max(start, len(seq) - 1)):
-        if i + 1 < len(seq) and isinstance(seq[i], int) and isinstance(seq[i+1], int):
-            seq[i], seq[i+1] = needed_w, needed_h
-            changed_pair = True
-            break
-    if not changed_pair:
-        # Some implementations store width/height as namedtuple-like tuple fields; leave untouched.
-        pass
-
-    return ret_type(seq)
-
-def _sanitize_atlas(*args, **kwargs):
-    atlas_text = ''
-    if args and isinstance(args[0], str):
-        atlas_text = args[0]
-    else:
-        for k in ('atlas_text', 'atlas', 'raw_atlas'):
-            if isinstance(kwargs.get(k), str):
-                atlas_text = kwargs[k]
-                break
-
-    base_w, base_h = _nmm_v0143_find_base_size(args, kwargs, atlas_text)
-    needed_w, needed_h = _nmm_v0143_atlas_needed_canvas_preserve_all(atlas_text, base_w, base_h)
-
-    if _nmm_v0143_original_sanitize_atlas is None:
-        return atlas_text, needed_w, needed_h, ['AtlasPreserveFix activo']
-
-    try:
-        old_result = _nmm_v0143_original_sanitize_atlas(*args, **kwargs)
-    except Exception:
-        # If Claude's old sanitizer crashes, preserve atlas and return the common shape.
-        return atlas_text, needed_w, needed_h, ['AtlasPreserveFix: sanitizer antiguo omitido']
-    return _nmm_v0143_replace_result_shape(old_result, atlas_text, needed_w, needed_h)
-# --- end NMM v0.14.3 Atlas PreserveFix -------------------------------------
-'''
+          append = textwrap.dedent(r'''
+              
+              # --- NMM v0.14.3 Atlas PreserveFix -----------------------------------------
+              # Do not delete atlas regions by suspicious names: the .skel may still need them.
+              # Preserve the original atlas and expand the transparent Spine canvas instead.
+              try:
+                  _nmm_v0143_original_sanitize_atlas = _sanitize_atlas
+              except NameError:
+                  _nmm_v0143_original_sanitize_atlas = None
+              import re as _nmm_v0143_re
+              
+              def _nmm_v0143_needed_canvas(atlas_text, base_w=0, base_h=0, hard_limit=8192):
+                  text = atlas_text or ''
+                  bw = int(base_w or 0)
+                  bh = int(base_h or 0)
+                  m = _nmm_v0143_re.search(r'(?im)^\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text)
+                  if (bw <= 0 or bh <= 0) and m:
+                      bw, bh = int(m.group(1)), int(m.group(2))
+                  need_w, need_h = max(1, bw), max(1, bh)
+                  for m in _nmm_v0143_re.finditer(r'(?im)^\s*bounds\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*$', text):
+                      x, y, w, h = map(int, m.groups())
+                      if w > 0 and h > 0:
+                          need_w = max(need_w, x + w)
+                          need_h = max(need_h, y + h)
+                  last_xy = None
+                  for line in text.splitlines():
+                      mxy = _nmm_v0143_re.match(r'\s*xy\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
+                      if mxy:
+                          last_xy = (int(mxy.group(1)), int(mxy.group(2)))
+                          continue
+                      ms = _nmm_v0143_re.match(r'\s*size\s*:\s*(-?\d+)\s*,\s*(-?\d+)\s*$', line)
+                      if ms and last_xy:
+                          x, y = last_xy
+                          w, h = int(ms.group(1)), int(ms.group(2))
+                          if w > 0 and h > 0:
+                              need_w = max(need_w, x + w)
+                              need_h = max(need_h, y + h)
+                          last_xy = None
+                  return max(1, min(int(need_w), hard_limit)), max(1, min(int(need_h), hard_limit))
+              
+              def _nmm_v0143_base_size(args, kwargs, atlas_text):
+                  for wk, hk in (('texture_width','texture_height'), ('tex_width','tex_height'), ('width','height'), ('base_width','base_height'), ('image_width','image_height')):
+                      if isinstance(kwargs.get(wk), int) and isinstance(kwargs.get(hk), int):
+                          return int(kwargs[wk]), int(kwargs[hk])
+                  for a in args[1:]:
+                      if isinstance(a, (tuple, list)) and len(a) >= 2 and isinstance(a[0], int) and isinstance(a[1], int):
+                          return int(a[0]), int(a[1])
+                  ints = [int(a) for a in args[1:] if isinstance(a, int)]
+                  if len(ints) >= 2:
+                      return ints[0], ints[1]
+                  return _nmm_v0143_needed_canvas(atlas_text, 0, 0)
+              
+              def _nmm_v0143_shape(result, atlas_text, need_w, need_h):
+                  if isinstance(result, dict):
+                      out = dict(result)
+                      for k in ('atlas_text', 'atlas', 'sanitized_atlas', 'spine_atlas_text'):
+                          if k in out: out[k] = atlas_text
+                      for k in ('width', 'atlas_width', 'canvas_width', 'needed_width', 'spine_width'):
+                          if isinstance(out.get(k), int): out[k] = need_w
+                      for k in ('height', 'atlas_height', 'canvas_height', 'needed_height', 'spine_height'):
+                          if isinstance(out.get(k), int): out[k] = need_h
+                      return out
+                  if isinstance(result, str):
+                      return atlas_text
+                  if not isinstance(result, (tuple, list)):
+                      return result
+                  seq = list(result)
+                  ret = tuple if isinstance(result, tuple) else list
+                  atlas_i = next((i for i,v in enumerate(seq) if isinstance(v, str) and ('bounds:' in v or '\nsize:' in v or '.png' in v)), None)
+                  if atlas_i is None:
+                      atlas_i = next((i for i,v in enumerate(seq) if isinstance(v, str)), None)
+                  if atlas_i is not None:
+                      seq[atlas_i] = atlas_text
+                  for i,v in enumerate(seq):
+                      if isinstance(v, tuple) and len(v) >= 2 and isinstance(v[0], int) and isinstance(v[1], int):
+                          seq[i] = (need_w, need_h) + tuple(v[2:])
+                      elif isinstance(v, list) and len(v) >= 2 and isinstance(v[0], int) and isinstance(v[1], int):
+                          v[0], v[1] = need_w, need_h
+                  start = (atlas_i + 1) if atlas_i is not None else 0
+                  for i in range(start, len(seq)-1):
+                      if isinstance(seq[i], int) and isinstance(seq[i+1], int):
+                          seq[i], seq[i+1] = need_w, need_h
+                          break
+                  return ret(seq)
+              
+              def _sanitize_atlas(*args, **kwargs):
+                  atlas_text = args[0] if args and isinstance(args[0], str) else ''
+                  if not atlas_text:
+                      for k in ('atlas_text', 'atlas', 'raw_atlas'):
+                          if isinstance(kwargs.get(k), str):
+                              atlas_text = kwargs[k]
+                              break
+                  bw, bh = _nmm_v0143_base_size(args, kwargs, atlas_text)
+                  need_w, need_h = _nmm_v0143_needed_canvas(atlas_text, bw, bh)
+                  if _nmm_v0143_original_sanitize_atlas is None:
+                      return atlas_text, need_w, need_h, ['AtlasPreserveFix activo']
+                  try:
+                      old = _nmm_v0143_original_sanitize_atlas(*args, **kwargs)
+                  except Exception:
+                      return atlas_text, need_w, need_h, ['AtlasPreserveFix: sanitizer antiguo omitido']
+                  return _nmm_v0143_shape(old, atlas_text, need_w, need_h)
+              # --- end NMM v0.14.3 Atlas PreserveFix -------------------------------------
+          ''')
 
           for p in files:
               s = p.read_text(encoding='utf-8', errors='ignore')
               p.with_suffix('.py.bak_v0143_atlaspreserve').write_text(s, encoding='utf-8')
-              # Fix Pillow padding bug without breaking other Image.* uses.
               if 'from PIL import Image' not in s and 'import PIL.Image' not in s:
                   marker = 'from __future__ import annotations\n'
-                  if marker in s:
-                      s = s.replace(marker, marker + 'from PIL import Image\n', 1)
-                  else:
-                      s = 'from PIL import Image\n' + s
+                  s = s.replace(marker, marker + 'from PIL import Image\n', 1) if marker in s else 'from PIL import Image\n' + s
+              s = s.replace('from PIL import Image as PILImage', 'from PIL import Image')
               s = s.replace('img.__class__.new(', 'Image.new(')
               s = s.replace('image.__class__.new(', 'Image.new(')
               s = s.replace('PILImage.new(', 'Image.new(')
-              # Make sure previous partial alias import does not leave Image undefined.
-              s = s.replace('from PIL import Image as PILImage', 'from PIL import Image')
               if 'NMM v0.14.3 Atlas PreserveFix' not in s:
-                  s = s.rstrip() + APPEND + '\n'
+                  s = s.rstrip() + append + '\n'
               s = s.replace('NIKKE Mod Manager v0.14 Classic Integrated Viewer', 'NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix')
               s = s.replace('Classic v0.14 Integrated Viewer', 'Classic v0.14.3 AtlasPreserveFix')
               p.write_text(s, encoding='utf-8')
@@ -240,7 +176,7 @@ def _sanitize_atlas(*args, **kwargs):
           for rel in ['VERSION.txt', 'LEEME_PRIMERO.txt']:
               p = target / rel
               old = p.read_text(encoding='utf-8', errors='ignore') if p.exists() else ''
-              p.write_text('NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix FULL\n\nCorrige Region not found in atlas: no elimina regiones raras del atlas. Conserva todas las regiones y expande el canvas transparente cuando el atlas supera la textura base. Tambien corrige el padding Pillow Image.new.\nInstalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
+              p.write_text('NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix FULL\n\nCorrige Region not found in atlas: conserva todas las regiones del atlas y expande el canvas transparente cuando el atlas supera la textura base. Tambien corrige el padding Pillow Image.new.\nInstalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.\n\n' + old, encoding='utf-8')
           print(target)
           PY
 
