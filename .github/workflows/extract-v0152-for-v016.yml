@@ -1,0 +1,66 @@
+name: Extract v0.15.2 sources for v0.16
+
+on:
+  push:
+    branches:
+      - nmm-v016-viewer-integration
+    paths:
+      - '.github/workflows/extract-v0152-for-v016.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  extract-source:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_ARTIFACT_ID: '10040876556'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: nmm-v016-viewer-integration
+
+      - name: Download v0.15.2 artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${SOURCE_ARTIFACT_ID}/zip" \
+            -o artifact.zip
+          rm -rf artifact extracted work_v016/base
+          mkdir -p artifact extracted work_v016/base
+          unzip -q artifact.zip -d artifact
+          appzip="$(find artifact -type f -name '*.zip' | head -n 1 || true)"
+          if [ -n "$appzip" ]; then
+            unzip -q "$appzip" -d extracted
+          else
+            cp -R artifact/* extracted/ || true
+          fi
+          root="$(dirname "$(dirname "$(find extracted -type f -path '*/web/app.js' | head -n 1)")")"
+          test -n "$root"
+          echo "APP_ROOT=$root"
+          mkdir -p work_v016/base/web work_v016/base/src work_v016/base/data
+          cp "$root/web/app.js" work_v016/base/web/app.js
+          cp "$root/web/index.html" work_v016/base/web/index.html
+          cp "$root/web/styles.css" work_v016/base/web/styles.css
+          cp "$root/src/preview.py" work_v016/base/src/preview.py
+          cp "$root/src/api.py" work_v016/base/src/api.py
+          cp "$root/app.py" work_v016/base/app.py
+          cp "$root/requirements.txt" work_v016/base/requirements.txt
+          cp "$root/VERSION.txt" work_v016/base/VERSION.txt
+          find "$root/web/assets/vendor" -maxdepth 2 -type f -printf '%P\t%s\n' | sort > work_v016/base/vendor-files.txt
+          printf '%s\n' "$root" > work_v016/base/source-root.txt
+
+      - name: Commit extracted text sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add work_v016/base
+          git commit -m "chore: snapshot v0.15.2 viewer sources" || exit 0
+          git push origin HEAD:nmm-v016-viewer-integration
