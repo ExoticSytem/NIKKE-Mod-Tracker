@@ -1,0 +1,68 @@
+NIKKE Mod Manager v0.15.2 Classic Integrated Viewer RegionFallback FULL
+
+Corrige Region not found in atlas: undefined.
+
+NIKKE Mod Manager v0.15.1 Classic Integrated Viewer VendorAttachmentFix FULL
+
+Parche directo a los runtimes vendor: el constructor Attachment ya no lanza error si name viene null; asigna un nombre seguro automático.
+Mantiene diagnóstico visible, atlas preserve, canvas expandido y fixes anteriores.
+
+NIKKE Mod Manager v0.15.0 Classic Integrated Viewer AttachmentSafe FULL
+
+Parche más agresivo para Attachment name must not be null: envuelve constructores y loader de attachments.
+Mantiene botón Copiar diagnóstico e incluye LAST_RUNTIME_STACK si vuelve a fallar.
+
+NIKKE Mod Manager v0.14.9 Classic Integrated Viewer RuntimeCompat FULL
+
+Agrega polyfill de attachments Spine faltantes: Point, BoundingBox, Path, Clipping, Region y AtlasAttachmentLoader.
+Mantiene diagnóstico visible y botón Copiar diagnóstico.
+
+NIKKE Mod Manager v0.14.8 Classic Integrated Viewer RuntimeDiagnosticTop FULL
+
+Versión diagnóstico con botón amarillo fijo arriba a la derecha para copiar el diagnóstico.
+Abre c015_00_aim; cuando falle, pulsa Copiar diagnóstico y pega el texto completo en el chat.
+
+NIKKE Mod Manager v0.14.7 Classic Integrated Viewer RuntimeDiagnostic FULL
+
+Esta version es diagnostico, no fix final. En Preview Alpha aparece un bloque amarillo llamado DIAGNOSTICO RUNTIME v0.14.7.
+Abre c015_00_aim, pulsa Copiar diagnostico y envia ese bloque completo.
+
+NIKKE Mod Manager v0.14.6 Classic Integrated Viewer MeshFallback FULL
+
+Corrige el bloqueo MeshAttachment class not available agregando fallback/polyfill de MeshAttachment y manteniendo fixes anteriores de atlas, secuencias y attachments null.
+Instalar limpio y ejecutar INSTALAR_Y_ABRIR.bat.
+
+NIKKE Mod Manager v0.14.5 Classic Integrated Viewer AttachmentNullFix FULL
+
+Parchea el runtime Spine para attachment name null, aliases de secuencia y atlas/canvas. Instalar limpio y ejecutar INSTALAR_Y_ABRIR.bat.
+
+NIKKE Mod Manager v0.14.4 Classic Integrated Viewer SequenceAttachFix FULL
+
+Corrige Attachment name must not be null, alias de secuencias body_t0000 -> body_t, y mantiene fixes de atlas/padding.
+Instalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.
+
+NIKKE Mod Manager v0.14.3 Classic Integrated Viewer AtlasPreserveFix FULL
+
+Corrige Region not found in atlas: conserva todas las regiones del atlas y expande el canvas transparente cuando el atlas supera la textura base. Tambien corrige el padding Pillow Image.new.
+Instalacion: descomprimir en carpeta nueva y ejecutar INSTALAR_Y_ABRIR.bat.
+
+NIKKE Mod Manager v0.14 Classic Integrated Viewer
+Base real: v0.11 Preview Alpha -> v0.13 Classic R8 Viewer LowLevel -> v0.14
+
+Cambio principal de v0.14 (fix del render Spine):
+- El atlas real de los mods de NIKKE usa lineas "bounds:x,y,w,h" por region,
+  no el formato clasico "xy:"/"size:" de libGDX/Spine. El codigo anterior
+  solo sabia leer xy/size, asi que el "padding" del canvas nunca se activaba
+  de verdad para bundles reales.
+- Ademas, algunos bundles traen un puñado de regiones con nombre
+  irreconocible (no siguen la convencion lowercase_con_guiones bajos del
+  resto del rig) cuyo bounds excede la textura por completo: eso es lo que
+  disparaba "frame does not fit inside the base Texture dimensions".
+- src/preview.py ahora valida cada region contra el tamaño real de la
+  textura exportada: las que entran se dejan igual, las que se salen por un
+  margen chico (redondeo del empaquetador) se conservan y el canvas se
+  agranda lo justo, y las que se salen por mucho o tienen nombre sospechoso
+  se descartan del atlas antes de mandarlo al visor (se listan en el aviso
+  de la vista previa, no se ocultan en silencio).
+- Se limpio web/app.js: quedan solo el viewer activo (antes "R8"), ya sin
+  los intentos R3/R7 que no se usaban.
