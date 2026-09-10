@@ -1,0 +1,508 @@
+from __future__ import annotations
+
+import os
+import re
+import shutil
+import sys
+from pathlib import Path
+
+
+def patch(root: Path) -> None:
+    appjs = root / "web" / "app.js"
+    index = root / "web" / "index.html"
+    styles = root / "web" / "styles.css"
+    preview = root / "src" / "preview.py"
+
+    # Frontend: remove the complete experimental LowLevel/Pixi patch chain.
+    js = appjs.read_text(encoding="utf-8", errors="ignore")
+    marker = "/* === Classic v0.15.2 AttachmentSafe:"
+    if marker not in js:
+        raise RuntimeError("Legacy viewer marker not found in app.js")
+    js = js.split(marker, 1)[0].rstrip() + "\n\n"
+    js = js.replace("preview_mod:'Vista previa experimental'", "preview_mod:'Visor Spine'")
+    js = js.replace("preview_loading:'Montando modelo Spine del mod normal...'", "preview_loading:'Cargando modelo Spine...'")
+    js = js.replace("preview_title:'Preview Alpha'", "preview_title:'Visor Spine'")
+    js = js.replace("preview_mod:'Experimental preview'", "preview_mod:'Spine viewer'")
+    js = js.replace("preview_loading:'Mounting normal mod Spine model...'", "preview_loading:'Loading Spine model...'")
+
+    viewer_js = r'''
+/* === NMM v0.16.0: integrated NIKKE SpinePlayer viewer ======================
+   One rendering path only. No region guessing, attachment fabrication or
+   Pixi LowLevel fallback chain. Atlas pages are loaded by their real names. */
+(() => {
+  let v16Player = null;
+  let v16Data = null;
+  let v16Runtime = '4.1';
+  let v16Pma = true;
+  let v16Tried = new Set();
+
+  function v16Dispose(){
+    try { if (v16Player && typeof v16Player.dispose === 'function') v16Player.dispose(); } catch(_e) {}
+    v16Player = null;
+  }
+  function v16Status(text, bad=false){
+    const el=document.getElementById('v16SpineStatus');
+    if(!el) return;
+    el.textContent=String(text||'');
+    el.classList.toggle('v16-bad',!!bad);
+  }
+  function v16RuntimeObject(ver){
+    return String(ver).startsWith('4.0') ? window.spine40 : window.spine41;
+  }
+  function v16DetectedRuntime(r){
+    const v=String(r?.spine_version_hint||'');
+    if(v.startsWith('4.0')) return '4.0';
+    if(v.startsWith('4.1')) return '4.1';
+    return '4.1';
+  }
+  function v16SetRuntimeButtons(){
+    document.querySelectorAll('[data-v16-runtime]').forEach(b=>b.classList.toggle('active',b.dataset.v16Runtime===v16Runtime));
+    const p=document.getElementById('v16Pma'); if(p) p.checked=v16Pma;
+  }
+  function v16ShowTexture(reason){
+    v16Dispose();
+    const host=document.getElementById('v16SpineHost');
+    const img=document.getElementById('v16TextureFallback');
+    if(host) host.classList.add('hidden');
+    if(img) img.classList.remove('hidden');
+    v16Status(reason||'Se muestra la textura extraída como respaldo.',true);
+  }
+  function v16Mount(ver, allowAutoFallback=true){
+    if(!v16Data) return;
+    v16Runtime=String(ver).startsWith('4.0')?'4.0':'4.1';
+    v16SetRuntimeButtons();
+    const runtime=v16RuntimeObject(v16Runtime);
+    const host=document.getElementById('v16SpineHost');
+    const img=document.getElementById('v16TextureFallback');
+    if(!host) return;
+    if(img) img.classList.add('hidden');
+    host.classList.remove('hidden');
+    v16Dispose();
+    host.innerHTML='';
+    if(!runtime || typeof runtime.SpinePlayer!=='function'){
+      v16ShowTexture(`Runtime Spine ${v16Runtime} no disponible.`);
+      return;
+    }
+    v16Tried.add(v16Runtime);
+    v16Status(`Cargando atlas real con Spine ${v16Runtime}${v16Pma?' · PMA':' · sin PMA'}...`);
+    try {
+      v16Player=new runtime.SpinePlayer('v16SpineHost',{
+        skelUrl:v16Data.spine_skel_url,
+        atlasUrl:v16Data.spine_atlas_url,
+        backgroundColor:'05080d',
+        alpha:false,
+        showControls:true,
+        showLoading:true,
+        premultipliedAlpha:v16Pma,
+        preserveDrawingBuffer:true,
+        success:function(player){
+          v16Player=player;
+          try{ player.play(); }catch(_e){}
+          const pages=Array.isArray(v16Data.spine_atlas_pages)?v16Data.spine_atlas_pages.length:0;
+          v16Status(`Modelo cargado · Spine ${v16Runtime} · ${pages} página${pages===1?'':'s'} de textura${v16Pma?' · PMA':''}`);
+        },
+        error:function(player,reason){
+          try{ if(player&&typeof player.dispose==='function') player.dispose(); }catch(_e){}
+          const other=v16Runtime==='4.1'?'4.0':'4.1';
+          if(allowAutoFallback && !v16Tried.has(other)){
+            v16Status(`Spine ${v16Runtime} no pudo abrirlo. Probando ${other}...`);
+            setTimeout(()=>v16Mount(other,false),25);
+            return;
+          }
+          v16ShowTexture(`No se pudo montar el Spine: ${reason||'runtime incompatible'}. Puedes probar 4.0/4.1 o cambiar PMA.`);
+        }
+      });
+    } catch(err){
+      const other=v16Runtime==='4.1'?'4.0':'4.1';
+      if(allowAutoFallback && !v16Tried.has(other)) setTimeout(()=>v16Mount(other,false),25);
+      else v16ShowTexture(`Error Spine ${v16Runtime}: ${err?.message||err}`);
+    }
+  }
+
+  window.closePreview=function(){
+    v16Dispose(); v16Data=null; v16Tried.clear();
+    const modal=document.getElementById('previewModal'); if(modal) modal.classList.add('hidden');
+  };
+
+  window.openPreview=async function(itemId){
+    const m=state?.items?.find(x=>x.item_id===itemId);
+    const pc=document.getElementById('previewContent'), pm=document.getElementById('previewModal');
+    if(!pc||!pm) return;
+    v16Dispose(); v16Data=null; v16Tried.clear();
+    pc.innerHTML=`<div class="preview-loading"><div class="preview-spinner">↻</div><h2>${esc(t('preview_title'))}</h2><p>${esc(t('preview_loading'))}</p>${m?`<div class="preview-mod-label">${esc(m.mod_title||m.name)}</div>`:''}</div>`;
+    pm.classList.remove('hidden');
+    try{
+      const r=await apiCall('preview_item',itemId);
+      if(!r?.ok){
+        pc.innerHTML=`<div class="preview-error"><div class="preview-error-icon">⚠</div><h2>${esc(t('preview_title'))}</h2><p>${esc(t('preview_failed',{error:r?.error||'—'}))}</p><div class="detail-path">${esc(r?.path||m?.path||'')}</div></div>`;
+        return;
+      }
+      v16Data=r;
+      const pages=Array.isArray(r.spine_atlas_pages)?r.spine_atlas_pages:[];
+      const resolved=Array.isArray(r.spine_pages_resolved)?r.spine_pages_resolved:[];
+      const missing=Array.isArray(r.spine_pages_missing)?r.spine_pages_missing:[];
+      const canSpine=!!(r.spine_ready&&r.spine_skel_url&&r.spine_atlas_url);
+      const hint=String(r.spine_version_hint||'desconocida');
+      pc.innerHTML=`
+        <div class="preview-head v16-head"><div><div class="preview-kicker">NMM v0.16 · NIKKE SpinePlayer</div><h2>${esc(r.mod_name||m?.mod_title||m?.name||'Mod')}</h2><div class="preview-sub">${esc(r.character_name||m?.character_name||'')} · ID ${esc(r.id||m?.id||'')} · Ver ${esc(r.version||m?.version||'')} · ${esc(actionLabel(r.action||m?.action||''))}</div></div><span class="preview-alpha-badge">SPINE</span></div>
+        <div class="v16-toolbar">
+          <span>Runtime</span><button class="v16-runtime" data-v16-runtime="4.1">4.1</button><button class="v16-runtime" data-v16-runtime="4.0">4.0</button>
+          <label class="v16-pma"><input id="v16Pma" type="checkbox" checked> PMA</label>
+          <button id="v16Reload" class="v16-runtime">↻ Recargar</button>
+          <button id="v16Texture" class="v16-runtime">Textura</button>
+          <span class="v16-hint">Detectado: ${esc(hint)}</span>
+        </div>
+        <div class="v16-stage"><div id="v16SpineHost" class="v16-spine-host"></div><img id="v16TextureFallback" class="v16-texture hidden" src="${esc(r.preview_url||'')}" alt="Texture fallback"></div>
+        <div id="v16SpineStatus" class="v16-status">${canSpine?'Preparando visor...':esc(r.warning||'No hay atlas + skel utilizables.')}</div>
+        <div class="preview-meta-grid v16-meta"><div><b>Atlas</b><span>${esc(r.spine_atlas_name||'—')} · ${pages.length} página(s)</span></div><div><b>Texturas</b><span>${resolved.length}/${pages.length||resolved.length} resueltas${missing.length?` · faltan ${esc(missing.join(', '))}`:''}</span></div><div><b>Skeleton</b><span>${esc(r.spine_skel_name||'—')} · v${esc(hint)}</span></div><div><b>${esc(t('preview_source'))}</b><span title="${esc(r.source_file||'')}">${esc(r.source_file||'—')}</span></div></div>`;
+      document.querySelectorAll('[data-v16-runtime]').forEach(b=>b.onclick=()=>{v16Tried.clear();v16Mount(b.dataset.v16Runtime,false);});
+      document.getElementById('v16Pma').onchange=e=>{v16Pma=!!e.target.checked;v16Tried.clear();v16Mount(v16Runtime,false);};
+      document.getElementById('v16Reload').onclick=()=>{v16Tried.clear();v16Mount(v16Runtime,false);};
+      document.getElementById('v16Texture').onclick=()=>v16ShowTexture('Mostrando la textura de respaldo.');
+      if(canSpine){ v16Pma=true; v16Runtime=v16DetectedRuntime(r); v16SetRuntimeButtons(); setTimeout(()=>v16Mount(v16Runtime,true),25); }
+      else v16ShowTexture(r.warning||'El bundle no contiene un Spine completo que pueda montar.');
+    }catch(err){
+      pc.innerHTML=`<div class="preview-error"><div class="preview-error-icon">⚠</div><h2>${esc(t('preview_title'))}</h2><p>${esc(err?.message||err)}</p></div>`;
+    }
+  };
+})();
+/* === end NMM v0.16.0 ===================================================== */
+'''
+    appjs.write_text(js + viewer_js + "\n", encoding="utf-8")
+
+    # HTML: vendor both runtimes, remove old Pixi loader scripts.
+    html = index.read_text(encoding="utf-8", errors="ignore")
+    html = html.replace(
+        '<link rel="stylesheet" href="styles.css" />',
+        '<link rel="stylesheet" href="assets/vendor/spineplayer/spine-player.css" />\n  <link rel="stylesheet" href="styles.css" />',
+    )
+    html = re.sub(
+        r'\s*<script src="assets/vendor/pixi\.min\.js"></script>\s*<script src="assets/vendor/pixi-spine\.umd\.js"></script>',
+        '\n  <script src="assets/vendor/spineplayer/spine-player40.js"></script>\n  <script src="assets/vendor/spineplayer/spine-player41.js"></script>',
+        html,
+    )
+    html = html.replace("v0.13 Classic R3 Spine", "v0.16 SpinePlayer")
+    index.write_text(html, encoding="utf-8")
+
+    # Backend: keep NKAB + UnityPy extraction, replace only generate().
+    py = preview.read_text(encoding="utf-8", errors="ignore")
+    sig = "    def generate(self, target: Path, item_id: str, action: str = '') -> dict[str, Any]:"
+    if sig not in py:
+        raise RuntimeError("ModPreviewEngine.generate signature not found")
+    prefix = py.split(sig, 1)[0]
+    prefix = prefix.replace("h.update(b'classic-v0-14-atlas-sanitize-001')", "h.update(b'v0-16-spineplayer-multipage-001')")
+
+    new_generate = r'''    def generate(self, target: Path, item_id: str, action: str = '') -> dict[str, Any]:
+        cache_key = self._fingerprint(target, item_id, action)
+        image_path = self.output_dir / f'{cache_key}.png'
+        meta_path = self.output_dir / f'{cache_key}.json'
+        if image_path.exists() and meta_path.exists():
+            try:
+                meta = json.loads(meta_path.read_text(encoding='utf-8'))
+                if isinstance(meta, dict) and meta.get('preview_version') == 'v0_16_spineplayer_multipage':
+                    meta['cached'] = True
+                    meta['preview_url'] = f'assets/previews/{image_path.name}'
+                    return meta
+            except Exception:
+                pass
+        try:
+            import UnityPy
+        except Exception as exc:
+            raise PreviewError('Falta UnityPy. Cierra la app y ejecuta INSTALAR_Y_ABRIR.bat para instalar dependencias.') from exc
+
+        def norm_name(value: str) -> str:
+            stem = Path(str(value or '').replace('\\', '/')).stem.lower()
+            return re.sub(r'[^a-z0-9]+', '', stem)
+
+        def page_specs(text: str) -> list[dict[str, Any]]:
+            lines = (text or '').replace('\r\n', '\n').replace('\r', '\n').split('\n')
+            specs: list[dict[str, Any]] = []
+            for i, line in enumerate(lines):
+                raw = line.strip()
+                if not raw or ':' in raw or not raw.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
+                    continue
+                w = h = 0
+                for nxt in lines[i + 1:i + 7]:
+                    m = re.match(r'^\s*size\s*:\s*(\d+)\s*,\s*(\d+)\s*$', nxt, re.I)
+                    if m:
+                        w, h = int(m.group(1)), int(m.group(2))
+                        break
+                    if nxt.strip() and ':' not in nxt:
+                        break
+                specs.append({'name': raw, 'width': w, 'height': h})
+            if not specs:
+                specs = [{'name': name, 'width': 0, 'height': 0} for name in _atlas_page_names(text)]
+            out: list[dict[str, Any]] = []
+            seen: set[str] = set()
+            for spec in specs:
+                if spec['name'] not in seen:
+                    seen.add(spec['name'])
+                    out.append(spec)
+            return out
+
+        def safe_page_path(page: str, index: int) -> Path:
+            raw = str(page or '').replace('\\', '/').strip('/')
+            parts = []
+            for part in raw.split('/'):
+                if not part or part in {'.', '..'}:
+                    continue
+                parts.append(_clean_filename(part, f'page_{index}'))
+            if not parts:
+                parts = [f'page_{index}.png']
+            return Path(*parts)
+
+        def detect_spine_version(payload: bytes) -> str:
+            text = payload[:1024].decode('latin-1', errors='ignore')
+            for pat in (r'4\.1(?:\.\d+)?', r'4\.0(?:\.\d+)?', r'4\.2(?:\.\d+)?', r'3\.8(?:\.\d+)?'):
+                m = re.search(pat, text)
+                if m:
+                    return m.group(0)
+            return ''
+
+        def texture_score(cand: dict[str, Any], spec: dict[str, Any], used: set[int], idx: int) -> int:
+            cn = norm_name(str(cand.get('name', '')))
+            pn = norm_name(spec.get('name', ''))
+            score = 0
+            if cn and pn and cn == pn:
+                score += 10000
+            elif cn and pn and (cn in pn or pn in cn):
+                score += 6000
+            cw, ch = int(cand.get('width') or 0), int(cand.get('height') or 0)
+            pw, ph = int(spec.get('width') or 0), int(spec.get('height') or 0)
+            if pw and ph:
+                if cw == pw and ch == ph:
+                    score += 3500
+                elif cw == ph and ch == pw:
+                    score += 800
+                else:
+                    score += max(0, 1200 - (abs(cw - pw) + abs(ch - ph)))
+            if action and action.lower() in str(cand.get('name', '')).lower():
+                score += 150
+            score += 500 if idx not in used else -5000
+            return score
+
+        def save_texture(img, path: Path) -> None:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            suffix = path.suffix.lower()
+            if suffix in {'.jpg', '.jpeg'}:
+                img.convert('RGB').save(path, format='JPEG', quality=95)
+            elif suffix == '.webp':
+                img.save(path, format='WEBP', lossless=True)
+            else:
+                img.save(path, format='PNG', optimize=True)
+
+        attempts: list[str] = []
+        last_error: Exception | None = None
+        for source_name, raw in _raw_candidates(target):
+            if not raw:
+                continue
+            attempts.append(source_name)
+            try:
+                plain, nkab_version = decrypt_nkab(raw)
+                env = UnityPy.load(plain)
+                textures: list[dict[str, Any]] = []
+                atlases: list[tuple[str, bytes]] = []
+                skels: list[tuple[str, bytes]] = []
+                character_id = ''
+                pose = ''
+                skin_key: int | None = None
+                for obj in env.objects:
+                    type_name = getattr(getattr(obj, 'type', None), 'name', '')
+                    if type_name == 'Texture2D':
+                        try:
+                            data = _object_data(obj)
+                            width = int(getattr(data, 'm_Width', 0) or getattr(data, 'width', 0) or 0)
+                            height = int(getattr(data, 'm_Height', 0) or getattr(data, 'height', 0) or 0)
+                            image = data.image
+                            if image is None:
+                                continue
+                            if image.mode != 'RGBA':
+                                image = image.convert('RGBA')
+                            textures.append({'area': max(1, width) * max(1, height), 'data': data, 'name': _texture_name(data), 'width': width, 'height': height, 'image': image})
+                        except Exception:
+                            continue
+                    elif type_name == 'TextAsset':
+                        try:
+                            data = _object_data(obj)
+                            name = _text_asset_name(data)
+                            payload = _text_asset_bytes(data)
+                            if not payload:
+                                continue
+                            if _looks_like_atlas(name, payload):
+                                atlases.append((name or f'atlas_{len(atlases)}.atlas', payload))
+                                m = self.ATLAS_NAME_RE.match(name or '')
+                                if m:
+                                    character_id = m.group(1)
+                                    pose = m.group(2) or 'idle'
+                                    try:
+                                        skin_key = int(m.group(3))
+                                    except Exception:
+                                        skin_key = None
+                            elif _looks_like_skel(name, payload):
+                                skels.append((name or f'skeleton_{len(skels)}.skel', payload))
+                        except Exception:
+                            continue
+                if not textures:
+                    raise PreviewError('El bundle se abrió, pero no contiene Texture2D que pueda mostrar.')
+                textures.sort(key=lambda x: int(x['area']), reverse=True)
+
+                atlas_name = ''
+                atlas_text = ''
+                if atlases:
+                    atlas_name, atlas_payload = sorted(atlases, key=lambda x: _score_asset(x[0], action), reverse=True)[0]
+                    atlas_text = _decode_atlas(atlas_payload)
+                skel_name = ''
+                skel_payload = b''
+                if skels:
+                    skel_name, skel_payload = sorted(skels, key=lambda x: _score_asset(x[0], action), reverse=True)[0]
+
+                specs = page_specs(atlas_text) if atlas_text else []
+                asset_dir = self.output_dir / f'{cache_key}_spine'
+                if asset_dir.exists():
+                    shutil.rmtree(asset_dir, ignore_errors=True)
+                asset_dir.mkdir(parents=True, exist_ok=True)
+                used: set[int] = set()
+                resolved: list[dict[str, Any]] = []
+                missing: list[str] = []
+                first_image = None
+                texture_urls: dict[str, str] = {}
+                for page_index, spec in enumerate(specs):
+                    scores = [(texture_score(c, spec, used, i), i, c) for i, c in enumerate(textures)]
+                    scores.sort(key=lambda x: (x[0], int(x[2]['area'])), reverse=True)
+                    best_score, best_i, best = scores[0]
+                    if len(specs) > 1 and best_score < 1000:
+                        missing.append(spec['name'])
+                        continue
+                    used.add(best_i)
+                    rel = safe_page_path(spec['name'], page_index)
+                    out = asset_dir / rel
+                    save_texture(best['image'], out)
+                    if first_image is None:
+                        first_image = best['image']
+                    url = f"assets/previews/{asset_dir.name}/{rel.as_posix()}"
+                    texture_urls[spec['name']] = url
+                    resolved.append({'page': spec['name'], 'texture': str(best['name']), 'width': int(best['width']), 'height': int(best['height']), 'url': url, 'score': best_score})
+
+                primary_image = first_image or textures[0]['image']
+                fallback = primary_image.copy()
+                bbox = fallback.getbbox()
+                if bbox:
+                    fallback = fallback.crop(bbox)
+                fallback.save(image_path, format='PNG', optimize=True)
+                if atlas_text:
+                    (asset_dir / 'model.atlas').write_text(atlas_text, encoding='utf-8', errors='replace')
+                if skel_payload:
+                    (asset_dir / 'model.skel').write_bytes(skel_payload)
+
+                page_names = [s['name'] for s in specs]
+                spine_ready = bool(atlas_text and skel_payload and page_names and not missing and len(resolved) == len(page_names))
+                version_hint = detect_spine_version(skel_payload) if skel_payload else ''
+                warnings: list[str] = []
+                if spine_ready:
+                    warnings.append(f'Visor v0.16: {len(resolved)} página(s) del atlas vinculada(s) a sus Texture2D reales.')
+                else:
+                    if not atlas_text:
+                        warnings.append('No se encontró atlas.')
+                    if not skel_payload:
+                        warnings.append('No se encontró skeleton .skel.')
+                    if not page_names and atlas_text:
+                        warnings.append('El atlas no declaró páginas de textura reconocibles.')
+                    if missing:
+                        warnings.append('Faltan páginas de textura: ' + ', '.join(missing[:8]))
+
+                result: dict[str, Any] = {
+                    'ok': True,
+                    'preview_version': 'v0_16_spineplayer_multipage',
+                    'preview_url': f'assets/previews/{image_path.name}',
+                    'cached': False,
+                    'source_file': source_name,
+                    'nkab_version': nkab_version,
+                    'texture_name': str(textures[0]['name']),
+                    'texture_width': int(textures[0]['width']),
+                    'texture_height': int(textures[0]['height']),
+                    'texture_count': len(textures),
+                    'atlas_names': [x[0] for x in atlases[:12]],
+                    'skeleton_names': [x[0] for x in skels[:12]],
+                    'character_id_detected': character_id,
+                    'pose_detected': pose,
+                    'skin_key_detected': skin_key,
+                    'attempted_files': len(attempts),
+                    'preview_kind': 'v0_16_spineplayer' if spine_ready else 'texture_fallback',
+                    'spine_ready': spine_ready,
+                    'spine_canvas': spine_ready,
+                    'spine_texture_url': resolved[0]['url'] if resolved else '',
+                    'spine_texture_urls': texture_urls,
+                    'spine_atlas_url': f'assets/previews/{asset_dir.name}/model.atlas' if atlas_text else '',
+                    'spine_skel_url': f'assets/previews/{asset_dir.name}/model.skel' if skel_payload else '',
+                    'spine_atlas_text': atlas_text,
+                    'spine_skel_b64': base64.b64encode(skel_payload).decode('ascii') if skel_payload else '',
+                    'spine_canvas_width': int(primary_image.width),
+                    'spine_canvas_height': int(primary_image.height),
+                    'spine_atlas_pages': page_names,
+                    'spine_pages_resolved': resolved,
+                    'spine_pages_missing': missing,
+                    'spine_atlas_name': atlas_name,
+                    'spine_skel_name': skel_name,
+                    'spine_dropped_regions': [],
+                    'spine_version_hint': version_hint,
+                    'action_hint': action,
+                    'warning': ' '.join(warnings),
+                }
+                meta_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
+                return result
+            except Exception as exc:
+                last_error = exc
+                continue
+        detail = str(last_error) if last_error else 'ningún archivo candidato pudo abrirse'
+        raise PreviewError(f'No pude extraer datos compatibles de este mod. Último error: {detail}')
+'''
+    preview.write_text(prefix + new_generate + "\n", encoding="utf-8")
+
+    css = styles.read_text(encoding="utf-8", errors="ignore")
+    css += r'''
+
+/* NMM v0.16 integrated SpinePlayer */
+.v16-head{margin-bottom:0}.v16-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#0f1928;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.v16-toolbar>span:first-child{font-size:11px;font-weight:800;letter-spacing:.08em;color:#8fa3bd;text-transform:uppercase}.v16-runtime{border:1px solid rgba(255,255,255,.16);background:#182538;color:#dce8f7;border-radius:8px;padding:7px 11px;cursor:pointer;font-weight:700}.v16-runtime:hover,.v16-runtime.active{background:#263c59;border-color:#66a7ff}.v16-pma{display:flex;align-items:center;gap:6px;padding:0 4px;color:#dce8f7;font-size:12px}.v16-hint{margin-left:auto;color:#8fa3bd;font-size:12px}.v16-stage{height:min(68vh,680px);min-height:520px;background:#05080d;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}.v16-spine-host{width:100%;height:100%;min-height:520px}.v16-spine-host .spine-player{width:100%!important;height:100%!important}.v16-spine-host canvas{max-width:100%;max-height:100%}.v16-texture{max-width:100%;max-height:100%;object-fit:contain}.v16-status{padding:9px 14px;background:#101b2a;border-top:1px solid rgba(255,255,255,.08);color:#a9d2ff;font-size:12px}.v16-status.v16-bad{color:#ffd184}.v16-meta{margin-top:0}.hidden{display:none!important}
+'''
+    styles.write_text(css, encoding="utf-8")
+
+    # Remove old viewer-only runtimes.
+    vend = root / "web" / "assets" / "vendor"
+    for p in list(vend.glob("pixi*.js")) + list(vend.glob("nikke-spine-runtime*.js")):
+        try:
+            p.unlink()
+        except FileNotFoundError:
+            pass
+    viewer_dir = vend / "viewer"
+    if viewer_dir.exists():
+        shutil.rmtree(viewer_dir)
+
+    version = root / "VERSION.txt"
+    old = version.read_text(encoding="utf-8", errors="ignore") if version.exists() else ""
+    version.write_text(
+        "NIKKE Mod Manager v0.16.0 Integrated SpinePlayer FULL\n\n"
+        "- Reemplaza el visor Pixi/LowLevel y la cadena de parches v0.14-v0.15 por Spine Web Player.\n"
+        "- Runtime NIKKE 4.0 y 4.1 integrado, con selección manual y PMA.\n"
+        "- Atlas multipágina: cada página usa su Texture2D real; ya no se duplica una sola textura bajo todos los nombres.\n"
+        "- Atlas y regiones se conservan sin inventar attachments ni regiones fallback.\n"
+        "- Fallback visual a textura si el bundle no trae un Spine completo.\n\n" + old,
+        encoding="utf-8",
+    )
+
+    finaljs = appjs.read_text(encoding="utf-8")
+    finalhtml = index.read_text(encoding="utf-8")
+    finalpy = preview.read_text(encoding="utf-8")
+    assert "r8BuildSkeletonData" not in finaljs
+    assert "__NMM_V0152_REGIONFALLBACK__" not in finaljs
+    assert "NMM v0.16.0" in finaljs
+    assert "spine-player40.js" in finalhtml and "spine-player41.js" in finalhtml
+    assert "pixi-spine.umd.js" not in finalhtml
+    assert "v0_16_spineplayer_multipage" in finalpy
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        raise SystemExit("usage: build_v016_patch.py <app-root>")
+    patch(Path(sys.argv[1]))
+    print("v0.16 viewer replacement applied successfully")
