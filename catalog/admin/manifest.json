@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-20c12c8407f8",
-  "published_at": "2026-09-11T23:15:16.526082Z",
+  "catalog_revision": "admin-fecab3b7939b",
+  "published_at": "2026-09-11T23:15:31.909247Z",
   "publication_note": "",
   "approved_characters": 548,
   "aliases": 0,
@@ -9,17 +9,17 @@
     {
       "path": "aliases.json",
       "size": 63,
-      "sha256": "a8eca2f64c8d63c35dbc04767b58eb68e51f054c575b7a04822c752bd2a85a5c"
+      "sha256": "a0baa9439d3d199f19fc1dd8e25b2b0198d0e2d437ef41c01ced349919cc63cc"
     },
     {
       "path": "catalog_package.json",
       "size": 178190,
-      "sha256": "aa585949be4afbac5993268b9d8efa9d7077b1323642bc0a04545b79fd9b0734"
+      "sha256": "b15806546608f4a42fd3ce05b5709b14b1836619d96a2f1158a1145035e37f83"
     },
     {
       "path": "characters.json",
       "size": 138711,
-      "sha256": "4a75ef6097bd862a2f09aaf96ede8183cd79c368a78c97fee84502fd4cd680af"
+      "sha256": "ae9e5ba2e8871a5068a12d8eace54bff6c1cc5826292067208201d183d0aaed7"
     },
     {
       "path": "images/010_00.png",
