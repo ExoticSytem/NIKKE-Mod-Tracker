@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-fecab3b7939b",
-  "generated_at": "2026-09-11T23:15:31.906754Z",
+  "catalog_revision": "admin-cdb53a6b5217",
+  "generated_at": "2026-09-11T23:32:07.628046Z",
   "characters": [
     {
       "id": "010",
@@ -22,14 +22,18 @@
         "normalization": {
           "width": 900,
           "height": 1200,
-          "source_width": 463,
-          "source_height": 1048,
-          "scale": 1.0419847328244274
+          "source_width": 501,
+          "source_height": 1130,
+          "scale": 1.0194690265486726,
+          "margin_x": 27,
+          "margin_y": 24,
+          "output_width": 511,
+          "output_height": 1152
         }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": "2026-09-11T23:06:20.994238Z"
+      "updated_at": "2026-09-11T23:31:59.387336Z"
     },
     {
       "id": "010",
