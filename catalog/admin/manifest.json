@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "catalog_revision": "admin-20c12c8407f8",
+  "published_at": "2026-09-11T23:15:16.526082Z",
+  "publication_note": "",
+  "approved_characters": 548,
+  "aliases": 0,
+  "files": [
+    {
+      "path": "aliases.json",
+      "size": 63,
+      "sha256": "a8eca2f64c8d63c35dbc04767b58eb68e51f054c575b7a04822c752bd2a85a5c"
+    },
+    {
+      "path": "catalog_package.json",
+      "size": 178190,
+      "sha256": "aa585949be4afbac5993268b9d8efa9d7077b1323642bc0a04545b79fd9b0734"
+    },
+    {
+      "path": "characters.json",
+      "size": 138711,
+      "sha256": "4a75ef6097bd862a2f09aaf96ede8183cd79c368a78c97fee84502fd4cd680af"
+    },
+    {
+      "path": "images/010_00.png",
+      "size": 509775,
+      "sha256": "832fae453fa6129d7ac29a4f6e590006696755d805288fb0c9f3612e8dfdfa0b"
+    }
+  ],
+  "distribution": {
+    "provider": "github_raw",
+    "base_url": "https://raw.githubusercontent.com/ExoticSytem/NIKKE-Mod-Tracker/main/catalog/admin",
+    "manifest_url": "https://raw.githubusercontent.com/ExoticSytem/NIKKE-Mod-Tracker/main/catalog/admin/manifest.json",
+    "owner": "ExoticSytem",
+    "repo": "NIKKE-Mod-Tracker",
+    "branch": "main",
+    "path": "catalog/admin"
+  }
+}
