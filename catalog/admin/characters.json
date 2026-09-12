@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-ea84dd82cd9f",
+  "catalog_version": "admin-0778e3029508",
   "count": 549,
   "characters": [
     {
@@ -54,8 +54,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/011_01.png",
+      "image_sha256": "c20a322477708d9cc0054760b1a7690c4d76e2430419d60e5a2644a167b1ad1a"
     },
     {
       "id": "012",
@@ -65,8 +65,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/012_00.png",
+      "image_sha256": "4dd13e85aefbddb93866ea9f1fafb9e9a02060c93506b2b57f372f76baf8840e"
     },
     {
       "id": "013",
@@ -87,8 +87,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/014_00.png",
+      "image_sha256": "b27b7133fa85f65f187c5b7cebc5dd21530bbdbc71a01409807e7a4eac280a4e"
     },
     {
       "id": "015",
@@ -98,8 +98,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/015_00.png",
+      "image_sha256": "e3f7a011bead9b414b8cd92861beb24f5075b25f1078fee8584bbd347c2a944b"
     },
     {
       "id": "016",
@@ -109,8 +109,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/016_00.png",
+      "image_sha256": "5ffcdeafabee729a96f2a13797d62ca551274ba9d77970e582de287de5e3cc70"
     },
     {
       "id": "016",
@@ -120,8 +120,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/016_01.png",
+      "image_sha256": "c1e7070d968e436330fc6db7dcd37d782f8b9f62a8aabfa457d99be95949ec84"
     },
     {
       "id": "016",
@@ -131,8 +131,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/016_02.png",
+      "image_sha256": "e9203012182a3fafc8c2e2629965d9d62d442576fe2dee51c9047748a7282cc9"
     },
     {
       "id": "016",
@@ -142,8 +142,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/016_03.png",
+      "image_sha256": "030963c6c60e2a5e21d1895ad2c45e903dac6e54159d79cf576584e438fdf9dd"
     },
     {
       "id": "017",
@@ -153,8 +153,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/017_00.png",
+      "image_sha256": "191aa94849fcbabaac5bc152e79dbd4c737818e1c32a24a4ab918d6663ee433f"
     },
     {
       "id": "017",
@@ -164,8 +164,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/017_01.png",
+      "image_sha256": "9d3b9269922d84ea485367540d8feb1210dc42809c0f686322915f4bfa81617e"
     },
     {
       "id": "017",
@@ -175,8 +175,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/017_02.png",
+      "image_sha256": "949c75ff3a59c06e44d186d61de4a72891592c72551aa1882dec31bd7137e1f9"
     },
     {
       "id": "018",
@@ -186,8 +186,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/018_00.png",
+      "image_sha256": "dda5ff4e0e7dc49a1e20a87b7e5beeef9fd0d7d737d173f771639739415d189d"
     },
     {
       "id": "020",
@@ -197,8 +197,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/020_00.png",
+      "image_sha256": "e1795a50dc938d323b56ad1a180f13fe3b2db84a44b0b380d0c0540f07471f5c"
     },
     {
       "id": "022",
@@ -208,8 +208,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/022_00.png",
+      "image_sha256": "cc0378c4a5e8728860c910e7b0eb3eff17775669f6bfee8fd17cc1a276d83a03"
     },
     {
       "id": "022",
@@ -219,8 +219,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/022_01.png",
+      "image_sha256": "38b04f1bd2c4960f330287083dee26741dae7adefab8097df9c864d2f7587d41"
     },
     {
       "id": "023",
@@ -230,8 +230,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/023_00.png",
+      "image_sha256": "0ca8429fcc23360f1cb6415ac61d60045e5f75a59bbbad6c19682efaed1816d6"
     },
     {
       "id": "030",
@@ -241,8 +241,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/030_00.png",
+      "image_sha256": "729264298eb1047d7784725d337873617395811485e1009ee6b0f7af73e86eef"
     },
     {
       "id": "030",
@@ -252,8 +252,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/030_01.png",
+      "image_sha256": "579ef755dc3bc11902dc2e7e3cdd2f27fa1cfe9cdad8e4eab17fea121b7f944f"
     },
     {
       "id": "030",
@@ -263,8 +263,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/030_02.png",
+      "image_sha256": "3c580fc3b564d3616c2e03b123dca99c8f726155eef9fda1b32a400713c843e4"
     },
     {
       "id": "032",
@@ -274,8 +274,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/032_00.png",
+      "image_sha256": "8833e3a204c71f3272deb4121ab10287939a9251842ebec54e5b28adb49ddbbf"
     },
     {
       "id": "032",
@@ -285,8 +285,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/032_01.png",
+      "image_sha256": "3e1d9a0de9a18e936aab9b6bebc706acd569573540033cc99a835885e4351e4e"
     },
     {
       "id": "033",
@@ -296,8 +296,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/033_00.png",
+      "image_sha256": "9ab1435aaa48d5ec291228928a02380402e7e61498a5ba533b97bc903166aeb3"
     },
     {
       "id": "040",
@@ -307,8 +307,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/040_00.png",
+      "image_sha256": "f100bd4e3e13cd94c7794df3356afb753d7af6b7c3fdfeda1bd9f9411ac9d2d3"
     },
     {
       "id": "041",
@@ -318,8 +318,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/041_00.png",
+      "image_sha256": "c26913f21f6fe78574d75699dc3645acd6810ca1c6fe8a9f9c620bf089a4b778"
     },
     {
       "id": "041",
@@ -329,8 +329,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/041_01.png",
+      "image_sha256": "be5214155593aa62debe3f7958f1b90cbfb17c72e7241eb3c8605dcb81c44138"
     },
     {
       "id": "043",
@@ -340,8 +340,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/043_00.png",
+      "image_sha256": "7972133dcd53dd729898151e7ddfbf1f5e9d0503dc4c7352095dd25674765694"
     },
     {
       "id": "043",
@@ -351,8 +351,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/043_01.png",
+      "image_sha256": "29550db733f25f9c9e010f2b31be9069db9229bf0a8b8121aeb5c512147bd49f"
     },
     {
       "id": "043",
@@ -362,8 +362,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/043_02.png",
+      "image_sha256": "4123755cce74df24a5fdcc9c5c7e0faddd3377dbcef96e6e8cb9a5dbf50c7175"
     },
     {
       "id": "060",
@@ -373,8 +373,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/060_00.png",
+      "image_sha256": "9f1840f6c714de802f4c944f19c1b9d013a4522ca25e4de7cdbfbbef7dd0b474"
     },
     {
       "id": "061",
@@ -384,8 +384,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/061_00.png",
+      "image_sha256": "9117880a3d9b08299dd217a3c171e6e017d4a0d1519877e46fe41bb70321e8ec"
     },
     {
       "id": "062",
@@ -395,8 +395,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/062_00.png",
+      "image_sha256": "63cf340b90a7662a7f71b06398fda6b9f53aa21feb0325aa492f6c3b986b7963"
     },
     {
       "id": "070",
@@ -406,8 +406,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/070_00.png",
+      "image_sha256": "f2a5a30aedeb958a29e17ccfb68bc8074b71e9ac2be2911921dd3f929964972a"
     },
     {
       "id": "070",
@@ -417,8 +417,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/070_01.png",
+      "image_sha256": "851e7b6ecbd5afa32d74e3a15a62d8d1d0e740f3733492b521ba8373e28e6fa0"
     },
     {
       "id": "070",
@@ -428,8 +428,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/070_02.png",
+      "image_sha256": "01860de0378dbac578270db55f4cfd99b25d9d7d5e2346a587733a486648ef0f"
     },
     {
       "id": "071",
@@ -439,8 +439,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/071_00.png",
+      "image_sha256": "9ba998da16e0e7cd65504e897633fdb6b17be757dab09de9d326f9b6c02f5e6c"
     },
     {
       "id": "072",
@@ -450,8 +450,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/072_00.png",
+      "image_sha256": "aff0df97132e89b83aceaac894d5b9240f957baa3ebaa2a2ade5f72580aa1099"
     },
     {
       "id": "072",
@@ -461,8 +461,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/072_01.png",
+      "image_sha256": "58136eec309bb80fc1dbdebc0bfdd0e6c077d706b9d344ec0537a1f19d594674"
     },
     {
       "id": "072",
@@ -472,8 +472,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/072_02.png",
+      "image_sha256": "aea7c98859553fd5f622f5e5667cb41fba4c4ee55519e510b041e68c1550c906"
     },
     {
       "id": "072",
@@ -483,8 +483,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/072_04.png",
+      "image_sha256": "6ce013c10b160002a900e09dcc97b6da095992d4db03fda435b6b6254e3877f9"
     },
     {
       "id": "073",
@@ -494,8 +494,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/073_00.png",
+      "image_sha256": "5cad836e68be43d61ee1be39ba91661f97f1034f8141fe436bfd97b440dc5d3a"
     },
     {
       "id": "074",
@@ -505,8 +505,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/074_00.png",
+      "image_sha256": "817b4abf53c8aa3ed273d375c08cc933d6af4d0c76f7950a21f4ad3cd10a574e"
     },
     {
       "id": "075",
@@ -516,8 +516,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/075_00.png",
+      "image_sha256": "368b01bcc561296132125dedbdda0f728dfc105fbca6ed43b3fae2268a6dc0d4"
     },
     {
       "id": "080",
@@ -527,8 +527,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/080_00.png",
+      "image_sha256": "db644b5a1d468e7ed28d44c0f0b647ba44f2e1bd0000607d58f066fa81b911e0"
     },
     {
       "id": "080",
@@ -538,8 +538,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/080_01.png",
+      "image_sha256": "f9f589a5890ecd244b08e62cdfc589426cac26f92f0a9750d27ef163efed7961"
     },
     {
       "id": "080",
@@ -549,8 +549,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/080_02.png",
+      "image_sha256": "883685eff36f11d3d15b4767b47c783c5c357e3dfd8446e52ac0cda696a90ccf"
     },
     {
       "id": "082",
@@ -560,8 +560,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/082_00.png",
+      "image_sha256": "96bda2de8d6403b9299a0a5369b23c12932a46f955f215c2836a721482602f8a"
     },
     {
       "id": "082",
@@ -571,8 +571,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/082_01.png",
+      "image_sha256": "2db2b7e6e341eb8b74a5a0126d86268290567805c18c5216951a3cd6391ca47f"
     },
     {
       "id": "082",
@@ -582,8 +582,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/082_02.png",
+      "image_sha256": "3f162db506835d7b1ab85818e6c14dbe39615c1dea62e2978c0806c4eaf9b758"
     },
     {
       "id": "090",
@@ -593,8 +593,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/090_00.png",
+      "image_sha256": "dc5b3a6f0215bb87d10af7af39dc7bf99ff716a7e265fac056911ada3da4592e"
     },
     {
       "id": "090",
@@ -604,8 +604,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/090_01.png",
+      "image_sha256": "dde67285d0cf01f81d5626d5063c531d73e7fc78f780b6d88af8ec6a4daeab81"
     },
     {
       "id": "090",
@@ -615,8 +615,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/090_02.png",
+      "image_sha256": "00414f227fe3a46e1ca527d77b1f29034e2b1c5e361140caa1cda11ed82cdb4f"
     },
     {
       "id": "091",
@@ -626,8 +626,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/091_00.png",
+      "image_sha256": "1908255bdb0ca741849182243837de1ba38c75d67b61897e972f8b95482e0b82"
     },
     {
       "id": "091",
@@ -637,8 +637,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/091_01.png",
+      "image_sha256": "258f611fbae3320436d9b3735f391fb8fa9bfacec739ffa7a876f9eebcd13d00"
     },
     {
       "id": "092",
@@ -648,8 +648,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/092_00.png",
+      "image_sha256": "e831693dbcd13e2b51ac439a092f9e814eb2c1622d6e4675a47ce4b323f8460b"
     },
     {
       "id": "093",
@@ -659,8 +659,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/093_00.png",
+      "image_sha256": "acf4db6b58d9705d377e1832a003d80ac66b4b537d49a4ae60d3c7fd87d49238"
     },
     {
       "id": "093",
@@ -670,8 +670,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/093_01.png",
+      "image_sha256": "d82c553cbf447040cb495aaa8de6da4013f94adda6c4ec900728ce14cb4106d3"
     },
     {
       "id": "094",
@@ -681,8 +681,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/094_00.png",
+      "image_sha256": "a07de305030ade71e32bf5e2a47a981a116d3052408a4616220563e264c3da2b"
     },
     {
       "id": "094",
@@ -692,8 +692,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/094_01.png",
+      "image_sha256": "19a82f31dba9a0de5e1a598a94f04c673bf9683bb944f1a72a017de259368fac"
     },
     {
       "id": "095",
@@ -703,8 +703,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/095_00.png",
+      "image_sha256": "b6e0c7d8998620d53d80d9a3295db8f2eef42c353bbf0fa9a630953857b22297"
     },
     {
       "id": "095",
@@ -714,8 +714,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/095_01.png",
+      "image_sha256": "9a6b5afb86e392c350dc9026867c157075707f0cfac878312127acc45bb29f9f"
     },
     {
       "id": "100",
@@ -725,8 +725,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/100_00.png",
+      "image_sha256": "a1101875901ce2308b40f93a58e289ab4540057cf423ae3bca41a660ff0557cd"
     },
     {
       "id": "101",
@@ -736,8 +736,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/101_00.png",
+      "image_sha256": "6f04931ca34c513ccc3eaec1187b47bf61da92083a5f0efbeaa323a6ba56b7a4"
     },
     {
       "id": "101",
@@ -747,8 +747,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/101_01.png",
+      "image_sha256": "f33184a9abb73c966cfbf0a240a0389e0aa64b0565df14385e70847460ee1bf8"
     },
     {
       "id": "101",
@@ -758,8 +758,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/101_02.png",
+      "image_sha256": "832386ea29e23c0d53b35869e4b2b83205da41cf1e808ea6b45a951ff9dbfe52"
     },
     {
       "id": "102",
@@ -769,8 +769,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/102_00.png",
+      "image_sha256": "70aa3515eedc0e7f4ece443c610db740d3772812a770f2ea69eb21b5b94ca92d"
     },
     {
       "id": "102",
@@ -780,8 +780,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/102_01.png",
+      "image_sha256": "973fdb30c963b92b1a336175cbb79337026ace85338df595fcc7e2b989bf0646"
     },
     {
       "id": "103",
@@ -791,8 +791,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/103_00.png",
+      "image_sha256": "97100620d312571eafc9ddec81a3d64058ec7bbffaef2751df90b13eb1a6b826"
     },
     {
       "id": "103",
@@ -802,8 +802,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/103_01.png",
+      "image_sha256": "fca3ed95d295387fba4107e9c6a7948bf2792cc10bcc8af90d9d0a284e025f45"
     },
     {
       "id": "104",
@@ -813,8 +813,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/104_00.png",
+      "image_sha256": "0091cfaef93af0679285caa8605e88426650e1af8b556b7a7af7fb67dbc5f2c5"
     },
     {
       "id": "105",
@@ -824,8 +824,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/105_00.png",
+      "image_sha256": "778eeb660645ee1fb9dd2644252426b6975f64e84d0b35edd3ad087d40b6fd2d"
     },
     {
       "id": "105",
@@ -835,8 +835,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/105_01.png",
+      "image_sha256": "dfdbde7344c34b6f500417df50efccf9dc33cc03a7a4bc37e5b833a76dbbcaf7"
     },
     {
       "id": "110",
@@ -846,8 +846,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/110_00.png",
+      "image_sha256": "2d1a1a5fb19af85b35f6b19c2c32a13396edd49605b382ca640d84ab74c872af"
     },
     {
       "id": "111",
@@ -857,8 +857,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/111_00.png",
+      "image_sha256": "1dd188d1e535984a4a97cf350c460ecfa385adaa06fd0b5bff7f70737fe7d8bd"
     },
     {
       "id": "111",
@@ -868,8 +868,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/111_01.png",
+      "image_sha256": "a30d2e2581e7aca8a2e214a523544d4d025f914977ba42254e4c273488aa672c"
     },
     {
       "id": "112",
@@ -879,8 +879,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/112_00.png",
+      "image_sha256": "127b5d7ef5cb31b0640b507c2c2b812f678f74a8ce38f1896a9403e218ea51bb"
     },
     {
       "id": "112",
@@ -890,8 +890,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/112_01.png",
+      "image_sha256": "cd046eedad292911a5c39ef95e59fcd7bde409f1e0606d680eb25a1e2a51cf6c"
     },
     {
       "id": "112",
@@ -901,8 +901,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/112_02.png",
+      "image_sha256": "244fab4f6994937c4d3be057a14d25a388225135282988cf324aefda15a65538"
     },
     {
       "id": "112",
@@ -912,8 +912,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/112_03.png",
+      "image_sha256": "7025cedfb1b8ab99ede13b7511ddd22b3bc7ea6941d64d0ed4310bcc4635dc74"
     },
     {
       "id": "113",
@@ -923,8 +923,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/113_00.png",
+      "image_sha256": "767323f9654022a8855f1e88a9084486a126c230fc238fe76c170fb3f88fe342"
     },
     {
       "id": "113",
@@ -934,8 +934,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/113_01.png",
+      "image_sha256": "ed237bbb5439ee2df6b59de9c785bda9a94d72ddf92e1c87ed4d3bbcd94774c8"
     },
     {
       "id": "120",
@@ -945,8 +945,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/120_00.png",
+      "image_sha256": "f277faab7a212be3c78da8c6d26c0bc4df6ee35ec5ff99bfd5cbba3ba6d1877a"
     },
     {
       "id": "121",
@@ -956,8 +956,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/121_00.png",
+      "image_sha256": "3ea45e75e87253079440412fb08f69106c80020f252fe901de816d02bf23deec"
     },
     {
       "id": "130",
@@ -967,8 +967,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/130_00.png",
+      "image_sha256": "853092d85894b597eaf012f1d8d1a0640cc47258a152d79c718f6ea00d7b4a0a"
     },
     {
       "id": "130",
@@ -978,8 +978,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/130_01.png",
+      "image_sha256": "9f9253febbc07ce306e9daaaa5ad70c440f7b1d2aebdf35bdcbaae093e2ff583"
     },
     {
       "id": "131",
@@ -989,8 +989,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/131_00.png",
+      "image_sha256": "4e9d96a3d1c2f78fe025ce93292b193c950804379e1dc20fbc885fe86ee6c195"
     },
     {
       "id": "131",
@@ -1000,8 +1000,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/131_01.png",
+      "image_sha256": "fa0e3fa62001e834222246fc93dc8eec7e96a56ff2835dc3889c318fb60ac0ab"
     },
     {
       "id": "132",
@@ -1011,8 +1011,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/132_00.png",
+      "image_sha256": "fd4db336e817369400a7b74c36c2b994e3f19ff1571b7dbfdd243624e4ccd7cf"
     },
     {
       "id": "140",
@@ -1022,8 +1022,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/140_00.png",
+      "image_sha256": "5b9840221a5c46b1f788521d7c733431e1402098b841de8eb164deae17c8f8c7"
     },
     {
       "id": "140",
@@ -1033,8 +1033,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/140_01.png",
+      "image_sha256": "53919ac64afb364ec5767259d1d41ceb42fe8443336636ba7e70be5247114e49"
     },
     {
       "id": "140",
@@ -1044,8 +1044,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/140_02.png",
+      "image_sha256": "c7420e340eb684e568ac41749dc5e80013021d8501fff547e5a3ff334f895fa2"
     },
     {
       "id": "141",
@@ -1055,8 +1055,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/141_00.png",
+      "image_sha256": "3c71d310d3efefc61af33a1b43e1180f334a3d0dcfc39dc9f11052fca0ed6ee2"
     },
     {
       "id": "141",
@@ -1066,8 +1066,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/141_01.png",
+      "image_sha256": "e49a80d4529f93d30286dea765d7e4e7890eed65b85515ea0d9e17e931b03501"
     },
     {
       "id": "142",
@@ -1077,8 +1077,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/142_00.png",
+      "image_sha256": "ab9a8fa2b77305275ac3d5449458933e1e5212e08836f5c61dd89d2caf846ecc"
     },
     {
       "id": "142",
@@ -1088,8 +1088,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/142_01.png",
+      "image_sha256": "f067f6646741e37e53657a742e017edb5a72c2753f80b68b137389c84527dee1"
     },
     {
       "id": "143",
@@ -1099,8 +1099,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/143_00.png",
+      "image_sha256": "da320e37bb1e0f1d2f60d77e8c83cc6f467708e4fef83c3b788bfcd2250b8e9d"
     },
     {
       "id": "150",
@@ -1110,8 +1110,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/150_00.png",
+      "image_sha256": "9cf9a775a8b7f9f68237cc49575d6fc2094d10685f6749f0928eb4e903512c57"
     },
     {
       "id": "150",
@@ -1121,8 +1121,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/150_01.png",
+      "image_sha256": "b92bb89e73fb8de302b2a2347c9903fbde6a95a86ebec30fe768a2569c0c50aa"
     },
     {
       "id": "150",
@@ -1132,8 +1132,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/150_02.png",
+      "image_sha256": "4b93d04007050ed73f49f02da3eab6a10b8adc22e7dcf105c72356b4979ec23f"
     },
     {
       "id": "160",
@@ -1143,8 +1143,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/160_00.png",
+      "image_sha256": "4e3b8c9a8239282cea5327a99e7e6fdbf40ef857c2bdecb290a1c4f149ee3ceb"
     },
     {
       "id": "160",
@@ -1154,8 +1154,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/160_01.png",
+      "image_sha256": "2c477cc6374c4433fc1f14837a674c0ed30b4f8205022b284f1ff21719c3371b"
     },
     {
       "id": "161",
@@ -1165,8 +1165,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/161_00.png",
+      "image_sha256": "65aa8a07c01cc043fb841abc6ea113f753f3a4bb1bc08c3816456589c92e8fc1"
     },
     {
       "id": "162",
@@ -1176,8 +1176,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/162_00.png",
+      "image_sha256": "45cb6c9003be030eb7a3207e25b98b13d500d41f8d2275616e31cdffa777c2bc"
     },
     {
       "id": "162",
@@ -1187,8 +1187,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/162_01.png",
+      "image_sha256": "dffd5185e72cc2ac50446192e0329de2e74e5a40d55198df3ee00747842a9907"
     },
     {
       "id": "170",
@@ -1198,8 +1198,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/170_00.png",
+      "image_sha256": "9e309ec2e2e68625ea523e233dd58111d8a799dbb92f1767c5432fa97ccaeea6"
     },
     {
       "id": "170",
@@ -1209,8 +1209,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/170_01.png",
+      "image_sha256": "de3e30af48e0e835fe81a2ef6806feea5f87fb6861e914ec1af13d1a2389736b"
     },
     {
       "id": "170",
@@ -1220,8 +1220,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/170_02.png",
+      "image_sha256": "f332f3c4e054b1ffede228ae4678a338c7167c4a598cf1469a471d6bd5a89cb1"
     },
     {
       "id": "170",
@@ -1231,8 +1231,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/170_03.png",
+      "image_sha256": "83d8dc7e612cd10253850718053ac05c73e6bbe959070b4a8e81d94cb9813c8c"
     },
     {
       "id": "170",
@@ -1242,8 +1242,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/170_04.png",
+      "image_sha256": "d4f49a4d0f7bd773cb2a53d191ce031bbd7d29f5c074c66be57f3d4af94ceb96"
     },
     {
       "id": "171",
@@ -1253,8 +1253,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/171_00.png",
+      "image_sha256": "903fcc9a39b28ef52d04ff61f30d468ef5d205e87057e4fe92878306ab1b81e4"
     },
     {
       "id": "172",
@@ -1264,8 +1264,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/172_00.png",
+      "image_sha256": "f3375bc085d802f91321dde4f8532b943c56972eda27e273f0feff9601f2300a"
     },
     {
       "id": "180",
@@ -1275,8 +1275,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/180_00.png",
+      "image_sha256": "29b53e07061003b590b8a8f8136c927803c787cab2ac701b7ee2485e96dfa9f2"
     },
     {
       "id": "180",
@@ -1286,8 +1286,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/180_01.png",
+      "image_sha256": "d9b68b678f6edf734e1b3f8bce4dc6ef4e744ba75c3973c09648b287103e6658"
     },
     {
       "id": "181",
@@ -1297,8 +1297,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/181_00.png",
+      "image_sha256": "24e822f76d955c41af50cd42c3ab54cfc216ceb4f592e2b9f856d41bb2137dfc"
     },
     {
       "id": "181",
@@ -1308,8 +1308,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/181_01.png",
+      "image_sha256": "00a074f65c5af29f69049175992fecac409d211c3d052e23269f700eddc19df8"
     },
     {
       "id": "181",
@@ -1319,8 +1319,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/181_02.png",
+      "image_sha256": "d46e9be44ad4097b4fc4017a2503efc7d68edff8d6f596d9a1de879dd12187f7"
     },
     {
       "id": "182",
@@ -1330,8 +1330,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/182_00.png",
+      "image_sha256": "86f772750f5aa2bfa244720fb000116d33de439648afaa59b55aa54910962946"
     },
     {
       "id": "183",
@@ -1341,8 +1341,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/183_00.png",
+      "image_sha256": "da8537a5ec1824d7f5a6ab9dce896f4c507f5ac22efd399f357b9b813ce07e48"
     },
     {
       "id": "190",
@@ -1352,8 +1352,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/190_00.png",
+      "image_sha256": "291f12d895311ae78bf0ef538bf8cbb3b0c6daf779029b8ddece81db690ab3f4"
     },
     {
       "id": "191",
@@ -1363,8 +1363,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/191_00.png",
+      "image_sha256": "c96d7ffdfc4b1ba82d3c8e8504b5988ae945b74d9faf5a38562768a388d73fff"
     },
     {
       "id": "191",
@@ -1374,8 +1374,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/191_01.png",
+      "image_sha256": "c571fd63018b5dc12e34fddd53c4d4490d63044590c4e1299697bbcabcfd437e"
     },
     {
       "id": "191",
@@ -1385,8 +1385,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/191_02.png",
+      "image_sha256": "dd20bd759fbc740d8d25df7873f814fa2c85edfb335ba159c2a001fbe136e21b"
     },
     {
       "id": "192",
@@ -1396,8 +1396,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/192_00.png",
+      "image_sha256": "f1bd1b5607d87352181a9580660759d1f5df6ab700b151dd3144d0e5474aecba"
     },
     {
       "id": "192",
@@ -1407,8 +1407,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/192_01.png",
+      "image_sha256": "ad1887e56945ea57539b89ed7d799a23a7bb6304a77427b45f92cbf8d856f027"
     },
     {
       "id": "192",
@@ -1418,8 +1418,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/192_02.png",
+      "image_sha256": "d926aefd15a882e863fb70b77757a6a1716e6a0e11d567a3214d878ce91d4b69"
     },
     {
       "id": "193",
@@ -1429,8 +1429,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/193_00.png",
+      "image_sha256": "b3a155d253e53c4def5770e13ae19374756e49159f39ef65fefeaf455583c297"
     },
     {
       "id": "194",
@@ -1440,8 +1440,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/194_00.png",
+      "image_sha256": "195d68f97bc6568f090cb3fd99af748fd8a7ceb628707ee8b25258689716379e"
     },
     {
       "id": "195",
@@ -1451,8 +1451,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/195_00.png",
+      "image_sha256": "3d1331fd75b71339d947cfddc3c26c9bbd24659408b99049027a0dd995132434"
     },
     {
       "id": "200",
@@ -1462,8 +1462,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/200_00.png",
+      "image_sha256": "ba865d13dd869c6b4ba50475bd5b25bbf1a0d3fd9555d3563485897456e4c84e"
     },
     {
       "id": "200",
@@ -1473,8 +1473,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/200_01.png",
+      "image_sha256": "21fe9c17f6e1db1f5345051bd5ac95d44257a96594164355d7e2e9a2f459ba69"
     },
     {
       "id": "201",
@@ -1484,8 +1484,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/201_00.png",
+      "image_sha256": "d6da2546505c7d254d99f3d72d5db884a81eb09e788b29d6a89c0290b3eed002"
     },
     {
       "id": "201",
@@ -1495,8 +1495,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/201_01.png",
+      "image_sha256": "bc41e7a05e9a2aba4f84d19e4876f3f60be1f2d96f2c8d267fda21727680a55d"
     },
     {
       "id": "202",
@@ -1506,8 +1506,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/202_00.png",
+      "image_sha256": "925b39054abb5572e00e9b800bbd9d764e01b24d9c93d60c0be8fe9c4f6b6ac0"
     },
     {
       "id": "202",
@@ -1517,8 +1517,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/202_01.png",
+      "image_sha256": "762f14ac65229fbc5772aae3d6f738fdb1325905e4ec33014879b0e8d19c461f"
     },
     {
       "id": "203",
@@ -1528,8 +1528,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/203_00.png",
+      "image_sha256": "3dc70c6e8bad7e66f2f1f49b943570de7439f087ef6e00dc8e8f978f956399c4"
     },
     {
       "id": "210",
@@ -1539,8 +1539,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/210_00.png",
+      "image_sha256": "93ac4c31836fcb388ad82e702572aed1c062a3f713e46be5a5d314d33b957bb4"
     },
     {
       "id": "210",
@@ -1550,8 +1550,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/210_01.png",
+      "image_sha256": "a456ae0737c3ae087bbf3922c546ddc4732a3bf8e9b6b254d0bb1bc51ffb0a8b"
     },
     {
       "id": "210",
@@ -1561,8 +1561,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/210_02.png",
+      "image_sha256": "5c7642e68e28dc27af5f1e468229bc3fb12208febe34e832a7aca8d2c102620a"
     },
     {
       "id": "210",
@@ -1572,8 +1572,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/210_03.png",
+      "image_sha256": "3ad4f22cd6be4be6c9767578e570e1b41d29840c974e0f973ea9b5a4f0ca14a9"
     },
     {
       "id": "212",
@@ -1583,8 +1583,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/212_00.png",
+      "image_sha256": "197d26d10ae8b9450c3eae17feab48832cdfcd0e90868bec73a92db886dbd3f9"
     },
     {
       "id": "212",
@@ -1594,8 +1594,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/212_01.png",
+      "image_sha256": "8b935170ee192d2425b9dceab0ab0deca78c70446e38de9e63690b38358ca893"
     },
     {
       "id": "212",
@@ -1605,8 +1605,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/212_02.png",
+      "image_sha256": "2ea12a12a719d0ae76aed7ba3743cdfe8692644ef9704857280c2acbcce13a21"
     },
     {
       "id": "220",
@@ -1616,8 +1616,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/220_00.png",
+      "image_sha256": "8f24788e3123c1241796647c15ac427785827265143870c55d6469925a3daf7b"
     },
     {
       "id": "220",
@@ -1627,8 +1627,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/220_01.png",
+      "image_sha256": "9f7f680037c7c0bcc0da75617bf7e7aed74aae61600f7fec490cbb07cd6716a9"
     },
     {
       "id": "221",
@@ -1638,8 +1638,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/221_00.png",
+      "image_sha256": "1ecb41304c68a43513a34988354c0d1a97124a23ef93387275b6b1b922ad1977"
     },
     {
       "id": "222",
@@ -1649,8 +1649,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/222_00.png",
+      "image_sha256": "822ff5b166ed28d31a1bb76a9dd7c4c575e9c176d3006a84e04eb0cb70765d15"
     },
     {
       "id": "222",
@@ -1660,8 +1660,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/222_01.png",
+      "image_sha256": "2b4187ad7158f6bdd6382d1ac8cf40f6189a0bc7927be0934375af6b747a1555"
     },
     {
       "id": "223",
@@ -1671,8 +1671,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/223_00.png",
+      "image_sha256": "403eb1a878d7e6c284cdc182e879f999d4b9d94f4cea6931ddacaf593d148894"
     },
     {
       "id": "223",
@@ -1682,8 +1682,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/223_01.png",
+      "image_sha256": "96a9ca3a7bc682914a7da739bac36cfcffc69f197a220019bae1e8ca32f746b7"
     },
     {
       "id": "224",
@@ -1693,8 +1693,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/224_00.png",
+      "image_sha256": "0c81a060c87f8763d7643f7fa17e50e01b548630a20a3a884798dde82aa6eb77"
     },
     {
       "id": "225",
@@ -1704,8 +1704,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/225_00.png",
+      "image_sha256": "46dde49dd9ee45e6dda155e1ecb1fbe68458df0ca4f5d2e03c87d3debcc9bddb"
     },
     {
       "id": "225",
@@ -1715,8 +1715,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/225_01.png",
+      "image_sha256": "19c1fbab90ec113a01e0f42090c3ea8128869b5e8774893ab8bac3fdebcca786"
     },
     {
       "id": "226",
@@ -1726,8 +1726,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/226_00.png",
+      "image_sha256": "62663178bdcae4ba9bc54eab30c19b779f17ddba78681626d480040a06a75c72"
     },
     {
       "id": "227",
@@ -1748,8 +1748,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/230_00.png",
+      "image_sha256": "04ed508645c013e0ebeeb71ce673a849c6d88167d52b533ba07d187ab6ef2292"
     },
     {
       "id": "230",
@@ -1759,8 +1759,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/230_01.png",
+      "image_sha256": "2717abee801921e329cf7d1437989fd21ee9034a1b5d0cc29e16c434f46416d0"
     },
     {
       "id": "231",
@@ -1770,8 +1770,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/231_00.png",
+      "image_sha256": "85636e4fd0e6e70558121373989537c7f224c740689df3f21010660639c645f0"
     },
     {
       "id": "231",
@@ -1781,8 +1781,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/231_01.png",
+      "image_sha256": "a990bd81c249ed664875400098118c009ed514df320dd9bd2a4679e09bebaf31"
     },
     {
       "id": "232",
@@ -1792,8 +1792,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/232_00.png",
+      "image_sha256": "b8b66a1c689445ece776e01de80df890b648974b52ec60a1b884980dea1825b8"
     },
     {
       "id": "233",
@@ -1803,8 +1803,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/233_00.png",
+      "image_sha256": "bb242dc02a3fc6e45ae55b683c039d00dd729671e8760c3d9e26ac531a64e353"
     },
     {
       "id": "233",
@@ -1814,8 +1814,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/233_01.png",
+      "image_sha256": "15636e7f89e2907e5de2a6b0d9781bb8d5d160a3a41b9a92694358a9bb83d998"
     },
     {
       "id": "233",
@@ -1825,8 +1825,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/233_02.png",
+      "image_sha256": "e9ea039538baec85a33868e97eeb24972d584b19ca740086189aa68abd7f386d"
     },
     {
       "id": "234",
@@ -1836,8 +1836,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/234_00.png",
+      "image_sha256": "1c41d088748ba996010e365313018283db26e3c6c9f31cf64556094c4b742a9f"
     },
     {
       "id": "240",
@@ -1847,8 +1847,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/240_00.png",
+      "image_sha256": "e0d1c90d8ce0005a90770646968296ba780ba4fdc5641d89a173108d6568df26"
     },
     {
       "id": "241",
@@ -1858,8 +1858,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/241_00.png",
+      "image_sha256": "f4df7cc2de1170f7cc7aebdd0a6b1b6f9ca4fc5beff82640b5c1584793f30cbc"
     },
     {
       "id": "242",
@@ -1869,8 +1869,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/242_00.png",
+      "image_sha256": "422d846effa24694b7b3075a6b6e26be91c88d5aa5397741d73bed427af9bc19"
     },
     {
       "id": "242",
@@ -1880,8 +1880,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/242_01.png",
+      "image_sha256": "0e626981d22f4335bee9fe5a4ccbdcdb804bc572817193a2de92060f366f68b0"
     },
     {
       "id": "250",
@@ -1957,8 +1957,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/260_00.png",
+      "image_sha256": "f7fa92f96471bd9f72b703970335cd8dd37e0ea08fe2e235d5131a9466c321c7"
     },
     {
       "id": "260",
@@ -1968,8 +1968,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/260_01.png",
+      "image_sha256": "645f9925b13b953bae34b65887407cdc8c55f318800fbec51c115a7c433bca2d"
     },
     {
       "id": "260",
@@ -1979,8 +1979,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/260_02.png",
+      "image_sha256": "593cacd0eeb4f0f8444b36f366471daa0a6f4a7eb9229839c94cbd1d951a9667"
     },
     {
       "id": "261",
@@ -1990,8 +1990,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/261_00.png",
+      "image_sha256": "ce3d6f48a261409f7e69fbb0458057d89cdba6bbb566ed433f3a7e90e5a24c99"
     },
     {
       "id": "262",
@@ -2001,8 +2001,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/262_00.png",
+      "image_sha256": "ecb0a70ab9ee61d364117e1e2ef15bb522863eb2e5060dd0ad6f0beb1e78f427"
     },
     {
       "id": "262",
@@ -2012,8 +2012,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/262_01.png",
+      "image_sha256": "6927d6c9790e4f55d67502e9be78f0d088c52dec064f69149caaf454ae9ad28a"
     },
     {
       "id": "263",
@@ -2034,8 +2034,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/270_00.png",
+      "image_sha256": "50ea04ca8494a02933de5207bbd85b9affaff160231ee0ac4eb925c62076cf76"
     },
     {
       "id": "270",
@@ -2045,8 +2045,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/270_01.png",
+      "image_sha256": "8d6cc5c6c7da6fb2c1c5e1feee625516eaaeec53c4d06e15a2f429c0360ca8fe"
     },
     {
       "id": "270",
@@ -2056,8 +2056,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/270_02.png",
+      "image_sha256": "c2cda2d73324aabbbfc857d421b6b948c9ea30bbccb417d8fd174cd8e477d821"
     },
     {
       "id": "270",
@@ -2067,8 +2067,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/270_03.png",
+      "image_sha256": "ac12ca853a2a078cc8f0ab96eef46ee146fd408321d3d7e2b5622ac1d094b893"
     },
     {
       "id": "271",
@@ -2078,8 +2078,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/271_00.png",
+      "image_sha256": "8abc42388d8b739a827a8007e3ed5535953e44f87c86a634503376e6138e7a0b"
     },
     {
       "id": "271",
@@ -2089,8 +2089,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/271_01.png",
+      "image_sha256": "10dc0c47daa6369424f86f9f194a5dbca9376a29fd6c71f07c6a26fdec77a608"
     },
     {
       "id": "271",
@@ -2100,8 +2100,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/271_02.png",
+      "image_sha256": "00fabb6243643463bb2a16951640d08d24e87664c9aec6b3358c2759f744d9b2"
     },
     {
       "id": "272",
@@ -2111,8 +2111,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/272_00.png",
+      "image_sha256": "0b75417a4737923386dde88931eeaf9e1924e60bb53c7333d8e30662da1b05f2"
     },
     {
       "id": "272",
@@ -2122,8 +2122,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/272_01.png",
+      "image_sha256": "6f354b32f3c83d5862a47b4e303ba5d4493d41d595ec2da36d822981aac44c8a"
     },
     {
       "id": "280",
@@ -2133,8 +2133,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/280_00.png",
+      "image_sha256": "3b60afe29edbd4f783b2e7bf68e5f0413b2583ae440b4d2ffc7e01ae826af45b"
     },
     {
       "id": "280",
@@ -2144,8 +2144,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/280_01.png",
+      "image_sha256": "c3ebf9b0029d59c3719ef4df0e140b1be0e6fefe545fe6db2dc148035e53991b"
     },
     {
       "id": "281",
@@ -2155,8 +2155,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/281_00.png",
+      "image_sha256": "50a27082a676ca693ee9cbf706b94deb85a306a4c9b08cf32845f12f9fdc6a3c"
     },
     {
       "id": "281",
@@ -2166,8 +2166,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/281_01.png",
+      "image_sha256": "fa3be73ae0deed0f8b63d09c29fadd09cee5f8c96d53489a19a6bf21222d956e"
     },
     {
       "id": "281",
@@ -2177,8 +2177,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/281_02.png",
+      "image_sha256": "174c7407581b77e2b28231d86652ddf052484ab6998268c6293df5e64382935d"
     },
     {
       "id": "282",
@@ -2188,8 +2188,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/282_00.png",
+      "image_sha256": "88c19f8be29a6d4302bf739f632069d0782f47c8a41ea804419eb0e41df3dd7d"
     },
     {
       "id": "282",
@@ -2199,8 +2199,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/282_01.png",
+      "image_sha256": "e2227d7caaaee0f083c4a06b31efa35e9a6e2a72038b494dbdcd702cabc5233e"
     },
     {
       "id": "283",
@@ -2210,8 +2210,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/283_00.png",
+      "image_sha256": "873c5f279dde29da62697f7b0661d9fc16cdb469c188f118194a3b380e4179d5"
     },
     {
       "id": "284",
@@ -2221,8 +2221,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/284_00.png",
+      "image_sha256": "a912ad56b9d188f77993cee05e8bfb358cd795744117e93c1b63d57016bd6b16"
     },
     {
       "id": "290",
@@ -2232,8 +2232,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/290_00.png",
+      "image_sha256": "aa9b20eb799b5ac56fde88d8166e1f848a7beada9d7991aa59cffc3099fa8935"
     },
     {
       "id": "291",
@@ -2243,8 +2243,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/291_00.png",
+      "image_sha256": "5ad3c7dba23027e64012e39b492a9f06339c7dac75898fb20c7163e30b40c83e"
     },
     {
       "id": "300",
@@ -2254,8 +2254,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/300_00.png",
+      "image_sha256": "c4a69cfdd3648b447e68e5eb8b97a951ad5e0838d7e57bdfded6445244a385c7"
     },
     {
       "id": "301",
@@ -2265,8 +2265,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/301_00.png",
+      "image_sha256": "38529a60096d8c65ce553f91dc9df10231a5ae145b21cfbf68d981c9962d4082"
     },
     {
       "id": "302",
@@ -2276,8 +2276,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/302_00.png",
+      "image_sha256": "cfc911ca6285a7434a05d42000d1564e2664a2dfefa278f73793f0b22c31ce45"
     },
     {
       "id": "303",
@@ -2287,8 +2287,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/303_00.png",
+      "image_sha256": "ad9f6b245674f2a0c60c3f3bbf8d4aeac2f8fe49dd438805330811f0794aff89"
     },
     {
       "id": "304",
@@ -2298,8 +2298,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/304_00.png",
+      "image_sha256": "81aac53328b647d7bac9f3827c6211c086dd3a8c65d1ebfc9612ffe80d1266a5"
     },
     {
       "id": "305",
@@ -2309,8 +2309,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/305_00.png",
+      "image_sha256": "d9c965edc9f361b66729485a93c08fe813f7ead7b2cfd1b42189bbb63a69256a"
     },
     {
       "id": "306",
@@ -2320,8 +2320,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/306_00.png",
+      "image_sha256": "08b46135c3c18305e90c871efdb909995caa61742892ed3fad4ce8cfe3ca2d07"
     },
     {
       "id": "307",
@@ -2331,8 +2331,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/307_00.png",
+      "image_sha256": "d22d069f23444114730f588ed05fe9f7da019a9cbaf0bf9643cfc7eaac3c32a5"
     },
     {
       "id": "308",
@@ -2342,8 +2342,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/308_00.png",
+      "image_sha256": "717dd76e2ca6c093a5333ff8ab76fa8570afd297b017f7121318a692e2a87988"
     },
     {
       "id": "310",
@@ -2353,8 +2353,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/310_00.png",
+      "image_sha256": "c2b25f7b3c4ef012624194f3075e3b394b9be219d2a36fdf5cb39de391191377"
     },
     {
       "id": "310",
@@ -2364,8 +2364,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/310_01.png",
+      "image_sha256": "f307657f7125e3c3cc6476cd122eddd39ff59ff0faea14baf3749aed1b828ddd"
     },
     {
       "id": "311",
@@ -2375,8 +2375,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/311_00.png",
+      "image_sha256": "9e1aec91f182417b34e6ee20884ce7b07ceba483c9d1b1f7ce7c976552fbcd26"
     },
     {
       "id": "312",
@@ -2386,8 +2386,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/312_00.png",
+      "image_sha256": "448117f8757643eadb5fab90a5a602a8fc1156d8825f3654be7e9a3cf98d05b4"
     },
     {
       "id": "313",
@@ -2397,8 +2397,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/313_00.png",
+      "image_sha256": "87129d80e760c6e06b02b4c20e26b71adaded06ae261c5dc3149547c5f31ebfd"
     },
     {
       "id": "314",
@@ -2408,8 +2408,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/314_00.png",
+      "image_sha256": "36d46b5bce2ae11e91fe8be8604287c6d586b2fb65b7cd14f0596deb8bd6d1b2"
     },
     {
       "id": "315",
@@ -2419,8 +2419,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/315_00.png",
+      "image_sha256": "26533e98f65b9d4d8ce0fde608229f54ec7faed5a1d93b39bdc7529db4b18819"
     },
     {
       "id": "316",
@@ -2430,8 +2430,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/316_00.png",
+      "image_sha256": "3ac1221d07d5a3c2499a101d4b64001f753d2234db07207df04f4734239ad14b"
     },
     {
       "id": "316",
@@ -2441,8 +2441,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/316_01.png",
+      "image_sha256": "667bc3c31fe30ec14776e1fdd387698e16a6639364177ac01126d84cbce74836"
     },
     {
       "id": "321",
@@ -2452,8 +2452,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/321_00.png",
+      "image_sha256": "18efa861f6f0d2aa17a8bc29372d5b5aab897a498c0015640bbd676eeba04802"
     },
     {
       "id": "321",
@@ -2463,8 +2463,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/321_01.png",
+      "image_sha256": "7ef18bee44c0fbc6c6dc22efc84cf10a53fb3c42abc27715d57199020ff3c0a6"
     },
     {
       "id": "322",
@@ -2474,8 +2474,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/322_00.png",
+      "image_sha256": "46f2b1ad826f33985ea667e65270f37213b94726492da0d92860e68ffc668fd4"
     },
     {
       "id": "330",
