@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-f331facfd017",
+  "catalog_version": "admin-34e414cfac8e",
   "count": 548,
   "characters": [
     {
@@ -5433,8 +5433,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/989_00.png",
+      "image_sha256": "2be3a75953d6546d367b24ba0aa02503dff3906741759ee03d80cd405a1b5f0d"
     },
     {
       "id": "990",
@@ -5444,8 +5444,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/990_00.png",
+      "image_sha256": "b275613d50710e448fec38cfe8a85a665b05c0f1369e01b67806b29648fc3b11"
     },
     {
       "id": "991",
@@ -5455,8 +5455,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/991_00.png",
+      "image_sha256": "d197faa25d2c8ddbdadffd29e44ea56151d1d11ce2268e40801f98bc0de19841"
     },
     {
       "id": "992",
@@ -5466,8 +5466,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/992_00.png",
+      "image_sha256": "76acc4be8892d61dadecddec516df642cf60879a3f222ad27ab5ef52fd527e9d"
     },
     {
       "id": "993",
@@ -5477,8 +5477,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/993_00.png",
+      "image_sha256": "bb297f9451416c5c25958f5e2e75d36f7a046c58cbf0d9aef2ced12aaddad1d3"
     },
     {
       "id": "994",
@@ -5488,8 +5488,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/994_00.png",
+      "image_sha256": "3da4d5c82e147a800e79f4db88c683550c1656ce276d19fb83fbe11ee88dc674"
     },
     {
       "id": "996",
@@ -5499,8 +5499,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/996_00.png",
+      "image_sha256": "7b79bc6f9d451fa139982a75aa35eba3e1ffb780c679da96132c3bd8b5de28f0"
     },
     {
       "id": "997",
@@ -5510,8 +5510,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/997_00.png",
+      "image_sha256": "ffb81e4620cb44692d526b8bbd5683f2848f5ac429d70ef7a2e95007e9de0324"
     },
     {
       "id": "998",
@@ -5521,8 +5521,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/998_00.png",
+      "image_sha256": "fa7f7f4c1918493a3a2b30a6f3fb902761692348a7d64ff22dc2bd88896013ef"
     },
     {
       "id": "9000",
@@ -5532,8 +5532,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_00.png",
+      "image_sha256": "4687c551ae0a758f06a22f401590689ee10967d1b845aaeeafcd2a485c33ca7c"
     },
     {
       "id": "9000",
@@ -5543,8 +5543,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_01.png",
+      "image_sha256": "0080e96af0552feccd36f709396e6a3a9781a5dea30a7127da245c4584cc2de7"
     },
     {
       "id": "9000",
@@ -5554,8 +5554,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_02.png",
+      "image_sha256": "93d4b1f0fb9fbe52b9d729328861d49efccbb2c2a01a06895c0c523fd5f5de68"
     },
     {
       "id": "9000",
@@ -5654,7 +5654,7 @@
       "classification": "npc_extra",
       "admin_source": true,
       "image_file": "images/9005_00.png",
-      "image_sha256": "df798f41c15668a36d63a9a7f21e906bbf3bf3c9666ed6f0e94f1e4f1e84c53d"
+      "image_sha256": "97612439fc8510fdbbfee1bcb2410f899980ee95b4cec9b77a8dba82b39b34a7"
     },
     {
       "id": "9005",
