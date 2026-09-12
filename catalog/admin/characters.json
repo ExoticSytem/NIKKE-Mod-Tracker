@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-025ac294f983",
+  "catalog_version": "admin-f331facfd017",
   "count": 548,
   "characters": [
     {
@@ -5565,8 +5565,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_03.png",
+      "image_sha256": "b7b51d461623ff00f50e927ec8ef9976c4f634f0779d196c0f58595b3830a61c"
     },
     {
       "id": "9000",
@@ -5576,8 +5576,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_05.png",
+      "image_sha256": "467d4701246cad715752b50d5d24876ccf4215574c00bce7daca930c4542dc56"
     },
     {
       "id": "9000",
@@ -5587,8 +5587,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_06.png",
+      "image_sha256": "e9c9fde76b53db218cda729243f6b2966441fe7e2d7b92386e94d28d2c5c9dbe"
     },
     {
       "id": "9000",
@@ -5598,8 +5598,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9000_07.png",
+      "image_sha256": "d3e5ee96374c2cd9906c49690c88381dc12363a35c94712585b9be8d41db35be"
     },
     {
       "id": "9001",
@@ -5609,8 +5609,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9001_00.png",
+      "image_sha256": "da6f352d513684e797c852f700fb84f847f506ab346db1d19668a567ba85d79b"
     },
     {
       "id": "9002",
@@ -5620,8 +5620,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9002_00.png",
+      "image_sha256": "2df4e6822ed4fe73dc285aaf8284ae076ac51e69e6dba04be9e3ad43409bb2b8"
     },
     {
       "id": "9003",
@@ -5631,8 +5631,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9003_00.png",
+      "image_sha256": "7bd7df3492c5804966f651c1147dff64a8f969d35594a988b41139e1989ba95f"
     },
     {
       "id": "9004",
@@ -5642,8 +5642,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9004_00.png",
+      "image_sha256": "f5d80327105e8295398b1c4c0daef0227b840d3eba007aafe716c70e6378bb84"
     },
     {
       "id": "9005",
@@ -5653,8 +5653,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9005_00.png",
+      "image_sha256": "df798f41c15668a36d63a9a7f21e906bbf3bf3c9666ed6f0e94f1e4f1e84c53d"
     },
     {
       "id": "9005",
@@ -5664,8 +5664,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9005_01.png",
+      "image_sha256": "9ed63468eef834f56b1a59e04f73700e0f39ca079637ad5327a8a8f327e45adf"
     },
     {
       "id": "9006",
@@ -5675,8 +5675,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9006_00.png",
+      "image_sha256": "5118967eaeeb4dcda86e5b69571d59a4c4fecbd254a8c599205c909ad6ab997e"
     },
     {
       "id": "9008",
@@ -5686,8 +5686,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9008_00.png",
+      "image_sha256": "eaeee7f2dbd4bab1ec14d968c4985a261dd92b8fd07f7174af6bd03958a8dde0"
     },
     {
       "id": "9009",
@@ -5697,8 +5697,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9009_00.png",
+      "image_sha256": "b851f73d306e31b4a19361c5b307b18edde9c970557003ba3e898a7d406e2703"
     },
     {
       "id": "9010",
@@ -5708,8 +5708,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9010_00.png",
+      "image_sha256": "215777e039f17154977c52527c27f544f514421ef5151c2d92141c38a6109350"
     },
     {
       "id": "9011",
@@ -5719,8 +5719,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9011_00.png",
+      "image_sha256": "95aa5cb3de90a6ef21f8840ce1ab4404441fc72477dc07f278dd005c2b597097"
     },
     {
       "id": "9013",
@@ -5730,8 +5730,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9013_00.png",
+      "image_sha256": "e556596ea37c76cba1a0d9b0ae1d4eb1a0a8b3b3c6dae5b66ba89c55f5cb685d"
     },
     {
       "id": "9014",
@@ -5741,8 +5741,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9014_00.png",
+      "image_sha256": "bf22c34805bf0dc8ee7b18c93aa18eb85f2bd0fa2a17cf1e85f340d3aa9ac6d4"
     },
     {
       "id": "9015",
@@ -5752,8 +5752,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9015_00.png",
+      "image_sha256": "bca6314bc5376cdf5ed00f15f2cfb1886422995197eb6e7757dc4010aa8d04ea"
     },
     {
       "id": "9016",
