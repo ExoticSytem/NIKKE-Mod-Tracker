@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-32d1afc49464",
-  "generated_at": "2026-09-12T00:50:54.927262Z",
+  "catalog_revision": "admin-1c7602474dfe",
+  "generated_at": "2026-09-12T00:58:51.674435Z",
   "characters": [
     {
       "id": "010",
@@ -22,18 +22,18 @@
         "normalization": {
           "width": 900,
           "height": 1200,
-          "source_width": 501,
-          "source_height": 1133,
-          "scale": 1.027360988526037,
+          "source_width": 527,
+          "source_height": 1131,
+          "scale": 1.0291777188328912,
           "margin_x": 18,
           "margin_y": 18,
-          "output_width": 515,
+          "output_width": 542,
           "output_height": 1164
         }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": "2026-09-12T00:50:32.790274Z"
+      "updated_at": "2026-09-12T00:58:47.542070Z"
     },
     {
       "id": "010",
@@ -43,29 +43,12 @@
       "classification": "nikke",
       "status": "approved",
       "image": {
-        "primary": "010_01.png",
-        "alternates": [],
-        "source": "nikke_official_spine_render",
-        "standard": "900x1200",
-        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c010/01_hd_7955006387c30884a7510dd30d729ebc.bundle",
-        "texture_name": "Standing render oficial",
-        "spine_atlas_name": "c010_01.atlas",
-        "spine_skel_name": "c010_01.skel",
-        "normalization": {
-          "width": 900,
-          "height": 1200,
-          "source_width": 501,
-          "source_height": 1128,
-          "scale": 1.0319148936170213,
-          "margin_x": 18,
-          "margin_y": 18,
-          "output_width": 517,
-          "output_height": 1164
-        }
+        "primary": "",
+        "alternates": []
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": "2026-09-12T00:50:47.398222Z"
+      "updated_at": ""
     },
     {
       "id": "010",
