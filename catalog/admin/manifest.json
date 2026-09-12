@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-5347b903bc86",
-  "published_at": "2026-09-11T23:33:07.546856Z",
+  "catalog_revision": "admin-e1064f3fdab8",
+  "published_at": "2026-09-12T00:19:42.994967Z",
   "publication_note": "",
   "approved_characters": 548,
   "aliases": 0,
@@ -9,27 +9,22 @@
     {
       "path": "aliases.json",
       "size": 63,
-      "sha256": "7d8a2ed01fa533e66b23370715a57847cf541b4d68ebeb0fb9edcd2839eebfb5"
+      "sha256": "cff36e2a53ceb1592dee4c24c46d5a65759dee558d7a37add57b31afda0ff5c1"
     },
     {
       "path": "catalog_package.json",
-      "size": 179000,
-      "sha256": "853f5bc98b5334730cf1ec16a5b76bc7c9927077c547d33a34ecb6dcad534456"
+      "size": 178306,
+      "sha256": "f68f8ce95c8d7dd473a4899773ae5461b634125a85d479bc9aa6206c8ca8077f"
     },
     {
       "path": "characters.json",
-      "size": 138792,
-      "sha256": "71cf073089b40667621803badf5a06d1733f41243238b5539fea9ed925a3d234"
+      "size": 138711,
+      "sha256": "2367efafad473cfe88fc3acf346ce67cf0028cb59f2680c1d5164af2e97a06b3"
     },
     {
       "path": "images/010_00.png",
-      "size": 555864,
-      "sha256": "d45ac41c0f97a832e9d4dea1567734e4561e3b1324a4d1418ceab22c63890ba0"
-    },
-    {
-      "path": "images/010_01.png",
-      "size": 615249,
-      "sha256": "30b1c10e6900accd21fb8b29a2348b099c900f625e476380612bf88c8e499a6c"
+      "size": 564708,
+      "sha256": "521607e8c7233539c0c75def929bd070b421963928e20454973889438479fa52"
     }
   ],
   "distribution": {
