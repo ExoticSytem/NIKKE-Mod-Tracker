@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-5347b903bc86",
+  "catalog_version": "admin-e1064f3fdab8",
   "count": 548,
   "characters": [
     {
@@ -11,7 +11,7 @@
       "classification": "nikke",
       "admin_source": true,
       "image_file": "images/010_00.png",
-      "image_sha256": "d45ac41c0f97a832e9d4dea1567734e4561e3b1324a4d1418ceab22c63890ba0"
+      "image_sha256": "521607e8c7233539c0c75def929bd070b421963928e20454973889438479fa52"
     },
     {
       "id": "010",
@@ -21,8 +21,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "images/010_01.png",
-      "image_sha256": "30b1c10e6900accd21fb8b29a2348b099c900f625e476380612bf88c8e499a6c"
+      "image_file": "",
+      "image_sha256": ""
     },
     {
       "id": "010",
