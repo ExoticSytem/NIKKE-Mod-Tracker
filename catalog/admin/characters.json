@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-e1064f3fdab8",
+  "catalog_version": "admin-d7eb5f4a68a0",
   "count": 548,
   "characters": [
     {
@@ -11,7 +11,7 @@
       "classification": "nikke",
       "admin_source": true,
       "image_file": "images/010_00.png",
-      "image_sha256": "521607e8c7233539c0c75def929bd070b421963928e20454973889438479fa52"
+      "image_sha256": "24c4a1adf6e0865a70e2b9a1d0edf72fb11504c91c8e80279722dd1fc82192a0"
     },
     {
       "id": "010",
