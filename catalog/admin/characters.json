@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-08dba945e888",
+  "catalog_version": "admin-240798786256",
   "count": 545,
   "characters": [
     {
@@ -5070,8 +5070,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/947_00.png",
+      "image_sha256": "ca972da094982f64f900bf9bfad551ceabd538b7b92a416016c963a5e5386aa0"
     },
     {
       "id": "948",
@@ -5081,8 +5081,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/948_00.png",
+      "image_sha256": "305ca0ce089ed2b0045644b8c2bb8e354aafedca9c63c380acedbda0345f2ee2"
     },
     {
       "id": "951",
@@ -5092,8 +5092,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/951_00.png",
+      "image_sha256": "b38befb7a4a91c6ee9a275690295eb85123b4a417157f966b47c4e5d42323cd0"
     },
     {
       "id": "952",
@@ -5103,8 +5103,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/952_00.png",
+      "image_sha256": "842df4ba54af3db5b2e74d27988a310fb1f256c520bf681f29af848446535a90"
     },
     {
       "id": "960",
@@ -5114,8 +5114,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/960_00.png",
+      "image_sha256": "50d8dcb1fe26c6fccafaa8d61a95d3a28935b0a173bc4b0c0eb5cb92a394bd6f"
     },
     {
       "id": "961",
@@ -5125,8 +5125,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/961_00.png",
+      "image_sha256": "7d0e119d5e6cce1a3a1c0746ff239dd22c356bc84564abb78e7f641c5595c0cb"
     },
     {
       "id": "961",
@@ -5136,8 +5136,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/961_01.png",
+      "image_sha256": "ac153b508dbd0c1ad78017297ea41c5d40de64632b712c2e975ad6a04bd710df"
     },
     {
       "id": "962",
@@ -5147,8 +5147,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/962_00.png",
+      "image_sha256": "1ffb63ad812e0083269ef3c459b9bbbadb8f3d42223e21559e1b1b63e650cef6"
     },
     {
       "id": "963",
