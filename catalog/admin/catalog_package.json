@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-891482d3e28b",
-  "generated_at": "2026-09-12T04:26:49.458521Z",
+  "catalog_revision": "admin-50101e28e492",
+  "generated_at": "2026-09-12T04:42:28.195579Z",
   "characters": [
     {
       "id": "010",
@@ -11121,6 +11121,134 @@
       "notes": "",
       "source": "manager_catalog",
       "updated_at": "2026-09-12T01:14:04.447251Z"
+    },
+    {
+      "id": "999",
+      "version": "00",
+      "name": "dummy",
+      "classification": "npc_extra",
+      "status": "approved",
+      "notes": "",
+      "source": "nikke_local_catalog",
+      "image": {
+        "primary": "999_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c999/00_hd_895c10df1b8cd32d5e03d7c09aaa9b8e.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c999_00.atlas",
+        "spine_skel_name": "c999_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 427,
+          "source_height": 1130,
+          "scale": 1.0300884955752212,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 440,
+          "output_height": 1164
+        }
+      },
+      "key": "999_00",
+      "updated_at": "2026-09-12T04:34:33.473439Z"
+    },
+    {
+      "id": "870",
+      "version": "99",
+      "name": "Queen/Makoto (NPC)",
+      "classification": "npc_extra",
+      "status": "approved",
+      "notes": "",
+      "source": "nikke_local_catalog",
+      "image": {
+        "primary": "870_99.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c870/99_hd_e49100402c9b4c59a45b8f8831cc5c9c.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c870_99.atlas",
+        "spine_skel_name": "c870_99.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 713,
+          "source_height": 1146,
+          "scale": 1.0157068062827226,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 724,
+          "output_height": 1164
+        }
+      },
+      "key": "870_99",
+      "updated_at": "2026-09-12T04:39:25.545930Z"
+    },
+    {
+      "id": "870",
+      "version": "98",
+      "name": "Queen/Makoto Academy Student  (NPC)",
+      "classification": "npc_extra",
+      "status": "approved",
+      "notes": "",
+      "source": "nikke_local_catalog",
+      "image": {
+        "primary": "870_98.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c870/98_hd_3b3b085ccab19e4fe68128664c9c5594.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c870_98.atlas",
+        "spine_skel_name": "c870_98.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 630,
+          "source_height": 1149,
+          "scale": 1.0130548302872062,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 638,
+          "output_height": 1164
+        }
+      },
+      "key": "870_98",
+      "updated_at": "2026-09-12T04:41:04.337924Z"
+    },
+    {
+      "id": "281",
+      "version": "98",
+      "name": "Moran (NPC)",
+      "classification": "npc_extra",
+      "status": "approved",
+      "notes": "",
+      "source": "nikke_local_catalog",
+      "image": {
+        "primary": "281_98.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingprefabgroup(hd)_assets_spine/standing/c281/98_normal_aba9073a3125a04075e9b848cf812dfc.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c281_98.atlas",
+        "spine_skel_name": "c281_98.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 608,
+          "source_height": 1134,
+          "scale": 1.0264550264550265,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 624,
+          "output_height": 1164
+        }
+      },
+      "key": "281_98",
+      "updated_at": "2026-09-12T04:42:10.226338Z"
     }
   ],
   "aliases": []
