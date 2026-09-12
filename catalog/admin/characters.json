@@ -1,6 +1,6 @@
 {
-  "catalog_version": "admin-891482d3e28b",
-  "count": 548,
+  "catalog_version": "admin-50101e28e492",
+  "count": 552,
   "characters": [
     {
       "id": "010",
@@ -6029,6 +6029,50 @@
       "admin_source": true,
       "image_file": "images/9040_00.png",
       "image_sha256": "a78cfd6df7cd78d4690194c5f5a25da935da28e96679c9a2e587398c5999a21e"
+    },
+    {
+      "id": "999",
+      "version": "00",
+      "key": "999_00",
+      "name": "dummy",
+      "is_placeholder": false,
+      "classification": "npc_extra",
+      "admin_source": true,
+      "image_file": "images/999_00.png",
+      "image_sha256": "fbefe5722985fdaaf955046334d4123df89c5cfa716b5da958ff733327112ecd"
+    },
+    {
+      "id": "870",
+      "version": "99",
+      "key": "870_99",
+      "name": "Queen/Makoto (NPC)",
+      "is_placeholder": false,
+      "classification": "npc_extra",
+      "admin_source": true,
+      "image_file": "images/870_99.png",
+      "image_sha256": "2c31e7e8eb87c265b34e2ced7a0822e99325c6a2007851129cc67f33bd1ef1a7"
+    },
+    {
+      "id": "870",
+      "version": "98",
+      "key": "870_98",
+      "name": "Queen/Makoto Academy Student  (NPC)",
+      "is_placeholder": false,
+      "classification": "npc_extra",
+      "admin_source": true,
+      "image_file": "images/870_98.png",
+      "image_sha256": "40c34db44ac910c304d16525c069aac0d199899a1585df8dfd1a7fe2560970e1"
+    },
+    {
+      "id": "281",
+      "version": "98",
+      "key": "281_98",
+      "name": "Moran (NPC)",
+      "is_placeholder": false,
+      "classification": "npc_extra",
+      "admin_source": true,
+      "image_file": "images/281_98.png",
+      "image_sha256": "766dafb692b61bca8dbfa0f579aee81988c19e214941c58629e7d9bffaef520f"
     }
   ]
 }
