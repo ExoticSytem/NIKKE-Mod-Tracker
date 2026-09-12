@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-50101e28e492",
-  "generated_at": "2026-09-12T04:42:28.195579Z",
+  "catalog_revision": "admin-43cde1fc2650",
+  "generated_at": "2026-09-12T04:45:13.524848Z",
   "characters": [
     {
       "id": "010",
@@ -11153,70 +11153,6 @@
       },
       "key": "999_00",
       "updated_at": "2026-09-12T04:34:33.473439Z"
-    },
-    {
-      "id": "870",
-      "version": "99",
-      "name": "Queen/Makoto (NPC)",
-      "classification": "npc_extra",
-      "status": "approved",
-      "notes": "",
-      "source": "nikke_local_catalog",
-      "image": {
-        "primary": "870_99.png",
-        "alternates": [],
-        "source": "nikke_official_spine_render",
-        "standard": "900x1200",
-        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c870/99_hd_e49100402c9b4c59a45b8f8831cc5c9c.bundle",
-        "texture_name": "Standing render oficial",
-        "spine_atlas_name": "c870_99.atlas",
-        "spine_skel_name": "c870_99.skel",
-        "normalization": {
-          "width": 900,
-          "height": 1200,
-          "source_width": 713,
-          "source_height": 1146,
-          "scale": 1.0157068062827226,
-          "margin_x": 18,
-          "margin_y": 18,
-          "output_width": 724,
-          "output_height": 1164
-        }
-      },
-      "key": "870_99",
-      "updated_at": "2026-09-12T04:39:25.545930Z"
-    },
-    {
-      "id": "870",
-      "version": "98",
-      "name": "Queen/Makoto Academy Student  (NPC)",
-      "classification": "npc_extra",
-      "status": "approved",
-      "notes": "",
-      "source": "nikke_local_catalog",
-      "image": {
-        "primary": "870_98.png",
-        "alternates": [],
-        "source": "nikke_official_spine_render",
-        "standard": "900x1200",
-        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c870/98_hd_3b3b085ccab19e4fe68128664c9c5594.bundle",
-        "texture_name": "Standing render oficial",
-        "spine_atlas_name": "c870_98.atlas",
-        "spine_skel_name": "c870_98.skel",
-        "normalization": {
-          "width": 900,
-          "height": 1200,
-          "source_width": 630,
-          "source_height": 1149,
-          "scale": 1.0130548302872062,
-          "margin_x": 18,
-          "margin_y": 18,
-          "output_width": 638,
-          "output_height": 1164
-        }
-      },
-      "key": "870_98",
-      "updated_at": "2026-09-12T04:41:04.337924Z"
     },
     {
       "id": "281",
