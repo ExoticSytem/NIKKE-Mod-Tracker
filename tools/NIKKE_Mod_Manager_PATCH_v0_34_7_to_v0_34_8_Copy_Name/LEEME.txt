@@ -1,0 +1,15 @@
+NIKKE Mod Manager — parche v0.34.7 -> v0.34.8
+
+Cambio:
+- Al tocar/clickear el nombre del personaje dentro de su ficha abierta, el nombre se copia automaticamente al portapapeles.
+- No muestra mensajes, notificaciones ni cambios visuales.
+- No cambia el cursor, color ni estilo del nombre.
+- No toca mods, cache del Repacker ni datos del jugador.
+
+Uso:
+1. Cierra NIKKE Mod Manager.
+2. Ejecuta APLICAR_PARche.bat.
+3. Selecciona la carpeta raiz de tu NIKKE Mod Manager v0.34.7 si el parche no la detecta automaticamente.
+4. Abre el Manager de nuevo.
+
+Se crea un respaldo de app.js y VERSION.txt en Backups/Patches antes de modificar nada.
