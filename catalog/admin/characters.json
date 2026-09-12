@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-6717584609ee",
+  "catalog_version": "admin-025ac294f983",
   "count": 548,
   "characters": [
     {
@@ -32,8 +32,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/010_02.png",
+      "image_sha256": "2e09fe6eddc9cf22a81e39884fed0e8ed2841ec83db7b98d6ae8e67e8ae62ca4"
     },
     {
       "id": "011",
@@ -43,8 +43,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/011_00.png",
+      "image_sha256": "9ae4950ee9707b16dec70358ea0482f4b055a6f0bc6599d3c8c28f59441394a6"
     },
     {
       "id": "011",
@@ -5763,8 +5763,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9016_00.png",
+      "image_sha256": "b6f5ce8858032176e202bbde54889221f548199302b1f6d388d44d0d7ce3abac"
     },
     {
       "id": "9017",
@@ -5774,8 +5774,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9017_00.png",
+      "image_sha256": "c24a036e88b0372780e81e6b57a4e385b6c7ed134606b3484e2f8d455d398e03"
     },
     {
       "id": "9018",
@@ -5785,8 +5785,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9018_00.png",
+      "image_sha256": "5650343393c293884743f1f47a91351c7304ae3d846f83299b52cba2bffb5735"
     },
     {
       "id": "9019",
@@ -5796,8 +5796,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9019_00.png",
+      "image_sha256": "ba15ecaa875078356869315bb83c211a4a62e619b451613b23a313e0af9b679d"
     },
     {
       "id": "9020",
@@ -5807,8 +5807,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9020_00.png",
+      "image_sha256": "026bb293e53cf178a2f9f013cf6582a6a86443c566d97329583f7db1047d95f4"
     },
     {
       "id": "9020",
@@ -5818,8 +5818,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9020_01.png",
+      "image_sha256": "ab23b1837accdb4adcc0e743ad7570fe3824f957c014034a8bcbbba4b1c0fece"
     },
     {
       "id": "9021",
@@ -5829,8 +5829,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9021_00.png",
+      "image_sha256": "73dbca7ac5cf15f6e368d32eaacde7e7c580f83527b7c213b1f92b4ea6097366"
     },
     {
       "id": "9021",
@@ -5840,8 +5840,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9021_01.png",
+      "image_sha256": "00da678263d2f33afe1fbadd32deacbb11651b0fc6b7f4c6b51ad34aa6f2a98c"
     },
     {
       "id": "9022",
@@ -5851,8 +5851,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9022_00.png",
+      "image_sha256": "36083ace4c0eedd614e4187f33c8e9923fab89a79ce27c65ba82b199655906d3"
     },
     {
       "id": "9023",
@@ -5862,8 +5862,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9023_00.png",
+      "image_sha256": "2d71c9503f6d0a1aa03a501190e1880dbfcd88ea51727baac243b2b102147f96"
     },
     {
       "id": "9024",
@@ -5873,8 +5873,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9024_00.png",
+      "image_sha256": "da90c3979ae92a11c8776ad5a873e2633a6a2e0fe5e106670884ff91cad283fa"
     },
     {
       "id": "9025",
@@ -5884,8 +5884,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9025_00.png",
+      "image_sha256": "431064351444a53d21650084ae2d568ba7ea0d8a84e5df4a815c84a6b6b8d3af"
     },
     {
       "id": "9026",
@@ -5895,8 +5895,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9026_00.png",
+      "image_sha256": "77cb062edef8320925aa3b69c16aad71563d60aa4aca901e2489f357f355299d"
     },
     {
       "id": "9028",
@@ -5906,8 +5906,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9028_00.png",
+      "image_sha256": "6804b6b7e35f5be2fe42d6032868ae5bc54ecdfd4998f4ed250cec0a62dd7d63"
     },
     {
       "id": "9029",
@@ -5917,8 +5917,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9029_00.png",
+      "image_sha256": "a9647c45d9fc3157903bdc9781262c0326fe3612b0dcb0c05810d9caa2191df7"
     },
     {
       "id": "9030",
@@ -5928,8 +5928,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9030_00.png",
+      "image_sha256": "7e2ac8a7959fe5ff67008b657a97244b28af8f7748dac71874bce657aa55046d"
     },
     {
       "id": "9031",
@@ -5939,8 +5939,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9031_00.png",
+      "image_sha256": "5d2e3f5858e13140f0cc59b6838792fda1d74ad65b84d324b5fb78f27ee4f189"
     },
     {
       "id": "9032",
@@ -5950,8 +5950,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9032_00.png",
+      "image_sha256": "097febcda979642c02a4568db8fea0ed056a6e4d4fa9b9b834f28cdaac011054"
     },
     {
       "id": "9034",
@@ -5961,8 +5961,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9034_00.png",
+      "image_sha256": "66dc50d310b4bc4a7b94825e99392afb55e792b5b4c83f9a2b6c57d85f0f95fc"
     },
     {
       "id": "9035",
@@ -5972,8 +5972,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9035_00.png",
+      "image_sha256": "0bca4b566d759fcf5c5304693134595ef82b4817ae696a4f099502d6422c6cf3"
     },
     {
       "id": "9036",
@@ -5983,8 +5983,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9036_00.png",
+      "image_sha256": "e100c0cdb63bab8a679cf2a2db2f8882c877fc039da982e1da806136083170af"
     },
     {
       "id": "9037",
@@ -5994,8 +5994,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9037_00.png",
+      "image_sha256": "0bdd0cde6efe29d531ed6eddd1a1720c25021abe37f6e8d5e6c1c2ece1a10690"
     },
     {
       "id": "9038",
