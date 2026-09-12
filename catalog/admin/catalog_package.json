@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-08dba945e888",
-  "generated_at": "2026-09-12T02:55:14.478195Z",
+  "catalog_revision": "admin-240798786256",
+  "generated_at": "2026-09-12T03:36:37.718145Z",
   "characters": [
     {
       "id": "010",
@@ -6979,12 +6979,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "947_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c947/00_hd_3849e045eb6cbdad936988a2d25081b7.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c947_00.atlas",
+        "spine_skel_name": "c947_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 382,
+          "source_height": 1140,
+          "scale": 1.0210526315789474,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 390,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:34:52.071881Z"
     },
     {
       "id": "948",
@@ -6994,12 +7011,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "948_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c948/00_hd_8c84f44d95334dddf237f0e21366411f.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c948_00.atlas",
+        "spine_skel_name": "c948_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 326,
+          "source_height": 1139,
+          "scale": 1.0219490781387182,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 333,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:34:35.127492Z"
     },
     {
       "id": "951",
@@ -7009,12 +7043,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "951_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c951/00_hd_b97aea7fdf794751e96382f78f43ab14.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c951_00.atlas",
+        "spine_skel_name": "c951_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 387,
+          "source_height": 1149,
+          "scale": 1.0130548302872062,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 392,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:34:16.204662Z"
     },
     {
       "id": "952",
@@ -7024,12 +7075,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "952_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c952/00_hd_4dd8878b019d5177f9113bcd2bbd737a.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c952_00.atlas",
+        "spine_skel_name": "c952_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 350,
+          "source_height": 1139,
+          "scale": 1.0219490781387182,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 358,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:33:47.651771Z"
     },
     {
       "id": "960",
@@ -7039,12 +7107,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "960_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c960/00_hd_0a371711b40e62b7adc76839b42c3256.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c960_00.atlas",
+        "spine_skel_name": "c960_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 450,
+          "source_height": 1139,
+          "scale": 1.0219490781387182,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 460,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:33:20.055649Z"
     },
     {
       "id": "961",
@@ -7054,12 +7139,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "961_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c961/00_hd_1f7d5a8803bf649aa194e10afced69d7.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c961_00.atlas",
+        "spine_skel_name": "c961_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 352,
+          "source_height": 1139,
+          "scale": 1.0219490781387182,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 360,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:31:53.082922Z"
     },
     {
       "id": "961",
@@ -7069,12 +7171,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "961_01.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c961/01_hd_5b5ca65ef159b390e7c069efe0ae3015.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c961_01.atlas",
+        "spine_skel_name": "c961_01.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 387,
+          "source_height": 1136,
+          "scale": 1.0246478873239437,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 397,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:31:34.271861Z"
     },
     {
       "id": "962",
@@ -7084,12 +7203,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "962_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c962/00_hd_39dcf8d753312e7a912600ee290a2cde.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c962_00.atlas",
+        "spine_skel_name": "c962_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 311,
+          "source_height": 1137,
+          "scale": 1.0237467018469657,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 318,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T03:31:17.105257Z"
     },
     {
       "id": "963",
