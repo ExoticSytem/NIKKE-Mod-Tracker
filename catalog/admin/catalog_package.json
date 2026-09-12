@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "catalog_revision": "admin-1c7602474dfe",
-  "generated_at": "2026-09-12T00:58:51.674435Z",
+  "catalog_revision": "admin-6717584609ee",
+  "generated_at": "2026-09-12T01:15:04.322601Z",
   "characters": [
     {
       "id": "010",
@@ -43,12 +43,29 @@
       "classification": "nikke",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "010_01.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c010/01_hd_7955006387c30884a7510dd30d729ebc.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c010_01.atlas",
+        "spine_skel_name": "c010_01.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 500,
+          "source_height": 1133,
+          "scale": 1.027360988526037,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 514,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T01:13:25.934302Z"
     },
     {
       "id": "010",
@@ -8203,12 +8220,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "9038_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c9038/00_hd_bb57c8258567027fd2adf85640c46404.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c9038_00.atlas",
+        "spine_skel_name": "c9038_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 826,
+          "source_height": 927,
+          "scale": 1.0460048426150121,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 864,
+          "output_height": 970
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T01:14:51.214610Z"
     },
     {
       "id": "9039",
@@ -8218,12 +8252,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "9039_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c9039/00_hd_b2ad64f5d5e51ebf93a36d226310c586.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c9039_00.atlas",
+        "spine_skel_name": "c9039_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 650,
+          "source_height": 1140,
+          "scale": 1.0210526315789474,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 664,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T01:14:30.366480Z"
     },
     {
       "id": "9040",
@@ -8233,12 +8284,29 @@
       "classification": "npc_extra",
       "status": "approved",
       "image": {
-        "primary": "",
-        "alternates": []
+        "primary": "9040_00.png",
+        "alternates": [],
+        "source": "nikke_official_spine_render",
+        "standard": "900x1200",
+        "catalog_key": "spinestandingcharactergroup(hd)_assets_spine/standing/c9040/00_hd_fabd3ed22650ce00776391dab6f13b0b.bundle",
+        "texture_name": "Standing render oficial",
+        "spine_atlas_name": "c9040_00.atlas",
+        "spine_skel_name": "c9040_00.skel",
+        "normalization": {
+          "width": 900,
+          "height": 1200,
+          "source_width": 700,
+          "source_height": 1133,
+          "scale": 1.027360988526037,
+          "margin_x": 18,
+          "margin_y": 18,
+          "output_width": 719,
+          "output_height": 1164
+        }
       },
       "notes": "",
       "source": "manager_catalog",
-      "updated_at": ""
+      "updated_at": "2026-09-12T01:14:04.447251Z"
     }
   ],
   "aliases": []
