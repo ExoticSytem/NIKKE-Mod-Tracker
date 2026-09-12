@@ -1,6 +1,6 @@
 {
-  "catalog_version": "admin-43cde1fc2650",
-  "count": 550,
+  "catalog_version": "admin-d0d7ed5dfdc8",
+  "count": 549,
   "characters": [
     {
       "id": "010",
@@ -3761,8 +3761,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/800_00.png",
+      "image_sha256": "16ab96f215e74335a68d2ae99689624056b637262db536ba29b2d0a139b9db4a"
     },
     {
       "id": "800",
@@ -3772,8 +3772,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/800_01.png",
+      "image_sha256": "224817f8ce1295a63902d8d4900bc851e82561487cdeb2737a7070ca1ae25f74"
     },
     {
       "id": "801",
@@ -3783,8 +3783,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/801_00.png",
+      "image_sha256": "c1e890a3dd9d8e02851d2cbf2c9e01abdac5d443da6c9139fa24aa54e7b89fe9"
     },
     {
       "id": "802",
@@ -3794,8 +3794,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/802_00.png",
+      "image_sha256": "da147cacbfef111ac846f8b89da05063b88f27ab08e70e982ad77038ea0c5069"
     },
     {
       "id": "803",
@@ -3827,8 +3827,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/810_00.png",
+      "image_sha256": "59ae4f25b0afee76fd60d3beb5026d14241a8a41951e8f962eb51523abacddbd"
     },
     {
       "id": "810",
@@ -3838,8 +3838,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/810_01.png",
+      "image_sha256": "2958f49820e8fa2c0fb7369f2ea8946f92d02af3cfeb9a68959ed6ebe1524fa8"
     },
     {
       "id": "810",
@@ -3849,8 +3849,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/810_02.png",
+      "image_sha256": "47ba3530ed3d75f3a2dc1fd1796dc064cf4b2b8926b4eb7d08c841ae6ce71109"
     },
     {
       "id": "810",
@@ -3860,8 +3860,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/810_03.png",
+      "image_sha256": "3427088bffaaf608c044838b8225ed338458b5b0f3c236362238d49c3a76fb3b"
     },
     {
       "id": "811",
@@ -3871,8 +3871,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/811_00.png",
+      "image_sha256": "af427053655d000b4e8dbe2fdb279007779d624fcdfb229a1d4e2008666bcdff"
     },
     {
       "id": "811",
@@ -3882,8 +3882,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/811_01.png",
+      "image_sha256": "f5f9bb87c476d72ab794dc1832605dad2be6e13b57ff81678c3615038616f08d"
     },
     {
       "id": "811",
@@ -3893,8 +3893,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/811_02.png",
+      "image_sha256": "98519d907f2b763b64595ba657cd6004ed44d4d343009c50e4f4b51271b7be84"
     },
     {
       "id": "811",
@@ -3904,8 +3904,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/811_03.png",
+      "image_sha256": "8c3487a40a980290c07c0aaaacbfb76920aa4cd07de0d04f1212009ce3730a87"
     },
     {
       "id": "812",
@@ -3915,8 +3915,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/812_00.png",
+      "image_sha256": "ecfb8d2c6b29a9c010fb25ad133357ac3edb042bc6ea21b99d66a69cebfd23e2"
     },
     {
       "id": "813",
@@ -3937,8 +3937,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/820_00.png",
+      "image_sha256": "eca508bec6c307341f0464d993558047c4981a31c12488d46ac4c739dcaf3a90"
     },
     {
       "id": "820",
@@ -3948,8 +3948,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/820_01.png",
+      "image_sha256": "3eb3f256b42e47b41fb0a46efde8ecafe756f1d52dde070538d73ef2aeecb610"
     },
     {
       "id": "820",
@@ -3959,8 +3959,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/820_02.png",
+      "image_sha256": "0f4afc8ca2e7b3333d2d37e617305861613277b1cac34cb7309d4bd899605e70"
     },
     {
       "id": "821",
@@ -3970,8 +3970,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/821_00.png",
+      "image_sha256": "f8421d001223d70ea3ce3f91804f60c967cbc75530162bb211a80b2526ddfc30"
     },
     {
       "id": "821",
@@ -3981,8 +3981,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/821_01.png",
+      "image_sha256": "65fcc39d1e64772ed9b242141da5e1e98cf58499ea276bf1818bfc223f267833"
     },
     {
       "id": "821",
@@ -3992,8 +3992,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/821_02.png",
+      "image_sha256": "5a36eeb6b8675d3c5d4645d8bb0e438106689bce99c457b531a3270fc7e94abe"
     },
     {
       "id": "822",
@@ -4003,8 +4003,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/822_00.png",
+      "image_sha256": "d635625ff35e53656b557bde0eec051b48b29f4e078fd5c5ab4cff2a396ebda3"
     },
     {
       "id": "830",
@@ -4014,8 +4014,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/830_00.png",
+      "image_sha256": "55e1ffbc98566169bc9af1e99cd65d8ec685c3c9dc56ba987f6e92748e478887"
     },
     {
       "id": "830",
@@ -4025,8 +4025,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/830_01.png",
+      "image_sha256": "08c8c47644ed7ee706f00ba92fecdb29bfffee38c11147da36fb90ea79748f29"
     },
     {
       "id": "830",
@@ -4036,8 +4036,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/830_02.png",
+      "image_sha256": "4ddc984ace090429701cc5ab788b461d9372b1e34748de1d71a197de8edf5198"
     },
     {
       "id": "830",
@@ -4047,8 +4047,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/830_03.png",
+      "image_sha256": "88841e8eeb6aad78988d2c9bebdf133a3ffd2328c11d288a357da9823f5da270"
     },
     {
       "id": "831",
@@ -4058,8 +4058,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/831_00.png",
+      "image_sha256": "b666132ebf749912ffff2d0ce273539c1c383927ef2c74d9b259e8b18b3b51ab"
     },
     {
       "id": "831",
@@ -4069,8 +4069,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/831_01.png",
+      "image_sha256": "c606f23470496304fa0882715653ff42db10e95cabe9292d24685feb8e748f40"
     },
     {
       "id": "831",
@@ -4080,8 +4080,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/831_02.png",
+      "image_sha256": "f247d642db8b6c7a08a3c5bfce7b9b8cef106ca51aaa8a6bf6c7fdaddfc0b23a"
     },
     {
       "id": "832",
@@ -4091,8 +4091,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/832_00.png",
+      "image_sha256": "c3156e87ef6cfcb9dabe72b81a485730b61255bbf9dae204ff1809aaf64bc24e"
     },
     {
       "id": "832",
@@ -4102,8 +4102,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/832_01.png",
+      "image_sha256": "18e09bb4792a2c700f0a495f582bce6d03c23491e4ff0d580b1be76c5e44922c"
     },
     {
       "id": "832",
@@ -4113,8 +4113,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/832_02.png",
+      "image_sha256": "3498fca2703043bf76ad24f22f48c017c0ab39f9940a54714787dd1ac1102a3a"
     },
     {
       "id": "832",
@@ -4124,8 +4124,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/832_03.png",
+      "image_sha256": "5741f8d6243cd26177f4a057f755a4253f702bb72fbc22b4f2409d072e9dae60"
     },
     {
       "id": "832",
@@ -4135,8 +4135,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/832_04.png",
+      "image_sha256": "f49511b61407c0958c4ce1fa06119d5e012311a1e8e96db4d07d5619852cdfb5"
     },
     {
       "id": "833",
@@ -4146,8 +4146,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/833_00.png",
+      "image_sha256": "83a1879affdd21a1dec0cd9f35d6d99b2172db665c29559c4380ad838932ca57"
     },
     {
       "id": "834",
@@ -4157,8 +4157,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/834_00.png",
+      "image_sha256": "03408bf0aa7a21045318421a8082859ae69b1378385fa05c90b1ab74b253b91d"
     },
     {
       "id": "834",
@@ -4168,8 +4168,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/834_01.png",
+      "image_sha256": "81b3809750780f42a67002b73138ac3a0ec06bda394eab471e012a153ac3dd1c"
     },
     {
       "id": "834",
@@ -4179,8 +4179,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/834_02.png",
+      "image_sha256": "a66e3d68bc216331de4c7f34899d3b523a0c3a674623c1e3a24033df8b7aeda2"
     },
     {
       "id": "835",
@@ -4190,8 +4190,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/835_00.png",
+      "image_sha256": "0a32e8260380d5c918d8d91896e12c67bbd1c73881fa9e6c11b38288489d4257"
     },
     {
       "id": "835",
@@ -4201,8 +4201,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/835_01.png",
+      "image_sha256": "562a830b8b813ebda41573d6806eaa76865a2e862599e7fcdba1db3e18438e77"
     },
     {
       "id": "835",
@@ -4212,8 +4212,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/835_02.png",
+      "image_sha256": "9b7b13117bf43746b8139edfd7f74d3427f681e8e66c9d67e76de5f055e2e3fd"
     },
     {
       "id": "836",
@@ -4223,8 +4223,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/836_00.png",
+      "image_sha256": "83b8ca9af6172adce7b4894835bb5005d34b5f9bfd3b998b868d628f62b6078b"
     },
     {
       "id": "840",
@@ -4234,8 +4234,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/840_00.png",
+      "image_sha256": "41d8651c733123db5274129583d54e04a958c7f4c5fc89c833e69aae93156221"
     },
     {
       "id": "840",
@@ -4245,8 +4245,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/840_01.png",
+      "image_sha256": "a740bcac7abf27a79ffb937dbb89485f795e52711adc605843819291dfdf6419"
     },
     {
       "id": "840",
@@ -4256,8 +4256,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/840_02.png",
+      "image_sha256": "0674f318843bedb6333292951fc82c2ab4fbacd2ac932525b7413c24a6b7e235"
     },
     {
       "id": "841",
@@ -4267,8 +4267,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/841_00.png",
+      "image_sha256": "27a0b68dc02a8574c516abb68605a3ed6d4950a7f3808aff4de207f9ef5a45d2"
     },
     {
       "id": "841",
@@ -4278,8 +4278,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/841_01.png",
+      "image_sha256": "0229529c85054f3fe35438ff113792c632b3c4edafa4b666dac2ef625f7187d0"
     },
     {
       "id": "841",
@@ -4289,8 +4289,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/841_02.png",
+      "image_sha256": "ac9b8f9410a55521b5c24089e4c4175bf303b0258b0e9f8a832419e01d9d0aba"
     },
     {
       "id": "842",
@@ -4300,8 +4300,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/842_00.png",
+      "image_sha256": "2fced106a0236415172b17ca833868023f6d156f574268c1af62cb6ca1986677"
     },
     {
       "id": "850",
@@ -4311,8 +4311,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/850_00.png",
+      "image_sha256": "1e3e23750a03e3c3009c03f2832f31411e297cb5d5fecb0f7622334d58188895"
     },
     {
       "id": "850",
@@ -4322,8 +4322,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/850_01.png",
+      "image_sha256": "cd8df09ed0ab6a4cab8dd423f4bb7893747cb8d8b01078fecc1667179f114e63"
     },
     {
       "id": "850",
@@ -4333,8 +4333,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/850_02.png",
+      "image_sha256": "07c84ddc204c74245236505c5f2011945a901526fc6c277aa4f26ac8a014a15a"
     },
     {
       "id": "850",
@@ -4344,8 +4344,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/850_03.png",
+      "image_sha256": "8ca9b9722a3b48c5917f5c7943d9e3912200880f91d4e96e195d6222f6c5e2c4"
     },
     {
       "id": "851",
@@ -4355,8 +4355,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/851_00.png",
+      "image_sha256": "cb5976673c2b7bcb97771404524a912f7653ebe4261e1b61cdb2c34854f49888"
     },
     {
       "id": "851",
@@ -4366,8 +4366,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/851_01.png",
+      "image_sha256": "24ff39c4974f119718e37bab2a86327bbad55cc6cc7726214b61b9f5fb4a4fcc"
     },
     {
       "id": "851",
@@ -4377,8 +4377,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/851_02.png",
+      "image_sha256": "36c9ce11b3906c9a61c72461f9513bcdaa3cc8afad74bc610d50952c1dd7666d"
     },
     {
       "id": "852",
@@ -4388,8 +4388,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/852_00.png",
+      "image_sha256": "5528230af82c6f1f3ac361376a8f4772877c4cc3291791062e4f0647fa3f8f2c"
     },
     {
       "id": "853",
@@ -4410,8 +4410,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/860_00.png",
+      "image_sha256": "2741d21d62fae96ae31e6d56753aa69bcf9b30490967a09fb58acfe8fb86a20a"
     },
     {
       "id": "860",
@@ -4421,8 +4421,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/860_01.png",
+      "image_sha256": "fad531e5f3ba2847c97338b8de134d73a438f67b4b1228daace9227478d57c61"
     },
     {
       "id": "860",
@@ -4432,8 +4432,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/860_02.png",
+      "image_sha256": "e18403364c7a5e54706e51e1adfe6b618047bd5a92a592728cefaed149867dd2"
     },
     {
       "id": "861",
@@ -4443,8 +4443,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/861_00.png",
+      "image_sha256": "9495c77358c7d3f66468a3abcb46fcc809eb7c9b504a430b7aa590d4cc6cea88"
     },
     {
       "id": "861",
@@ -4454,8 +4454,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/861_01.png",
+      "image_sha256": "dbeaf1493289d2539d5bf5b46f2a7b3ec435d2a90eeeb1e7090735af41f1a3c1"
     },
     {
       "id": "861",
@@ -4465,8 +4465,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/861_02.png",
+      "image_sha256": "a595903a148fcfefc80eeb535cce5a481a73920045f9be4a7073abbdf00f24f5"
     },
     {
       "id": "862",
@@ -4476,8 +4476,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/862_00.png",
+      "image_sha256": "24edfd5440c9162abbb2ba9008495686b117c537549583be3fd2235533ecf857"
     },
     {
       "id": "870",
@@ -4487,8 +4487,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/870_00.png",
+      "image_sha256": "baa8cfce202c4deab2479bfbaac1222e073d60993c659328cca2fd422e7528b2"
     },
     {
       "id": "870",
@@ -4498,8 +4498,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/870_01.png",
+      "image_sha256": "bd93abd80d352dbd8c6c9ddcb58f73bbf1dc935b40d40b8c8f06f1827a845970"
     },
     {
       "id": "870",
@@ -4509,8 +4509,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/870_02.png",
+      "image_sha256": "a6c7747f915bb1a9f93d55c2bd955b222a381d8a09bc4afecd5e90103d36bba2"
     },
     {
       "id": "871",
@@ -4520,8 +4520,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/871_00.png",
+      "image_sha256": "f8989e9c1ee5a3cd76b5739d807df9077ba9102ac5fd8c3bbe4256ba81c2cc9a"
     },
     {
       "id": "871",
@@ -4531,8 +4531,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/871_01.png",
+      "image_sha256": "4ac77c6318cc5bba48ca8f5cbfe983b42d7a9aebe26825acba51325c3d45f8d5"
     },
     {
       "id": "871",
@@ -4542,8 +4542,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/871_02.png",
+      "image_sha256": "4947d1d77104409fa05c4dfebbb7b5939d9309b08b065154df422dabfda805ef"
     },
     {
       "id": "872",
@@ -4553,8 +4553,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/872_00.png",
+      "image_sha256": "8dec77ed2db6787a412f7a62fe8a9957dbc09e5e13a449fa87bef4193a5d9510"
     },
     {
       "id": "890",
@@ -6040,17 +6040,6 @@
       "admin_source": true,
       "image_file": "images/999_00.png",
       "image_sha256": "fbefe5722985fdaaf955046334d4123df89c5cfa716b5da958ff733327112ecd"
-    },
-    {
-      "id": "281",
-      "version": "98",
-      "key": "281_98",
-      "name": "Moran (NPC)",
-      "is_placeholder": false,
-      "classification": "npc_extra",
-      "admin_source": true,
-      "image_file": "images/281_98.png",
-      "image_sha256": "766dafb692b61bca8dbfa0f579aee81988c19e214941c58629e7d9bffaef520f"
     }
   ]
 }
