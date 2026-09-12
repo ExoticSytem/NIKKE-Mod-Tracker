@@ -1,6 +1,6 @@
 {
-  "catalog_version": "admin-50101e28e492",
-  "count": 552,
+  "catalog_version": "admin-43cde1fc2650",
+  "count": 550,
   "characters": [
     {
       "id": "010",
@@ -6040,28 +6040,6 @@
       "admin_source": true,
       "image_file": "images/999_00.png",
       "image_sha256": "fbefe5722985fdaaf955046334d4123df89c5cfa716b5da958ff733327112ecd"
-    },
-    {
-      "id": "870",
-      "version": "99",
-      "key": "870_99",
-      "name": "Queen/Makoto (NPC)",
-      "is_placeholder": false,
-      "classification": "npc_extra",
-      "admin_source": true,
-      "image_file": "images/870_99.png",
-      "image_sha256": "2c31e7e8eb87c265b34e2ced7a0822e99325c6a2007851129cc67f33bd1ef1a7"
-    },
-    {
-      "id": "870",
-      "version": "98",
-      "key": "870_98",
-      "name": "Queen/Makoto Academy Student  (NPC)",
-      "is_placeholder": false,
-      "classification": "npc_extra",
-      "admin_source": true,
-      "image_file": "images/870_98.png",
-      "image_sha256": "40c34db44ac910c304d16525c069aac0d199899a1585df8dfd1a7fe2560970e1"
     },
     {
       "id": "281",
