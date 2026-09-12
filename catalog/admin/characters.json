@@ -1,6 +1,6 @@
 {
-  "catalog_version": "admin-34e414cfac8e",
-  "count": 548,
+  "catalog_version": "admin-08dba945e888",
+  "count": 545,
   "characters": [
     {
       "id": "010",
@@ -5158,8 +5158,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/963_00.png",
+      "image_sha256": "7ff6fc5d2bd5953ba37f1f6c9a6c31d72d9965631edcff5492f34e450733db55"
     },
     {
       "id": "964",
@@ -5169,8 +5169,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/964_00.png",
+      "image_sha256": "411c8324cc02b8301a53c2efae313c9ddbd5fe2ac41a6f52cedfa6fd788407cf"
     },
     {
       "id": "965",
@@ -5180,8 +5180,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/965_00.png",
+      "image_sha256": "dc781740b03d22e14d82511bbcc4864b37d1420d393bd4a63e865d39a1b2688e"
     },
     {
       "id": "966",
@@ -5191,8 +5191,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/966_00.png",
+      "image_sha256": "42910df3054a7da104f594b4401a96d07d8c73ce3dbd6a6fcde51522e01dac35"
     },
     {
       "id": "967",
@@ -5202,8 +5202,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/967_00.png",
+      "image_sha256": "6ecb85894daaee47cc52a713d78bf5407433d62b42a15908c75c829a18d9dda4"
     },
     {
       "id": "968",
@@ -5213,8 +5213,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/968_00.png",
+      "image_sha256": "01495a22e53750e3c452f38efd473013d378a61d9f60993664d7f66c369628f3"
     },
     {
       "id": "969",
@@ -5224,8 +5224,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/969_00.png",
+      "image_sha256": "b8b2e02ea9f54701bba1d26626502d7987b49334826280c39c76b2209144e7bf"
     },
     {
       "id": "970",
@@ -5235,8 +5235,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/970_00.png",
+      "image_sha256": "7c268ee6883415aeddb02c6d88c71759243f2f9c0a70c9338edc244ca3bd2c9c"
     },
     {
       "id": "971",
@@ -5246,8 +5246,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/971_00.png",
+      "image_sha256": "dfc6df7a5476d06014962016ea9997aba7d45fe478c03c938702776fbc39bc82"
     },
     {
       "id": "971",
@@ -5257,8 +5257,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/971_01.png",
+      "image_sha256": "4dc5e97828f5f45d469cddf63906bb572f7d24438e8505dfbd85232271c05718"
     },
     {
       "id": "973",
@@ -5268,8 +5268,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/973_00.png",
+      "image_sha256": "7473c62ed36df7f6d68adfed7860dbbeca4643f49b4f9e72dbd9a625919dcd7f"
     },
     {
       "id": "974",
@@ -5279,8 +5279,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/974_00.png",
+      "image_sha256": "d3cd88b7e805a52d3cbdd3b0142b488cdba500a3ed61e385e41bef385901edbf"
     },
     {
       "id": "975",
@@ -5290,19 +5290,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
-    },
-    {
-      "id": "976",
-      "version": "00",
-      "key": "976_00",
-      "name": "T.Rony",
-      "is_placeholder": false,
-      "classification": "npc_extra",
-      "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/975_00.png",
+      "image_sha256": "604084aa198204459bd687afeb8c57c78b1cf142fb84d13dcc25776dc6f61d0f"
     },
     {
       "id": "977",
@@ -5312,8 +5301,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/977_00.png",
+      "image_sha256": "ebcc9d477707a8f26cdbefa2c17a953eccc6106a81fc70ace58dee1599170989"
     },
     {
       "id": "979",
@@ -5323,8 +5312,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/979_00.png",
+      "image_sha256": "f12aa012a6273bddaed3cd795ea437c91fa1cc8bca5621285009b988f2cf7ab8"
     },
     {
       "id": "980",
@@ -5334,8 +5323,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/980_00.png",
+      "image_sha256": "9aa54b945cbd1eb7befc22667f70012353ce3b93862f288ef4860e6316c10250"
     },
     {
       "id": "981",
@@ -5345,8 +5334,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/981_00.png",
+      "image_sha256": "8e59b503c0432483dba697c5a77f5b4ef5e53936612f8d8d4915a3a32c4e5986"
     },
     {
       "id": "982",
@@ -5356,8 +5345,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/982_00.png",
+      "image_sha256": "c5adf67c80b51c6c41d5b30867b1535a468eca03cb76c43c48c4fc88ff70f79a"
     },
     {
       "id": "983",
@@ -5367,30 +5356,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
-    },
-    {
-      "id": "984",
-      "version": "00",
-      "key": "984_00",
-      "name": "Sound Only",
-      "is_placeholder": false,
-      "classification": "npc_extra",
-      "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
-    },
-    {
-      "id": "984",
-      "version": "01",
-      "key": "984_01",
-      "name": "X",
-      "is_placeholder": false,
-      "classification": "npc_extra",
-      "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/983_00.png",
+      "image_sha256": "be92cd804243b48c9e000243fd2effe34542ff9e2ed1801c091dd7560c907c36"
     },
     {
       "id": "985",
@@ -5400,8 +5367,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/985_00.png",
+      "image_sha256": "08ae2453a6d64a794abcfe26d59638aac5fb405957c619cd72f629b182ca063f"
     },
     {
       "id": "986",
@@ -5411,8 +5378,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/986_00.png",
+      "image_sha256": "0768f6f35e9b5712f75e217ea005ff24a26dcff20a4ff52f7879bb2ccb113c52"
     },
     {
       "id": "988",
@@ -5422,8 +5389,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/988_00.png",
+      "image_sha256": "90735cd1e1364e31c20be8e041c9476b70cac7af95b977dcfec7d831c5d65302"
     },
     {
       "id": "989",
