@@ -1,5 +1,5 @@
 {
-  "catalog_version": "admin-1c7602474dfe",
+  "catalog_version": "admin-6717584609ee",
   "count": 548,
   "characters": [
     {
@@ -21,8 +21,8 @@
       "is_placeholder": false,
       "classification": "nikke",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/010_01.png",
+      "image_sha256": "12d1844801e5728eba627340883fd60631e078c9ba8b0b50c15e553fcebcce13"
     },
     {
       "id": "010",
@@ -6005,8 +6005,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9038_00.png",
+      "image_sha256": "d49e5111153871bfc2d93407ab782176d00b24802af07c4bf3aed03a3aeadcb5"
     },
     {
       "id": "9039",
@@ -6016,8 +6016,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9039_00.png",
+      "image_sha256": "24a9955c14c68cce9d94a75bb7c5afd5cf4826a980e7bb36ce0ec44c5e95a829"
     },
     {
       "id": "9040",
@@ -6027,8 +6027,8 @@
       "is_placeholder": false,
       "classification": "npc_extra",
       "admin_source": true,
-      "image_file": "",
-      "image_sha256": ""
+      "image_file": "images/9040_00.png",
+      "image_sha256": "a78cfd6df7cd78d4690194c5f5a25da935da28e96679c9a2e587398c5999a21e"
     }
   ]
 }
