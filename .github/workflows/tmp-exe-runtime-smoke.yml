@@ -1,0 +1,40 @@
+name: Temporary final EXE runtime smoke test
+on:
+  push:
+    branches: ['tmp/cython-protected-exe-build']
+    paths: ['.tmp-build/exe-smoke.txt']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  smoke-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Download exact validated artifact
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+          $url='https://api.github.com/repos/ExoticSytem/NIKKE-Mod-Tracker/actions/artifacts/10311473881/zip'
+          Invoke-WebRequest -Headers $h -Uri $url -OutFile app.zip
+          Expand-Archive app.zip app -Force
+          if (-not (Test-Path app/NIKKE_Mod_Manager.exe)) { throw 'Final EXE missing from downloaded artifact' }
+      - name: Start final EXE and verify it remains alive
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $exe=(Resolve-Path app/NIKKE_Mod_Manager.exe).Path
+          $p=Start-Process -FilePath $exe -WorkingDirectory (Split-Path $exe) -PassThru
+          Start-Sleep -Seconds 8
+          $p.Refresh()
+          if ($p.HasExited) {
+            Write-Host "EXE exited early with code $($p.ExitCode)"
+            if (Test-Path app/data/startup_error.log) { Get-Content app/data/startup_error.log }
+            throw 'Runtime smoke test failed: application exited during startup'
+          }
+          Write-Host "RUNTIME_SMOKE_OK PID=$($p.Id)"
+          Stop-Process -Id $p.Id -Force
+          Start-Sleep -Seconds 1
+          if (Get-Process -Id $p.Id -ErrorAction SilentlyContinue) { throw 'Could not terminate smoke-test process' }
