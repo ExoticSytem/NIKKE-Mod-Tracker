@@ -55,6 +55,51 @@ jobs:
         run: |
           python -m pip install -r requirements.txt
           python -m pip install cython pyinstaller setuptools wheel pefile
+      - name: Discover imports used by proprietary modules
+        shell: pwsh
+        working-directory: source
+        run: |
+          @'
+          import ast
+          import importlib.util
+          from pathlib import Path
+
+          files = [Path('app.py')] + sorted(Path('src').glob('*.py'))
+          mods = set()
+          for p in files:
+              tree = ast.parse(p.read_text(encoding='utf-8-sig'), filename=str(p))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      mods.update(alias.name for alias in node.names)
+                  elif isinstance(node, ast.ImportFrom):
+                      if node.level:
+                          if p.parent.name == 'src':
+                              name = 'src' + ('.' + node.module if node.module else '')
+                              mods.add(name)
+                      elif node.module:
+                          mods.add(node.module)
+
+          own = {
+              'src.api','src.catalog','src.catalog_updater','src.classifier','src.playable_updater',
+              'src.preview','src.repacker_detector','src.repacker_engine','src.repacker_service',
+              'src.runtime_cache','src.scanner','src.sync_server'
+          }
+          usable = set(own)
+          for mod in sorted(mods):
+              try:
+                  if importlib.util.find_spec(mod) is not None:
+                      usable.add(mod)
+              except Exception:
+                  pass
+          # Cython hides stdlib imports from PyInstaller; keep sqlite explicit too.
+          usable.update({'sqlite3', '_sqlite3'})
+          Path('hidden_imports.txt').write_text('\n'.join(sorted(usable)) + '\n', encoding='utf-8')
+          print('HIDDEN_IMPORTS', len(usable))
+          print(Path('hidden_imports.txt').read_text(encoding='utf-8'))
+          '@ | Set-Content -Encoding UTF8 collect_hidden_imports.py
+          python collect_hidden_imports.py
+          if ($LASTEXITCODE -ne 0) { throw 'Import discovery failed' }
+          if (-not (Select-String -Path hidden_imports.txt -Pattern '^sqlite3$' -Quiet)) { throw 'sqlite3 was not captured' }
       - name: Compile proprietary modules
         shell: pwsh
         working-directory: source
@@ -78,13 +123,13 @@ jobs:
         shell: pwsh
         working-directory: source
         run: |
-          python -c "import nmm_entry; import src.api, src.catalog, src.catalog_updater, src.classifier, src.playable_updater, src.preview, src.repacker_detector, src.repacker_engine, src.repacker_service, src.runtime_cache, src.scanner, src.sync_server; print('COMPILED_IMPORTS_OK')"
+          python -c "import sqlite3; import nmm_entry; import src.api, src.catalog, src.catalog_updater, src.classifier, src.playable_updater, src.preview, src.repacker_detector, src.repacker_engine, src.repacker_service, src.runtime_cache, src.scanner, src.sync_server; print('COMPILED_IMPORTS_OK', sqlite3.sqlite_version)"
           if ($LASTEXITCODE -ne 0) { throw 'Compiled module import smoke test failed' }
       - name: Remove proprietary source
         shell: pwsh
         working-directory: source
         run: |
-          Remove-Item app.py,nmm_entry.py,build_cython.py -Force
+          Remove-Item app.py,nmm_entry.py,build_cython.py,collect_hidden_imports.py -Force
           Get-ChildItem src -File -Filter '*.py' | Where-Object {$_.Name -ne '__init__.py'} | Remove-Item -Force
           Set-Content -Encoding UTF8 src/__init__.py ''
           @'
@@ -112,7 +157,7 @@ jobs:
         shell: pwsh
         working-directory: source
         run: |
-          $hidden = @('src.api','src.catalog','src.catalog_updater','src.classifier','src.playable_updater','src.preview','src.repacker_detector','src.repacker_engine','src.repacker_service','src.runtime_cache','src.scanner','src.sync_server')
+          $hidden = @(Get-Content hidden_imports.txt | Where-Object { $_.Trim() } | Sort-Object -Unique)
           $a = @('--noconfirm','--clean','--windowed','--onedir','--contents-directory','.','--name','NIKKE_Mod_Manager','--paths','.','--collect-all','webview','--collect-all','UnityPy','--collect-all','Crypto','--collect-all','qrcode','--collect-all','send2trash','--collect-all','zstandard','--collect-all','lz4','--add-data','web;web','--add-data','data;data','--add-data','Backups;Backups','--add-data','VERSION.txt;.','--add-data','ABOUT_PROJECT_ES_EN.txt;.','--add-data','LEEME_EJECUTABLE.txt;.')
           foreach ($m in $hidden) { $a += @('--hidden-import',$m) }
           $a += 'launcher.py'
@@ -136,6 +181,7 @@ jobs:
           $pydNames = Get-ChildItem $srcDir -File -Filter '*.pyd' | ForEach-Object {$_.Name}
           if ($pydNames.Count -ne 12) { throw "Expected 12 compiled src PYD files; found $($pydNames.Count)" }
           if (-not (Test-Path (Join-Path $out 'nmm_entry.cp312-win_amd64.pyd'))) { throw 'Compiled entry PYD missing' }
+          if (-not (Get-ChildItem $out -Recurse -File -Filter '_sqlite3*.pyd' -ErrorAction SilentlyContinue)) { throw '_sqlite3 runtime binary missing' }
           if (-not (Test-Path (Join-Path $out 'web/index.html'))) { throw 'Web UI missing' }
           if (-not (Test-Path (Join-Path $out 'data'))) { throw 'Data directory missing' }
           if (-not (Select-String -Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt') -Pattern 'BD2ModManager' -Quiet)) { throw 'BD2 credit missing' }
@@ -147,9 +193,31 @@ jobs:
           Write-Host "Authenticode status: $($sig.Status)"
           Get-FileHash $exe -Algorithm SHA256 | Format-List
           Get-ChildItem $out -Recurse -File | Measure-Object Length -Sum | Format-List Count,Sum
+      - name: Real startup smoke test
+        shell: pwsh
+        working-directory: source
+        run: |
+          $out = Resolve-Path dist/NIKKE_Mod_Manager_v0_34_9_Windows
+          $exe = Join-Path $out 'NIKKE_Mod_Manager.exe'
+          $err = Join-Path $out 'data/startup_error.log'
+          Remove-Item $err -Force -ErrorAction SilentlyContinue
+          $p = Start-Process -FilePath $exe -WorkingDirectory $out -PassThru
+          Start-Sleep -Seconds 10
+          if (Test-Path $err) {
+            Write-Host 'STARTUP_ERROR_LOG:'
+            Get-Content $err
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+            throw 'Runtime smoke test failed: startup_error.log was created'
+          }
+          $p.Refresh()
+          if ($p.HasExited) { throw "Runtime smoke test failed: application exited with code $($p.ExitCode)" }
+          Write-Host "RUNTIME_SMOKE_OK PID=$($p.Id)"
+          Stop-Process -Id $p.Id -Force
+          Start-Sleep -Seconds 1
+          if (Get-Process -Id $p.Id -ErrorAction SilentlyContinue) { throw 'Could not terminate smoke-test process' }
       - uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_34_9_Windows_Cython_Protected
+          name: NIKKE_Mod_Manager_v0_34_9_Windows_Cython_Protected_FIXED
           path: source/dist/NIKKE_Mod_Manager_v0_34_9_Windows
           retention-days: 1
           if-no-files-found: error
