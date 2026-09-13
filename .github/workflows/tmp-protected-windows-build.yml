@@ -121,12 +121,13 @@ jobs:
           if (Test-Path $out) { Remove-Item $out -Recurse -Force }
           Move-Item $dist.FullName $out
           if (-not (Test-Path (Join-Path $out 'NIKKE_Mod_Manager.exe'))) { throw 'NIKKE_Mod_Manager.exe was not generated.' }
-          @"
-NIKKE Mod Manager v0.34.9 — compiled Windows distribution
-Backend compiled with Nuitka. Python project source files are not included.
-Repack and Viewer are experimental/testing features.
-Keep the complete folder together; do not move only the EXE.
-"@ | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
+          $buildInfo = @(
+            'NIKKE Mod Manager v0.34.9 - compiled Windows distribution',
+            'Backend compiled with Nuitka. Python project source files are not included.',
+            'Repack and Viewer are experimental/testing features.',
+            'Keep the complete folder together; do not move only the EXE.'
+          )
+          $buildInfo | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
           $ownPy = Get-ChildItem $out -Recurse -File -Filter '*.py' | Where-Object { $_.FullName -match '\\src\\|\\app\.py$' }
           if ($ownPy) { throw 'Application Python source unexpectedly present in compiled distribution.' }
           Get-FileHash (Join-Path $out 'NIKKE_Mod_Manager.exe') -Algorithm SHA256 | Format-List
