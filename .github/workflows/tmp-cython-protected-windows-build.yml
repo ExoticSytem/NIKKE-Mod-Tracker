@@ -128,10 +128,12 @@ jobs:
           Move-Item $src $out
           $exe = Join-Path $out 'NIKKE_Mod_Manager.exe'
           if (-not (Test-Path $exe)) { throw 'EXE missing' }
+          $badRoot = @((Join-Path $out 'app.py'),(Join-Path $out 'nmm_entry.py')) | Where-Object { Test-Path $_ }
           $ownNames = @('api.py','catalog.py','catalog_updater.py','classifier.py','playable_updater.py','preview.py','repacker_detector.py','repacker_engine.py','repacker_service.py','runtime_cache.py','scanner.py','sync_server.py')
-          $bad = Get-ChildItem $out -Recurse -File | Where-Object { $_.Name -in @('app.py','nmm_entry.py') -or ($_.Name -in $ownNames -and $_.Directory.Name -eq 'src') }
-          if ($bad) { throw ('Proprietary Python source found: ' + (($bad | ForEach-Object {$_.FullName}) -join ', ')) }
-          $pydNames = Get-ChildItem (Join-Path $out 'src') -File -Filter '*.pyd' | ForEach-Object {$_.Name}
+          $srcDir = Join-Path $out 'src'
+          $badSrc = if (Test-Path $srcDir) { Get-ChildItem $srcDir -File -Filter '*.py' | Where-Object { $_.Name -in $ownNames } } else { @() }
+          if ($badRoot -or $badSrc) { throw 'Proprietary Python source found in application root/src' }
+          $pydNames = Get-ChildItem $srcDir -File -Filter '*.pyd' | ForEach-Object {$_.Name}
           if ($pydNames.Count -ne 12) { throw "Expected 12 compiled src PYD files; found $($pydNames.Count)" }
           if (-not (Test-Path (Join-Path $out 'nmm_entry.cp312-win_amd64.pyd'))) { throw 'Compiled entry PYD missing' }
           if (-not (Test-Path (Join-Path $out 'web/index.html'))) { throw 'Web UI missing' }
