@@ -72,12 +72,17 @@ jobs:
                   if isinstance(node, ast.Import):
                       mods.update(alias.name for alias in node.names)
                   elif isinstance(node, ast.ImportFrom):
+                      base = None
                       if node.level:
                           if p.parent.name == 'src':
-                              name = 'src' + ('.' + node.module if node.module else '')
-                              mods.add(name)
+                              base = 'src' + ('.' + node.module if node.module else '')
                       elif node.module:
-                          mods.add(node.module)
+                          base = node.module
+                      if base:
+                          mods.add(base)
+                          for alias in node.names:
+                              if alias.name != '*':
+                                  mods.add(base + '.' + alias.name)
 
           own = {
               'src.api','src.catalog','src.catalog_updater','src.classifier','src.playable_updater',
@@ -91,15 +96,16 @@ jobs:
                       usable.add(mod)
               except Exception:
                   pass
-          # Cython hides stdlib imports from PyInstaller; keep sqlite explicit too.
-          usable.update({'sqlite3', '_sqlite3'})
+          usable.update({'sqlite3', '_sqlite3', 'tkinter.filedialog', 'tkinter.messagebox', 'tkinter.ttk'})
           Path('hidden_imports.txt').write_text('\n'.join(sorted(usable)) + '\n', encoding='utf-8')
           print('HIDDEN_IMPORTS', len(usable))
           print(Path('hidden_imports.txt').read_text(encoding='utf-8'))
           '@ | Set-Content -Encoding UTF8 collect_hidden_imports.py
           python collect_hidden_imports.py
           if ($LASTEXITCODE -ne 0) { throw 'Import discovery failed' }
-          if (-not (Select-String -Path hidden_imports.txt -Pattern '^sqlite3$' -Quiet)) { throw 'sqlite3 was not captured' }
+          foreach ($m in @('sqlite3','tkinter.filedialog','tkinter.messagebox','tkinter.ttk')) {
+            if (-not (Select-String -Path hidden_imports.txt -Pattern "^$([regex]::Escape($m))$" -Quiet)) { throw "$m was not captured" }
+          }
       - name: Compile proprietary modules
         shell: pwsh
         working-directory: source
@@ -123,7 +129,7 @@ jobs:
         shell: pwsh
         working-directory: source
         run: |
-          python -c "import sqlite3; import nmm_entry; import src.api, src.catalog, src.catalog_updater, src.classifier, src.playable_updater, src.preview, src.repacker_detector, src.repacker_engine, src.repacker_service, src.runtime_cache, src.scanner, src.sync_server; print('COMPILED_IMPORTS_OK', sqlite3.sqlite_version)"
+          python -c "import sqlite3, tkinter.filedialog, tkinter.messagebox, tkinter.ttk; import nmm_entry; import src.api, src.catalog, src.catalog_updater, src.classifier, src.playable_updater, src.preview, src.repacker_detector, src.repacker_engine, src.repacker_service, src.runtime_cache, src.scanner, src.sync_server; print('COMPILED_IMPORTS_OK', sqlite3.sqlite_version)"
           if ($LASTEXITCODE -ne 0) { throw 'Compiled module import smoke test failed' }
       - name: Remove proprietary source
         shell: pwsh
