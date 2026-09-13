@@ -15,13 +15,15 @@ jobs:
     env:
       PYTHONUTF8: '1'
       PIP_DISABLE_PIP_VERSION_CHECK: '1'
-      SOURCE_URL: 'https://eu-central.storage.cloudconvert.com/tasks/3fe4bdbc-be67-4fe1-b730-506a4fd511af/source%2Csource.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T034738Z&X-Amz-Expires=86400&X-Amz-Signature=a78fce8b24fe3b8a03cced29296e1d0c73e863d6583bb401722eb38794e873b0&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22source%2Csource.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+      SOURCE_URL: 'https://eu-central.storage.cloudconvert.com/tasks/83a10df6-2a74-450f-90c9-f5bddc43b0e2/source2%2Csource2.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T042638Z&X-Amz-Expires=86400&X-Amz-Signature=83bb0d8dc48640483356cc7eeaa3dac328373a31f003a54adfba24aa8a145c23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22source2%2Csource2.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
     steps:
       - name: Download encrypted build payload
         shell: pwsh
         run: |
           Invoke-WebRequest -Uri $env:SOURCE_URL -OutFile transfer.zip
           Expand-Archive transfer.zip encrypted -Force
+          if (-not (Test-Path encrypted/source2.enc)) { throw 'Encrypted source payload missing' }
+          if (-not (Test-Path encrypted/source2.key)) { throw 'Encrypted source key missing' }
 
       - name: Download ephemeral private key
         shell: pwsh
@@ -39,15 +41,17 @@ jobs:
         shell: pwsh
         run: |
           $openssl = 'C:\Program Files\Git\usr\bin\openssl.exe'
-          & $openssl pkeyutl -decrypt -inkey key/private.pem -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in encrypted/source.key -out keyiv.bin
+          & $openssl pkeyutl -decrypt -inkey key/private.pem -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in encrypted/source2.key -out keyiv.bin
           if ($LASTEXITCODE -ne 0) { throw 'RSA decrypt failed' }
           $b=[IO.File]::ReadAllBytes((Resolve-Path keyiv.bin))
+          if ($b.Length -ne 48) { throw "Unexpected key/IV length: $($b.Length)" }
           $k=-join ($b[0..31] | % {$_.ToString('x2')})
           $iv=-join ($b[32..47] | % {$_.ToString('x2')})
-          & $openssl enc -d -aes-256-cbc -K $k -iv $iv -in encrypted/source.enc -out source.zip
+          & $openssl enc -d -aes-256-cbc -K $k -iv $iv -in encrypted/source2.enc -out source.zip
           if ($LASTEXITCODE -ne 0) { throw 'AES decrypt failed' }
           Expand-Archive source.zip source -Force
           if (-not (Test-Path source/app.py)) { throw 'Source payload incomplete' }
+          if (-not (Select-String -Path source/ABOUT_PROJECT_ES_EN.txt -Pattern 'BD2ModManager' -Quiet)) { throw 'Updated project credits missing' }
 
       - uses: actions/setup-python@v5
         with:
@@ -70,6 +74,10 @@ jobs:
             --assume-yes-for-downloads `
             --windows-console-mode=disable `
             --enable-plugin=tk-inter `
+            --low-memory `
+            --mingw64 `
+            --clang `
+            --lto=no `
             --include-package=send2trash `
             --include-package=qrcode `
             --include-package=UnityPy `
@@ -93,11 +101,13 @@ jobs:
           $dist=Get-ChildItem build -Directory -Filter '*.dist' | Select-Object -First 1
           if (-not $dist) { throw 'Nuitka dist not found' }
           $out=Join-Path (Resolve-Path build) 'NIKKE_Mod_Manager_v0_34_9_Windows'
+          if (Test-Path $out) { Remove-Item $out -Recurse -Force }
           Move-Item $dist.FullName $out
           if (-not (Test-Path (Join-Path $out 'NIKKE_Mod_Manager.exe'))) { throw 'EXE missing' }
           @('NIKKE Mod Manager v0.34.9 - compiled Windows distribution','Backend compiled with Nuitka. Python project source files are not included.','Repack and Viewer are experimental/testing features.','Keep the complete folder together; do not move only the EXE.') | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
           $ownPy=Get-ChildItem $out -Recurse -File -Filter '*.py' | Where-Object {$_.FullName -match '\\src\\|\\app\.py$'}
           if ($ownPy) { throw 'Application Python source present in distribution' }
+          if (-not (Select-String -Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt') -Pattern 'Na0h / NMM' -Quiet)) { throw 'Credits file missing from distribution' }
           Get-FileHash (Join-Path $out 'NIKKE_Mod_Manager.exe') -Algorithm SHA256 | Format-List
 
       - uses: actions/upload-artifact@v4
