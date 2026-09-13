@@ -54,7 +54,7 @@ jobs:
         working-directory: source
         run: |
           python -m pip install -r requirements.txt
-          python -m pip install cython pyinstaller setuptools wheel
+          python -m pip install cython pyinstaller setuptools wheel pefile
       - name: Compile proprietary modules
         shell: pwsh
         working-directory: source
@@ -73,7 +73,13 @@ jobs:
           python build_cython.py build_ext --inplace
           if ($LASTEXITCODE -ne 0) { throw 'Cython build failed' }
           if (-not (Get-ChildItem -File -Filter 'nmm_entry*.pyd')) { throw 'nmm_entry pyd missing' }
-          if ((Get-ChildItem src -File -Filter '*.pyd').Count -lt 10) { throw 'Compiled src modules missing' }
+          if ((Get-ChildItem src -File -Filter '*.pyd').Count -ne 12) { throw 'Expected 12 compiled src modules' }
+      - name: Smoke test compiled modules
+        shell: pwsh
+        working-directory: source
+        run: |
+          python -c "import nmm_entry; import src.api, src.catalog, src.catalog_updater, src.classifier, src.playable_updater, src.preview, src.repacker_detector, src.repacker_engine, src.repacker_service, src.runtime_cache, src.scanner, src.sync_server; print('COMPILED_IMPORTS_OK')"
+          if ($LASTEXITCODE -ne 0) { throw 'Compiled module import smoke test failed' }
       - name: Remove proprietary source
         shell: pwsh
         working-directory: source
@@ -107,7 +113,7 @@ jobs:
         working-directory: source
         run: |
           $hidden = @('src.api','src.catalog','src.catalog_updater','src.classifier','src.playable_updater','src.preview','src.repacker_detector','src.repacker_engine','src.repacker_service','src.runtime_cache','src.scanner','src.sync_server')
-          $a = @('--noconfirm','--clean','--windowed','--onedir','--name','NIKKE_Mod_Manager','--paths','.','--collect-all','webview','--collect-all','UnityPy','--collect-all','Crypto','--collect-all','qrcode','--collect-all','send2trash','--collect-all','zstandard','--collect-all','lz4','--add-data','web;web','--add-data','data;data','--add-data','Backups;Backups','--add-data','VERSION.txt;.','--add-data','ABOUT_PROJECT_ES_EN.txt;.','--add-data','LEEME_EJECUTABLE.txt;.')
+          $a = @('--noconfirm','--clean','--windowed','--onedir','--contents-directory','.','--name','NIKKE_Mod_Manager','--paths','.','--collect-all','webview','--collect-all','UnityPy','--collect-all','Crypto','--collect-all','qrcode','--collect-all','send2trash','--collect-all','zstandard','--collect-all','lz4','--add-data','web;web','--add-data','data;data','--add-data','Backups;Backups','--add-data','VERSION.txt;.','--add-data','ABOUT_PROJECT_ES_EN.txt;.','--add-data','LEEME_EJECUTABLE.txt;.')
           foreach ($m in $hidden) { $a += @('--hidden-import',$m) }
           $a += 'launcher.py'
           python -m PyInstaller @a
@@ -122,10 +128,21 @@ jobs:
           Move-Item $src $out
           $exe = Join-Path $out 'NIKKE_Mod_Manager.exe'
           if (-not (Test-Path $exe)) { throw 'EXE missing' }
-          $own = Get-ChildItem $out -Recurse -File -Filter '*.py' | Where-Object {$_.FullName -match '\\src\\|\\app\.py$|\\nmm_entry\.py$'}
-          if ($own) { throw 'Proprietary Python source found' }
-          if (-not (Select-String -Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt') -Pattern 'Na0h / NMM' -Quiet)) { throw 'Updated credits missing' }
+          $ownNames = @('api.py','catalog.py','catalog_updater.py','classifier.py','playable_updater.py','preview.py','repacker_detector.py','repacker_engine.py','repacker_service.py','runtime_cache.py','scanner.py','sync_server.py')
+          $bad = Get-ChildItem $out -Recurse -File | Where-Object { $_.Name -in @('app.py','nmm_entry.py') -or ($_.Name -in $ownNames -and $_.Directory.Name -eq 'src') }
+          if ($bad) { throw ('Proprietary Python source found: ' + (($bad | ForEach-Object {$_.FullName}) -join ', ')) }
+          $pydNames = Get-ChildItem (Join-Path $out 'src') -File -Filter '*.pyd' | ForEach-Object {$_.Name}
+          if ($pydNames.Count -ne 12) { throw "Expected 12 compiled src PYD files; found $($pydNames.Count)" }
+          if (-not (Test-Path (Join-Path $out 'nmm_entry.cp312-win_amd64.pyd'))) { throw 'Compiled entry PYD missing' }
+          if (-not (Test-Path (Join-Path $out 'web/index.html'))) { throw 'Web UI missing' }
+          if (-not (Test-Path (Join-Path $out 'data'))) { throw 'Data directory missing' }
+          if (-not (Select-String -Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt') -Pattern 'BD2ModManager' -Quiet)) { throw 'BD2 credit missing' }
+          if (-not (Select-String -Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt') -Pattern 'Na0h / NMM' -Quiet)) { throw 'NMM credit missing' }
           @('NIKKE Mod Manager v0.34.9 - Windows protected distribution','Application modules compiled with Cython; proprietary Python source is not distributed.','Runtime dependencies bundled with PyInstaller.','Repack and Viewer are experimental/testing features.','Keep the complete folder together; do not move only the EXE.') | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
+          python -c "import pefile,sys; p=pefile.PE(sys.argv[1]); assert p.FILE_HEADER.Machine==0x8664, hex(p.FILE_HEADER.Machine); assert p.OPTIONAL_HEADER.Subsystem==2, p.OPTIONAL_HEADER.Subsystem; assert p.OPTIONAL_HEADER.Magic==0x20B, hex(p.OPTIONAL_HEADER.Magic); print('PE_VALID_AMD64_GUI')" $exe
+          if ($LASTEXITCODE -ne 0) { throw 'PE validation failed' }
+          $sig = Get-AuthenticodeSignature $exe
+          Write-Host "Authenticode status: $($sig.Status)"
           Get-FileHash $exe -Algorithm SHA256 | Format-List
           Get-ChildItem $out -Recurse -File | Measure-Object Length -Sum | Format-List Count,Sum
       - uses: actions/upload-artifact@v4
