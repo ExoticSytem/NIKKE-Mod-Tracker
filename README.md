@@ -8,7 +8,7 @@ Hice este proyecto rápido porque se me estaba haciendo incómodo recordar qué 
 
 ## EN — About the project
 
-I put this project together quickly because it was getting inconvenient to remember which NIKKE mods I had, spot duplicates, and check which skin or action each mod affected. The idea and part of the visual/workflow inspiration came from [bruhnn's BD2ModManager](https://github.com/bruhnn/BD2ModManager), an excellent Brown Dust 2 mod manager; full credit to that project for the inspiration. NIKKE Mod Tracker started as a personal project and was developed with AI assistance. I did not know whether something similar already existed for NIKKE; if it is useful to anyone else, feel free to use it, test it, and share suggestions.
+I put this project together quickly because it was getting inconvenient to remember which NIKKE mods I had, spot duplicates, and check which skin or action each mod affected. The idea and part of the visual/workflow inspiration came from [bruhnn's BD2ModManager](https://github.com/bruhnn/BD2ModManager), an excellent mod manager for Brown Dust 2; full credit to that project for the inspiration. NIKKE Mod Tracker started as a personal project and was developed with AI assistance. I did not know whether something similar already existed for NIKKE; if it is useful to anyone else, feel free to use it, test it, and share suggestions.
 
 ## Funciones / Features
 
@@ -17,6 +17,7 @@ I put this project together quickly because it was getting inconvenient to remem
 - Detección de mods duplicados/conflictos en PC.
 - Nombres de mods visibles en Android después de sincronizar.
 - Etiquetas compartidas PC ↔ Android.
+- Filtro por etiquetas y opciones de orden tanto en PC como en Android.
 - Sincronización local mediante Wi‑Fi/QR, sin cuentas ni base de datos central.
 - Catálogo e imágenes con caché local y soporte para imágenes curadas por el proyecto.
 - La clasificación NPC / Extra es compartida y la mantiene el proyecto; los jugadores no la editan localmente.
@@ -43,7 +44,7 @@ Ejemplo: `assets/characters/manual/c016_02.png`.
 
 ## APK
 
-El APK se compila automáticamente con GitHub Actions. Ve a **Actions → Build Android APK → Artifacts** para descargar la versión más reciente.
+El repositorio mantiene el catálogo, las imágenes y las automatizaciones centrales. El APK de Android se distribuye como compilación aparte; actualmente no existe un workflow activo de GitHub Actions que compile el APK desde este repositorio.
 
 ## Créditos / Credits
 
