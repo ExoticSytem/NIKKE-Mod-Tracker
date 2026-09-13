@@ -1,0 +1,168 @@
+name: Temporary Cython protected Windows EXE build
+
+on:
+  push:
+    branches: ['tmp/cython-protected-exe-build']
+    paths: ['.tmp-build/cython-run.txt']
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
+      SOURCE_URL: 'https://eu-central.storage.cloudconvert.com/tasks/83a10df6-2a74-450f-90c9-f5bddc43b0e2/source2%2Csource2.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T042638Z&X-Amz-Expires=86400&X-Amz-Signature=83bb0d8dc48640483356cc7eeaa3dac328373a31f003a54adfba24aa8a145c23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22source2%2Csource2.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+    steps:
+      - name: Download encrypted build payload
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri $env:SOURCE_URL -OutFile transfer.zip
+          Expand-Archive transfer.zip encrypted -Force
+          if (-not (Test-Path encrypted/source2.enc)) { throw 'Encrypted source payload missing' }
+          if (-not (Test-Path encrypted/source2.key)) { throw 'Encrypted source key missing' }
+
+      - name: Download ephemeral private key
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $h = @{Authorization="Bearer $env:GH_TOKEN"; Accept='application/vnd.github+json'; 'X-GitHub-Api-Version'='2022-11-28'}
+          $p = Invoke-RestMethod -Headers $h -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts?name=nmm-private-build-key&per_page=10"
+          $a = $p.artifacts | Where-Object {-not $_.expired} | Sort-Object created_at -Descending | Select-Object -First 1
+          if (-not $a) { throw 'Private build key artifact not found' }
+          Invoke-WebRequest -Headers $h -Uri $a.archive_download_url -OutFile key.zip
+          Expand-Archive key.zip key -Force
+
+      - name: Decrypt source
+        shell: pwsh
+        run: |
+          $openssl = 'C:\Program Files\Git\usr\bin\openssl.exe'
+          & $openssl pkeyutl -decrypt -inkey key/private.pem -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in encrypted/source2.key -out keyiv.bin
+          if ($LASTEXITCODE -ne 0) { throw 'RSA decrypt failed' }
+          $b=[IO.File]::ReadAllBytes((Resolve-Path keyiv.bin))
+          if ($b.Length -ne 48) { throw "Unexpected key/IV length: $($b.Length)" }
+          $k=-join ($b[0..31] | % {$_.ToString('x2')})
+          $iv=-join ($b[32..47] | % {$_.ToString('x2')})
+          & $openssl enc -d -aes-256-cbc -K $k -iv $iv -in encrypted/source2.enc -out source.zip
+          if ($LASTEXITCODE -ne 0) { throw 'AES decrypt failed' }
+          Expand-Archive source.zip source -Force
+          if (-not (Test-Path source/app.py)) { throw 'Source payload incomplete' }
+          if (-not (Select-String -Path source/ABOUT_PROJECT_ES_EN.txt -Pattern 'BD2ModManager' -Quiet)) { throw 'Updated project credits missing' }
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
+
+      - name: Install build and runtime dependencies
+        shell: pwsh
+        working-directory: source
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install cython pyinstaller setuptools wheel
+
+      - name: Compile application modules with Cython
+        shell: pwsh
+        working-directory: source
+        run: |
+          Copy-Item app.py nmm_entry.py
+          @'
+          from pathlib import Path
+          from setuptools import setup, Extension
+          from Cython.Build import cythonize
+
+          exts = [Extension('nmm_entry', ['nmm_entry.py'])]
+          for p in sorted(Path('src').glob('*.py')):
+              if p.name == '__init__.py':
+                  continue
+              exts.append(Extension(f'src.{p.stem}', [str(p)]))
+
+          setup(
+              name='nmm_compiled',
+              ext_modules=cythonize(
+                  exts,
+                  compiler_directives={'language_level': 3, 'binding': True},
+                  annotate=False,
+              ),
+          )
+          '@ | Set-Content -Encoding UTF8 build_cython.py
+          python build_cython.py build_ext --inplace
+          if ($LASTEXITCODE -ne 0) { throw 'Cython build failed' }
+          if (-not (Get-ChildItem -File -Filter 'nmm_entry*.pyd')) { throw 'Compiled nmm_entry module missing' }
+          $mods = Get-ChildItem src -File -Filter '*.pyd'
+          if ($mods.Count -lt 10) { throw "Expected compiled src modules; found $($mods.Count)" }
+
+      - name: Remove proprietary Python source and create launcher
+        shell: pwsh
+        working-directory: source
+        run: |
+          Remove-Item app.py, nmm_entry.py, build_cython.py -Force
+          Get-ChildItem src -File -Filter '*.py' | Where-Object {$_.Name -ne '__init__.py'} | Remove-Item -Force
+          Set-Content -Encoding UTF8 src/__init__.py ''
+          @'
+          import traceback
+          from pathlib import Path
+          import nmm_entry
+
+          try:
+              nmm_entry.main()
+          except Exception as exc:
+              try:
+                  root = Path(__file__).resolve().parent
+                  p = root / 'data' / 'startup_error.log'
+                  p.parent.mkdir(parents=True, exist_ok=True)
+                  p.write_text(f'{type(exc).__name__}: {exc}\n\n{traceback.format_exc()}', encoding='utf-8')
+              except Exception:
+                  pass
+              try:
+                  import tkinter as tk
+                  from tkinter import messagebox
+                  w=tk.Tk(); w.withdraw()
+                  messagebox.showerror('NIKKE Mod Manager', 'La aplicación no pudo iniciar. Revisa data/startup_error.log.\n\n' + str(exc))
+                  w.destroy()
+              except Exception:
+                  pass
+              raise
+          '@ | Set-Content -Encoding UTF8 launcher.py
+          $remaining = Get-ChildItem src -File -Filter '*.py' | Where-Object {$_.Name -ne '__init__.py'}
+          if ($remaining) { throw 'Proprietary Python source remains before packaging' }
+
+      - name: Package standalone EXE distribution
+        shell: pwsh
+        working-directory: source
+        run: |
+          $hidden = @('src.api','src.catalog','src.catalog_updater','src.classifier','src.playable_updater','src.preview','src.repacker_detector','src.repacker_engine','src.repacker_service','src.runtime_cache','src.scanner','src.sync_server')
+          $args = @('--noconfirm','--clean','--windowed','--onedir','--name','NIKKE_Mod_Manager','--paths','.', '--collect-all','webview','--collect-all','UnityPy','--collect-all','Crypto','--collect-all','qrcode','--collect-all','send2trash','--collect-all','zstandard','--collect-all','lz4','--add-data','web;web','--add-data','data;data','--add-data','Backups;Backups','--add-data','VERSION.txt;.','--add-data','ABOUT_PROJECT_ES_EN.txt;.','--add-data','LEEME_EJECUTABLE.txt;.')
+          foreach ($m in $hidden) { $args += @('--hidden-import', $m) }
+          $args += 'launcher.py'
+          python -m PyInstaller @args
+          if ($LASTEXITCODE -ne 0) { throw 'PyInstaller packaging failed' }
+
+      - name: Validate and prepare distribution
+        shell: pwsh
+        working-directory: source
+        run: |
+          $src = Resolve-Path dist/NIKKE_Mod_Manager
+          $out = Join-Path (Resolve-Path dist) 'NIKKE_Mod_Manager_v0_34_9_Windows'
+          if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+          Move-Item $src $out
+          $exe = Join-Path $out 'NIKKE_Mod_Manager.exe'
+          if (-not (Test-Path $exe)) { throw 'EXE missing' }
+          $ownPy = Get-ChildItem $out -Recurse -File -Filter '*.py' | Where-Object { $_.FullName -match '\\src\\|\\app\.py$|\\nmm_entry\.py$' }
+          if ($ownPy) { throw ('Application Python source present in distribution: ' + (($ownPy | % FullName) -join ', ')) }
+          if (-not (Test-Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt'))) { throw 'Credits file missing' }
+          if (-not (Select-String -Path (Join-Path $out 'ABOUT_PROJECT_ES_EN.txt') -Pattern 'Na0h / NMM' -Quiet)) { throw 'Updated credits missing' }
+          @('NIKKE Mod Manager v0.34.9 - Windows protected distribution','Application modules compiled with Cython; proprietary Python source is not distributed.','Runtime dependencies are bundled with PyInstaller.','Repack and Viewer are experimental/testing features.','Keep the complete folder together; do not move only the EXE.') | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
+          Get-FileHash $exe -Algorithm SHA256 | Format-List
+          Get-ChildItem $out -Recurse -File | Measure-Object -Property Length -Sum | Format-List Count,Sum
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_34_9_Windows_Cython_Protected
+          path: source/dist/NIKKE_Mod_Manager_v0_34_9_Windows
+          retention-days: 1
+          if-no-files-found: error
