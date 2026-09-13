@@ -5,8 +5,7 @@ on:
     branches:
       - 'tmp/protected-exe-build'
     paths:
-      - '.tmp-build/source.enc'
-      - '.tmp-build/source.key'
+      - '.tmp-build/run.txt'
 
 permissions:
   contents: read
@@ -18,9 +17,19 @@ jobs:
     env:
       PYTHONUTF8: '1'
       PIP_DISABLE_PIP_VERSION_CHECK: '1'
+      SOURCE_URL: 'https://eu-central.storage.cloudconvert.com/tasks/3fe4bdbc-be67-4fe1-b730-506a4fd511af/source%2Csource.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T034738Z&X-Amz-Expires=86400&X-Amz-Signature=a78fce8b24fe3b8a03cced29296e1d0c73e863d6583bb401722eb38794e873b0&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22source%2Csource.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
     steps:
-      - name: Checkout encrypted payload only
+      - name: Checkout branch
         uses: actions/checkout@v4
+
+      - name: Download encrypted source transport
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Invoke-WebRequest -Uri $env:SOURCE_URL -OutFile source-transfer.zip
+          Expand-Archive -Path source-transfer.zip -DestinationPath encrypted -Force
+          if (-not (Test-Path encrypted/source.enc)) { throw 'source.enc missing.' }
+          if (-not (Test-Path encrypted/source.key)) { throw 'source.key missing.' }
 
       - name: Download ephemeral private key
         shell: pwsh
@@ -47,18 +56,18 @@ jobs:
           $ErrorActionPreference = 'Stop'
           $openssl = 'C:\Program Files\Git\usr\bin\openssl.exe'
           if (-not (Test-Path $openssl)) { $openssl = 'openssl' }
-          & $openssl pkeyutl -decrypt -inkey build-key/private.pem -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in .tmp-build/source.key -out keyiv.bin
+          & $openssl pkeyutl -decrypt -inkey build-key/private.pem -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256 -in encrypted/source.key -out keyiv.bin
           if ($LASTEXITCODE -ne 0) { throw 'RSA decryption failed.' }
           $bytes = [IO.File]::ReadAllBytes((Resolve-Path keyiv.bin))
           if ($bytes.Length -ne 48) { throw "Invalid AES key payload length: $($bytes.Length)" }
           $key = -join ($bytes[0..31] | ForEach-Object { $_.ToString('x2') })
           $iv  = -join ($bytes[32..47] | ForEach-Object { $_.ToString('x2') })
-          & $openssl enc -d -aes-256-cbc -K $key -iv $iv -in .tmp-build/source.enc -out source.zip
+          & $openssl enc -d -aes-256-cbc -K $key -iv $iv -in encrypted/source.enc -out source.zip
           if ($LASTEXITCODE -ne 0) { throw 'AES decryption failed.' }
           Expand-Archive -Path source.zip -DestinationPath source -Force
           if (-not (Test-Path source/app.py)) { throw 'Decrypted source payload is incomplete.' }
-          Remove-Item keyiv.bin, source.zip, build-key.zip -Force -ErrorAction SilentlyContinue
-          Remove-Item build-key -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item keyiv.bin, source.zip, source-transfer.zip, build-key.zip -Force -ErrorAction SilentlyContinue
+          Remove-Item encrypted, build-key -Recurse -Force -ErrorAction SilentlyContinue
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -113,11 +122,11 @@ jobs:
           Move-Item $dist.FullName $out
           if (-not (Test-Path (Join-Path $out 'NIKKE_Mod_Manager.exe'))) { throw 'NIKKE_Mod_Manager.exe was not generated.' }
           @"
-          NIKKE Mod Manager v0.34.9 — compiled Windows distribution
-          Backend compiled with Nuitka. Python project source files are not included.
-          Repack and Viewer are experimental/testing features.
-          Keep the complete folder together; do not move only the EXE.
-          "@ | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
+NIKKE Mod Manager v0.34.9 — compiled Windows distribution
+Backend compiled with Nuitka. Python project source files are not included.
+Repack and Viewer are experimental/testing features.
+Keep the complete folder together; do not move only the EXE.
+"@ | Set-Content -Encoding UTF8 (Join-Path $out 'BUILD_INFO.txt')
           $ownPy = Get-ChildItem $out -Recurse -File -Filter '*.py' | Where-Object { $_.FullName -match '\\src\\|\\app\.py$' }
           if ($ownPy) { throw 'Application Python source unexpectedly present in compiled distribution.' }
           Get-FileHash (Join-Path $out 'NIKKE_Mod_Manager.exe') -Algorithm SHA256 | Format-List
