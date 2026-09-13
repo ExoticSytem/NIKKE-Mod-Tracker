@@ -1,0 +1,111 @@
+name: Temporary friendly NIKKE Mod Manager demo package
+on:
+  push:
+    branches: ['tmp/cython-protected-exe-build']
+    paths: ['.tmp-build/package-run.txt']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Download validated fixed application artifact
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+          $url='https://api.github.com/repos/ExoticSytem/NIKKE-Mod-Tracker/actions/artifacts/10311834959/zip'
+          Invoke-WebRequest -Headers $h -Uri $url -OutFile app.zip
+          Expand-Archive app.zip incoming -Force
+          $exe=Get-ChildItem incoming -Recurse -File -Filter 'NIKKE_Mod_Manager.exe' | Select-Object -First 1
+          if (-not $exe) { throw 'Validated EXE not found in artifact' }
+          $exe.Directory.FullName | Set-Content -Encoding UTF8 app_root.txt
+
+      - name: Build clean demo layout and shortcut
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $appRoot=(Get-Content app_root.txt -Raw).Trim()
+          $layout=Join-Path $PWD 'final_layout'
+          $demo=Join-Path $layout 'mod manager demo'
+          New-Item -ItemType Directory -Path $demo -Force | Out-Null
+          Copy-Item (Join-Path $appRoot '*') $demo -Recurse -Force
+          Remove-Item (Join-Path $demo 'data/startup_error.log') -Force -ErrorAction SilentlyContinue
+
+          $target=Join-Path $demo 'NIKKE_Mod_Manager.exe'
+          if (-not (Test-Path $target)) { throw 'Target EXE missing in mod manager demo folder' }
+          $shortcutPath=Join-Path $layout 'NIKKE Mod Manager.lnk'
+          $ws=New-Object -ComObject WScript.Shell
+          $sc=$ws.CreateShortcut($shortcutPath)
+          $sc.TargetPath=$target
+          $sc.WorkingDirectory=$demo
+          $sc.IconLocation="$target,0"
+          $sc.Description='Abrir NIKKE Mod Manager / Open NIKKE Mod Manager'
+          $sc.Save()
+          if (-not (Test-Path $shortcutPath)) { throw 'Shortcut was not created' }
+
+          $rootItems=@(Get-ChildItem $layout -Force)
+          if ($rootItems.Count -ne 2) { throw "Unexpected root item count: $($rootItems.Count)" }
+          if (-not (Test-Path (Join-Path $layout 'mod manager demo'))) { throw 'mod manager demo folder missing' }
+          if (-not (Test-Path (Join-Path $layout 'NIKKE Mod Manager.lnk'))) { throw 'Root shortcut missing' }
+
+      - name: Validate shortcut after ZIP relocation
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $layout=Join-Path $PWD 'final_layout'
+          Compress-Archive -Path (Join-Path $layout '*') -DestinationPath relocation_test.zip -CompressionLevel Optimal -Force
+          Remove-Item $layout -Recurse -Force
+          $relocated=Join-Path $PWD 'relocated_layout'
+          Expand-Archive relocation_test.zip $relocated -Force
+
+          $link=Join-Path $relocated 'NIKKE Mod Manager.lnk'
+          $demo=Join-Path $relocated 'mod manager demo'
+          $exe=Join-Path $demo 'NIKKE_Mod_Manager.exe'
+          $err=Join-Path $demo 'data/startup_error.log'
+          if (-not (Test-Path $link)) { throw 'Shortcut missing after ZIP extraction' }
+          if (-not (Test-Path $exe)) { throw 'EXE missing after ZIP extraction' }
+          Remove-Item $err -Force -ErrorAction SilentlyContinue
+
+          $before=@(Get-Process -Name 'NIKKE_Mod_Manager' -ErrorAction SilentlyContinue | ForEach-Object {$_.Id})
+          Start-Process -FilePath $link
+          Start-Sleep -Seconds 12
+          if (Test-Path $err) {
+            Get-Content $err
+            Get-Process -Name 'NIKKE_Mod_Manager' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+            throw 'Shortcut launch created startup_error.log'
+          }
+          $running=@(Get-Process -Name 'NIKKE_Mod_Manager' -ErrorAction SilentlyContinue | Where-Object {$_.Id -notin $before})
+          if (-not $running) { throw 'Shortcut did not launch NIKKE_Mod_Manager.exe after relocation' }
+          Write-Host "SHORTCUT_RELOCATION_OK PID=$($running[0].Id)"
+          $running | Stop-Process -Force -ErrorAction SilentlyContinue
+          Start-Sleep -Seconds 1
+
+          Move-Item $relocated $layout
+          Remove-Item relocation_test.zip -Force
+
+      - name: Validate final share structure
+        shell: pwsh
+        run: |
+          $layout=Resolve-Path final_layout
+          $demo=Join-Path $layout 'mod manager demo'
+          $exe=Join-Path $demo 'NIKKE_Mod_Manager.exe'
+          $link=Join-Path $layout 'NIKKE Mod Manager.lnk'
+          if (-not (Test-Path $exe)) { throw 'Final EXE missing' }
+          if (-not (Test-Path $link)) { throw 'Final shortcut missing' }
+          if (Test-Path (Join-Path $demo 'data/startup_error.log')) { throw 'startup_error.log should not ship' }
+          $root=@(Get-ChildItem $layout -Force)
+          if ($root.Count -ne 2) { throw 'Final ZIP root must contain only shortcut and mod manager demo folder' }
+          Get-FileHash $exe -Algorithm SHA256 | Format-List
+          Write-Host 'FINAL_LAYOUT:'
+          Get-ChildItem $layout | Select-Object Name,Mode,Length | Format-Table -AutoSize
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NIKKE_Mod_Manager_v0_34_9_DEMO_FINAL
+          path: final_layout
+          retention-days: 1
+          if-no-files-found: error
