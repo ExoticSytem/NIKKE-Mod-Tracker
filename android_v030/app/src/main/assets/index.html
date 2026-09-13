@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0d12" />
+  <title>NIKKE Mod Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>NIKKE Mod Tracker</h1>
+      <div class="sub">Catálogo central + inventario del PC</div>
+    </div>
+    <button id="syncBtn" class="iconbtn" title="Sincronizar">↻</button>
+  </header>
+
+  <main>
+    <section class="status-card">
+      <div><span class="dot" id="pcDot"></span><strong id="pcStatus">PC no vinculado</strong></div>
+      <div class="muted" id="catalogStatus">Cargando catálogo…</div>
+      <div class="status-actions">
+        <button id="catalogBtn" class="soft">Actualizar catálogo</button>
+        <button id="pairHelpBtn" class="soft">Vincular PC</button>
+      </div>
+    </section>
+
+    <div class="search-wrap"><input id="search" placeholder="Buscar personaje o skin…" autocomplete="off" /></div>
+    <div class="filters" id="filters">
+      <button data-filter="mods" class="active">Con mods</button>
+      <button data-filter="all">Todos</button>
+      <button data-filter="conflicts">Conflictos</button>
+      <button data-filter="npc">NPC / Extra</button>
+    </div>
+
+    <section id="empty" class="empty hidden"></section>
+    <section id="grid" class="grid"></section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="shade" data-close="1"></div>
+    <article class="detail">
+      <button class="close" data-close="1">×</button>
+      <div class="detail-image" id="detailImage"></div>
+      <div class="detail-body">
+        <h2 id="detailName"></h2>
+        <div class="meta" id="detailMeta"></div>
+        <div class="counts" id="detailCounts"></div>
+        <div class="tagbox">
+          <div class="tag-title">Etiquetas personales</div>
+          <div id="detailTags" class="taglist"></div>
+          <div class="tag-add"><input id="tagInput" maxlength="40" placeholder="Agregar etiqueta"/><button id="tagAddBtn">+</button></div>
+        </div>
+        <div class="mods-title">Mods detectados</div>
+        <div id="detailMods" class="mods"></div>
+      </div>
+    </article>
+  </div>
+
+  <div id="pairModal" class="modal hidden">
+    <div class="shade" data-pair-close="1"></div>
+    <article class="dialog">
+      <button class="close" data-pair-close="1">×</button>
+      <h2>Vincular con el PC</h2>
+      <p>En el Mod Manager de Windows abre <b>Configuración → Sincronización con Android</b> y escanea el QR con la cámara normal del teléfono.</p>
+      <p class="muted">El PC y el teléfono deben estar conectados a la misma red Wi‑Fi. No se transfieren archivos de mods.</p>
+      <button id="clearPairBtn" class="danger">Olvidar PC vinculado</button>
+      <button id="clearCacheBtn" class="soft wide">Limpiar caché de miniaturas</button>
+    </article>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>
