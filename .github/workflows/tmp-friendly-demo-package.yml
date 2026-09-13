@@ -9,6 +9,8 @@ permissions:
 jobs:
   package-windows:
     runs-on: windows-latest
+    env:
+      ICON_URL: 'https://eu-central.storage.cloudconvert.com/tasks/a85d37f9-ed7c-4e50-abf4-099fe41f85ae/NIKKE_Mod_Manager.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T055525Z&X-Amz-Expires=86400&X-Amz-Signature=4250bf6dc87548df215283d497527a310714c8adf6c7dd91f314955ab60cb4c1&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22NIKKE_Mod_Manager.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
     steps:
       - name: Download validated fixed application artifact
         shell: pwsh
@@ -23,6 +25,49 @@ jobs:
           $exe=Get-ChildItem incoming -Recurse -File -Filter 'NIKKE_Mod_Manager.exe' | Select-Object -First 1
           if (-not $exe) { throw 'Validated EXE not found in artifact' }
           $exe.Directory.FullName | Set-Content -Encoding UTF8 app_root.txt
+
+      - name: Download and embed application icon
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          Invoke-WebRequest -Uri $env:ICON_URL -OutFile icon.zip
+          Expand-Archive icon.zip icon -Force
+          $ico=Resolve-Path 'icon/NIKKE_Mod_Manager.ico'
+          $appRoot=(Get-Content app_root.txt -Raw).Trim()
+          $exe=Join-Path $appRoot 'NIKKE_Mod_Manager.exe'
+          if (-not (Test-Path $exe)) { throw 'EXE missing before icon patch' }
+          npm install rcedit@4.0.1 --no-save
+          $rcedit=Resolve-Path 'node_modules/rcedit/bin/rcedit-x64.exe'
+          & $rcedit $exe --set-icon $ico
+          if ($LASTEXITCODE -ne 0) { throw 'rcedit icon patch failed' }
+          Add-Type -AssemblyName System.Drawing
+          $extracted=[System.Drawing.Icon]::ExtractAssociatedIcon($exe)
+          if (-not $extracted) { throw 'Could not extract embedded EXE icon' }
+          $bmp=$extracted.ToBitmap()
+          $bmp.Save((Join-Path $PWD 'embedded_icon_preview.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+          $bmp.Dispose(); $extracted.Dispose()
+          if ((Get-Item 'embedded_icon_preview.png').Length -lt 1000) { throw 'Embedded icon preview looks invalid' }
+          Get-FileHash $exe -Algorithm SHA256 | Format-List
+
+      - name: Smoke test icon-patched executable
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          $appRoot=(Get-Content app_root.txt -Raw).Trim()
+          $exe=Join-Path $appRoot 'NIKKE_Mod_Manager.exe'
+          $err=Join-Path $appRoot 'data/startup_error.log'
+          Remove-Item $err -Force -ErrorAction SilentlyContinue
+          $p=Start-Process -FilePath $exe -WorkingDirectory $appRoot -PassThru
+          Start-Sleep -Seconds 10
+          if (Test-Path $err) {
+            Get-Content $err
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+            throw 'Icon-patched EXE created startup_error.log'
+          }
+          $p.Refresh()
+          if ($p.HasExited) { throw "Icon-patched EXE exited with code $($p.ExitCode)" }
+          Write-Host "ICON_PATCHED_EXE_STARTUP_OK PID=$($p.Id)"
+          Stop-Process -Id $p.Id -Force
 
       - name: Build clean demo layout and shortcut
         shell: pwsh
@@ -70,6 +115,10 @@ jobs:
           if (-not (Test-Path $exe)) { throw 'EXE missing after ZIP extraction' }
           Remove-Item $err -Force -ErrorAction SilentlyContinue
 
+          $ws=New-Object -ComObject WScript.Shell
+          $sc=$ws.CreateShortcut($link)
+          if ($sc.IconLocation -notlike '*NIKKE_Mod_Manager.exe*') { throw 'Shortcut is not using EXE embedded icon' }
+
           $before=@(Get-Process -Name 'NIKKE_Mod_Manager' -ErrorAction SilentlyContinue | ForEach-Object {$_.Id})
           Start-Process -FilePath $link
           Start-Sleep -Seconds 12
@@ -105,7 +154,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: NIKKE_Mod_Manager_v0_34_9_DEMO_FINAL
+          name: NIKKE_Mod_Manager_v0_34_9_DEMO_ICON_FINAL
           path: final_layout
           retention-days: 1
           if-no-files-found: error
