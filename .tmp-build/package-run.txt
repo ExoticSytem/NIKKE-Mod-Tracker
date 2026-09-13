@@ -1,1 +1,1 @@
-package fixed protected build as friendly demo layout retry 2026-09-13T05:40Z
+package fixed protected build with embedded NIKKE Mod Manager icon 2026-09-13T05:57Z
