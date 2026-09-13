@@ -12,7 +12,7 @@ jobs:
     env:
       PYTHONUTF8: '1'
       PIP_DISABLE_PIP_VERSION_CHECK: '1'
-      SOURCE_URL: 'https://eu-central.storage.cloudconvert.com/tasks/83a10df6-2a74-450f-90c9-f5bddc43b0e2/source2%2Csource2.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T042638Z&X-Amz-Expires=86400&X-Amz-Signature=83bb0d8dc48640483356cc7eeaa3dac328373a31f003a54adfba24aa8a145c23&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22source2%2Csource2.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
+      SOURCE_URL: 'https://eu-central.storage.cloudconvert.com/tasks/f9f7450a-5685-49cd-affc-2c47ee6af6ac/source2%2Csource2.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20260913%2Ffra%2Fs3%2Faws4_request&X-Amz-Date=20260913T053249Z&X-Amz-Expires=86400&X-Amz-Signature=b9375f1534188d1f2b8218779b7a20fd4304f0b275fefb52cc37c6da77916d53&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22source2%2Csource2.zip%22&response-content-type=application%2Fzip&x-amz-checksum-mode=ENABLED&x-id=GetObject'
     steps:
       - name: Download encrypted payload
         shell: pwsh
