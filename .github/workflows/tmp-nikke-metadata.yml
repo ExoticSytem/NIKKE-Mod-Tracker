@@ -1,0 +1,36 @@
+name: Temporary NIKKE metadata extraction
+on:
+  push:
+    branches: ['tmp/cython-protected-exe-build']
+    paths: ['.tmp-build/nikke-metadata.txt']
+permissions:
+  contents: read
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download public character metadata
+        run: |
+          python - <<'PY'
+          import json, urllib.request
+          url='https://raw.githubusercontent.com/jyd7661-del/nikke-site/main/nikke-site/data/characterDatabase.json'
+          with urllib.request.urlopen(url, timeout=60) as r:
+              data=json.load(r)
+          out=[]
+          for c in data:
+              out.append({
+                  'title': c.get('title',''),
+                  'manufacturer': c.get('manufacturer',''),
+                  'rarity': c.get('rarity',''),
+                  'squad': c.get('squad',''),
+                  'releaseDate': c.get('releaseDate',''),
+              })
+          with open('nikke_metadata.json','w',encoding='utf-8') as f:
+              json.dump(out,f,ensure_ascii=False,indent=2)
+          print('entries',len(out))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nikke_metadata_with_rarity
+          path: nikke_metadata.json
+          retention-days: 1
